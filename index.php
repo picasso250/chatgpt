@@ -41,9 +41,6 @@ $type = "个人";
                 <div class="header-logo">
                     <h2 class="logo"><a class="links" id="clean" title="清空对话信息"><span class="logo-title">清空对话信息</span></a></h2>
                 </div>
-                <div class="header-logo">
-                    <h2 class="logo"><a class="links" href="https://github.com/dirk1983/chatgpt"><span class="logo-title">获取源码</span></a></h2>
-                </div>
             </div>
         </header>
         <div class="layout-content">

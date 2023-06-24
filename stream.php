@@ -1,4 +1,7 @@
 <?php
+function logData($msg){
+    error_log("$msg\n",3,__DIR__.'/data.log');
+}
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/event-stream");
 header("X-Accel-Buffering: no");
@@ -6,7 +9,6 @@ set_time_limit(0);
 session_start();
 $postData = $_SESSION['data'];
 $responsedata = "";
-$ch = curl_init();
 $OPENAI_API_KEY = "";
 
 //下面这段代码是从文件中获取apikey，采用轮询方式调用。配置apikey请访问key.php
@@ -76,21 +78,36 @@ $callback = function ($ch, $data) {
     return strlen($data);
 };
 
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+$configFile = 'config.ini';
+$appConfig = parse_ini_file($configFile);
+
+if(!empty($appConfig['https_proxy'])){
+    putenv("https_proxy=$appConfig[https_proxy]");
+}
+
+$ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+    'Content-Type: application/json',
+    'Authorization: Bearer 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'
+));
+curl_setopt($ch, CURLOPT_POST, true);
+// curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
+//     'model' => 'gpt-3.5-turbo',
+//     'messages' => array(
+//         array('role' => 'user', 'content' => 'Say this is a test!')
+//     ),
+//     'temperature' => 0.7,
+//     'stream'=>true,
+// )));
 curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
-curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 120); // 设置连接超时时间为30秒
-curl_setopt($ch, CURLOPT_MAXREDIRS, 3); // 设置最大重定向次数为3次
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 允许自动重定向
-curl_setopt($ch, CURLOPT_AUTOREFERER, true); // 自动设置Referer
-//curl_setopt($ch, CURLOPT_PROXY, "http://127.0.0.1:1081");
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+curl_setopt($ch, CURLOPT_VERBOSE, true);
 
-curl_exec($ch);
+$response = curl_exec($ch);
 curl_close($ch);
 
 $answer = "";
