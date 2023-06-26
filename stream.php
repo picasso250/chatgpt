@@ -1,11 +1,7 @@
 <?php
 
+require_once 'lib.php';
 require_once 'logic.php';
-
-function log_data($msg)
-{
-    error_log("$msg\n", 3, __DIR__ . '/data.log');
-}
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/event-stream");

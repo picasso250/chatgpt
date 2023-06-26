@@ -1,0 +1,89 @@
+.user-list-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-list-table th,
+.user-list-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+}
+
+.user-list-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.user-list-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+
+#display-area {
+    background-color: #f1f1f1;
+    padding: 20px;
+}
+
+#function-area {
+    background-color: #ddd;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.pagination {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.pagination a {
+    padding: 5px 10px;
+    background-color: #f1f1f1;
+    color: #333;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    margin-left: 5px;
+}
+
+.pagination a:hover {
+    background-color: #ddd;
+}
+
+.login-area {
+    /* background-color: #f2f2f2; */
+    padding: 0 20px;
+    border-radius: 5px;
+    width: 300px;
+    /* margin: 0 auto; */
+    display: flex;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+a.btn,
+button.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: #4CAF50;
+    padding: 7px 14px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 1px solid grey;
+}
+
+a.btn:hover,
+button.btn:hover {
+    background-color: #45a049;
+}
+
+#logout {
+    display: none;
+}

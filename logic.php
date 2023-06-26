@@ -3,9 +3,8 @@
 require_once 'db.php';
 
 // 生成一个随机的代号
-function generateRandomCode($length = 9)
+function generateRandomCode($length = 9, $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $code = '';
     for ($i = 0; $i < $length; $i++) {
         $randomIndex = rand(0, strlen($characters) - 1);
@@ -35,9 +34,15 @@ function insertOrUpdateUser($username)
         // 开启事务
         $pdo->beginTransaction();
 
-        $sql = "INSERT INTO users (username, balance) VALUES (:username, 100)
-                ON DUPLICATE KEY UPDATE last_updated = CURRENT_TIMESTAMP";
-        $params = [':username' => $username];
+        $last_ip = $_SERVER['REMOTE_ADDR'];
+
+        $sql = "INSERT INTO users (username, balance, last_ip) VALUES (:username, 100, :last_ip)
+        ON DUPLICATE KEY UPDATE last_updated = CURRENT_TIMESTAMP, last_ip = :last_ip2";
+        $params = [
+            ':username' => $username,
+            ':last_ip' => $last_ip,
+            ':last_ip2' => $last_ip,
+        ];
 
         // 执行SQL语句
         $stmt = executePreparedStmt($sql, $params);
@@ -83,4 +88,56 @@ function deductUserBalance($userId, $cost)
     }
 
     return null; // Return null if balance fetching failed
+}
+function getMaxIdFromRows($rows)
+{
+    $maxId = 0;
+    foreach ($rows as $row) {
+        if ($row['id'] > $maxId) {
+            $maxId = $row['id'];
+        }
+    }
+    return $maxId;
+}
+function batchInsertUser($userList, $balance)
+{
+    // Prepare the SQL statement for insertion
+    $sql = "INSERT INTO users (username, balance) VALUES (?, ?)";
+
+    // Iterate over each user
+    foreach ($userList as $user) {
+        // Execute the prepared statement for each user
+        executePreparedStmt($sql, [$user, $balance]);
+    }
+}
+function validateUser($username, $password)
+{
+    $sql = "SELECT * FROM admin_users WHERE username = :username";
+    $params = array(':username' => $username);
+
+    $stmt = executePreparedStmt($sql, $params);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($row && password_verify($password, $row['password'])) {
+        return true;
+    }
+
+    return false;
+}
+function registerUser($username, $password)
+{
+    // 加密密码
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // 构建SQL语句
+    $sql = "INSERT INTO admin_users (username, password) VALUES (:username, :password)";
+
+    // 准备参数
+    $params = array(
+        ':username' => $username,
+        ':password' => $hashedPassword,
+    );
+
+    // 执行预处理语句
+    executePreparedStmt($sql, $params);
 }
