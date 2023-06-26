@@ -473,3 +473,16 @@ function newChat() {
     conversation_list[active_conversation].context = contextarray;
     contextarray = [];
 }
+$(document).ready(function() {
+    $("#rechargeButton").click(function() {
+      layer.open({
+        type: 1,
+        title: false,
+        closeBtn: 1,
+        area: ['300px', '150px'],
+        shadeClose: true,
+        content: $('#qqGroup').html()
+      });
+    });
+  });
+  

@@ -33,10 +33,15 @@ $type = "个人";
             </ul>
             <div class="control-panel">
                 <div class="username">用户名: <span><?=htmlspecialchars($username)?></span></div>
-                <div class="recharge-button">充值</div>
+                <div class="recharge-button" id="rechargeButton">充值</div>
                 <div class="credits">积分: <span id="balance"><?=htmlspecialchars($user['balance'] / 100)?></span></div>
                 <div class="invite-link" id="inviteLink">邀请链接</div>
             </div>
+
+<div id="qqGroup" style="display:none;">
+  <p>请加入客服QQ群：123456789，联系客服进行充值。</p>
+</div>
+
         </div>
         <div class="main-content">
             <header class="layout-header">
