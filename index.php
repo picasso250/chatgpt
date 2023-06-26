@@ -35,7 +35,7 @@ $type = "个人";
                 <div class="username">用户名: <span><?=htmlspecialchars($username)?></span></div>
                 <div class="recharge-button">充值</div>
                 <div class="credits">积分: <span id="balance"><?=htmlspecialchars($user['balance'] / 100)?></span></div>
-                <div class="invite-link">邀请链接</div>
+                <div class="invite-link" id="inviteLink">邀请链接</div>
             </div>
         </div>
         <div class="main-content">

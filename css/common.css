@@ -2309,6 +2309,7 @@ a.unlinks-deco {
 .conversation:active {
     background-color: #ebebeb;
 }
+
 .conversation.active {
     background-color: #ebebeb;
 }
@@ -2339,4 +2340,11 @@ a.unlinks-deco {
     background: none;
     border: none;
     cursor: pointer;
+}
+
+#urlInput {
+    display: block;
+    border: none;
+    border-bottom: 1px solid black;
+    width: 30em;
 }
