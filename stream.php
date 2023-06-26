@@ -1,6 +1,7 @@
 <?php
-function logData($msg){
-    error_log("$msg\n",3,__DIR__.'/data.log');
+function logData($msg)
+{
+    error_log("$msg\n", 3, __DIR__ . '/data.log');
 }
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/event-stream");
@@ -39,10 +40,10 @@ if (isset($_SESSION['key'])) {
     $OPENAI_API_KEY = $_SESSION['key'];
 }
 session_write_close();
-$headers  = [
+$headers = [
     'Accept: application/json',
     'Content-Type: application/json',
-    'Authorization: Bearer ' . $OPENAI_API_KEY
+    'Authorization: Bearer ' . $OPENAI_API_KEY,
 ];
 
 setcookie("errcode", ""); //EventSource无法获取错误信息，通过cookie传递
@@ -71,6 +72,7 @@ $callback = function ($ch, $data) {
         }
         $responsedata = $data;
     } else {
+        logData($data);
         echo $data;
         $responsedata .= $data;
         flush();
@@ -81,7 +83,7 @@ $callback = function ($ch, $data) {
 $configFile = 'config.ini';
 $appConfig = parse_ini_file($configFile);
 
-if(!empty($appConfig['https_proxy'])){
+if (!empty($appConfig['https_proxy'])) {
     putenv("https_proxy=$appConfig[https_proxy]");
 }
 
@@ -90,7 +92,7 @@ curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Content-Type: application/json',
-    'Authorization: Bearer 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'
+    'Authorization: Bearer ' . $OPENAI_API_KEY,
 ));
 curl_setopt($ch, CURLOPT_POST, true);
 // curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
@@ -124,7 +126,7 @@ foreach ($responsearr as $msg) {
 }
 $questionarr = json_decode($postData, true);
 $filecontent = $_SERVER["REMOTE_ADDR"] . " | " . date("Y-m-d H:i:s") . "\n";
-$filecontent .= "Q:" . end($questionarr['messages'])['content'] .  "\nA:" . trim($answer) . "\n----------------\n";
+$filecontent .= "Q:" . end($questionarr['messages'])['content'] . "\nA:" . trim($answer) . "\n----------------\n";
 $myfile = fopen(__DIR__ . "/chatlog.php", "a") or die("Writing file failed.");
 fwrite($myfile, $filecontent);
 fclose($myfile);

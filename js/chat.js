@@ -1,4 +1,7 @@
 var contextarray = [];
+var conversation_list = [];
+var is_new = true;
+var active_conversation = 0;
 
 var defaults = {
     html: false,        // Enable HTML tags in source
@@ -357,6 +360,20 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (results) {
                     streaming();
+
+                    if (is_new) {
+                        var conversationText = prompt.substr(0, 10); // 获取对话的前10个字符
+                        var conversationItem = {
+                            context: contextarray,
+                            text: conversationText
+                        };
+                        conversation_list.unshift(conversationItem); // 将新对话添加到对话列表的开头
+
+                        displayConversationList(conversation_list);
+
+                        is_new = false;
+                        active_conversation = 0;
+                    }
                 }
             });
         }
@@ -375,4 +392,64 @@ $(document).ready(function () {
         return pwd;
     }
 
+    $('#newChatBtn').on('click', newChat);
+    $('#conversationList').on('click', '.delete-button', function (event) {
+        event.stopPropagation();
+        var index = $(this).closest('li').index();
+        $(this).closest('li').remove();
+        deleteConversation(index);
+        console.log('删除对话' + (index + 1));
+    });
+    $('#conversationList').on('click', 'li', function (event) {
+        // 保存当前contextarray到conversation_list[active_conversation]
+        conversation_list[active_conversation].context = contextarray;
+
+        // 设置被点击的li元素的样式为active
+        $(this).closest('li').addClass('active').siblings().removeClass('active');
+
+        // 获取被点击的li元素的索引
+        var index = $(this).closest('li').index();
+        active_conversation = index;
+
+        // 设置#article-wrapper里的内容为conversation_list[active_conversation]并显示
+        var conversation = conversation_list[active_conversation];
+        $("#article-wrapper").empty();
+        for (var i = 0; i < conversation.context.length; i++) {
+            var message = conversation.context[i];
+            var answer = randomString(16);
+            $("#article-wrapper").append('<li class="article-title" id="q' + answer + '"><pre></pre></li>');
+            for (var j = 0; j < message[0].length; j++) {
+                $("#q" + answer).children('pre').text($("#q" + answer).children('pre').text() + message[0][j]);
+            }
+            $("#article-wrapper").append('<li class="article-content" id="' + answer + '"></li>');
+            for (var j = 0; j < message[1].length; j++) {
+                $("#" + answer).text($("#" + answer).text() + message[1][j]);
+            }
+        }
+
+        contextarray = conversation.context;
+    });
+
+
 });
+function deleteConversation(index) {
+    conversation_list.splice(index, 1); // 从对话列表中移除对应索引的对话项
+}
+
+function displayConversationList(conversationList) {
+    var ulElement = $('#conversationList').empty('');
+
+    $.each(conversationList, function (index, conversationItem) {
+        var liElement = $('<li class="conversation"></li>').text(conversationItem.text);
+        liElement.append('<button class="delete-button" >&times;</button>');
+        ulElement.append(liElement);
+    });
+}
+// 新建聊天按钮点击事件
+function newChat() {
+    // 刷新右侧区域的代码
+    $('#article-wrapper').empty();
+    is_new = true;
+    conversation_list[active_conversation].context = contextarray;
+    contextarray = [];
+}

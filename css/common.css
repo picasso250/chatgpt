@@ -2266,3 +2266,77 @@ a.unlinks-deco {
     color: var(--zhuluan-black-3-color);
     background: linear-gradient(90deg, var(--zhuluan-custom-e8-color), var(--zhuluan-custom-d8-color));
 }
+
+/* Add styles for the new sidebar */
+.sidebar {
+    width: 30%;
+    /* Adjust this value as needed */
+    background-color: #f4f4f4;
+    /* Add desired background color */
+    float: left;
+    padding: 20px;
+    /* Adjust padding as needed */
+}
+
+/* Add styles for the main content area */
+.main-content {
+    width: 70%;
+    /* Adjust this value as needed */
+    float: left;
+}
+
+/* Add styles to make the layout responsive */
+@media (max-width: 768px) {
+
+    /* For smaller screens, make the layout stack vertically */
+    .sidebar,
+    .main-content {
+        width: 100%;
+        float: none;
+    }
+}
+
+/* Add styles to make conversation list items clickable */
+.conversation {
+    cursor: pointer;
+    padding: 10px;
+}
+
+.conversation:hover {
+    background-color: #f5f5f5;
+}
+
+.conversation:active {
+    background-color: #ebebeb;
+}
+.conversation.active {
+    background-color: #ebebeb;
+}
+
+/* 添加删除按钮样式 */
+.delete-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #ff0000;
+    cursor: pointer;
+}
+
+/* 新建聊天按钮样式 */
+.new-chat-button {
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.delete-button {
+    margin-left: 10px;
+    float: right;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
