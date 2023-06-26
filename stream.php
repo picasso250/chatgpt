@@ -1,8 +1,12 @@
 <?php
-function logData($msg)
+
+require_once 'logic.php';
+
+function log_data($msg)
 {
     error_log("$msg\n", 3, __DIR__ . '/data.log');
 }
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/event-stream");
 header("X-Accel-Buffering: no");
@@ -11,6 +15,18 @@ session_start();
 $postData = $_SESSION['data'];
 $responsedata = "";
 $OPENAI_API_KEY = "";
+
+// 获取用户名
+$username = getUsernameFromCookie();
+
+// 在数据库中插入或更新用户
+$user = insertOrUpdateUser($username);
+
+if ($user['balance'] <= 0) {
+    $msg = json_encode(['error' => ['code' => 42, 'message' => '余额不足']]);
+    setcookie("errcode", "insufficient_balance");
+    die("data: $msg\n\n\n\n");
+}
 
 //下面这段代码是从文件中获取apikey，采用轮询方式调用。配置apikey请访问key.php
 $content = "<?php header('HTTP/1.1 404 Not Found');exit; ?>\n";
@@ -49,7 +65,7 @@ $headers = [
 setcookie("errcode", ""); //EventSource无法获取错误信息，通过cookie传递
 setcookie("errmsg", "");
 
-$callback = function ($ch, $data) {
+$callback = function ($ch, $data) use ($user, $postData) {
     global $responsedata;
     $complete = json_decode($data);
     if (isset($complete->error)) {
@@ -72,10 +88,37 @@ $callback = function ($ch, $data) {
         }
         $responsedata = $data;
     } else {
-        logData($data);
-        echo $data;
-        $responsedata .= $data;
-        flush();
+        log_data($data);
+        $pattern = '/^data: \\[DONE\\]/m';
+        log_data("!!!" . (preg_match($pattern, $data)));
+        if (preg_match($pattern, $data)) {
+            $responsedata .= $data;
+            $answer = build_answer($responsedata);
+
+            putenv("https_proxy="); // unset the https_proxy environment variable
+
+            $token_size = strlen($postData . $answer);
+
+            $pricePerToken = 0.003 / 1e3 * 7.3;
+
+            $price = $pricePerToken * $token_size;
+            $price *= 100;
+            if ($price < 1) {
+                $price = 1;
+            }
+
+            // Save the updated balance back to the user's data
+            $newBalance = deductUserBalance($user['id'], $price);
+            $datanb = json_encode(["newBalance" => $newBalance]);
+            echo preg_replace($pattern, "data: $datanb\n\n" . 'data: [DONE]', $data);
+            flush();
+
+        } else {
+            echo $data;
+            $responsedata .= $data;
+            flush();
+        }
+
     }
     return strlen($data);
 };
@@ -86,6 +129,7 @@ $appConfig = parse_ini_file($configFile);
 if (!empty($appConfig['https_proxy'])) {
     putenv("https_proxy=$appConfig[https_proxy]");
 }
+$OPENAI_API_KEY = $appConfig['OPENAI_API_KEY'];
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
@@ -104,6 +148,7 @@ curl_setopt($ch, CURLOPT_POST, true);
 //     'stream'=>true,
 // )));
 curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+log_data($postData);
 curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($ch, CURLOPT_TIMEOUT, 0);
@@ -112,18 +157,23 @@ curl_setopt($ch, CURLOPT_VERBOSE, true);
 $response = curl_exec($ch);
 curl_close($ch);
 
-$answer = "";
-if (substr(trim($responsedata), -6) == "[DONE]") {
-    $responsedata = substr(trim($responsedata), 0, -6) . "{";
-}
-$responsearr = explode("}\n\ndata: {", $responsedata);
-
-foreach ($responsearr as $msg) {
-    $contentarr = json_decode("{" . trim($msg) . "}", true);
-    if (isset($contentarr['choices'][0]['delta']['content'])) {
-        $answer .= $contentarr['choices'][0]['delta']['content'];
+function build_answer($responsedata)
+{
+    $answer = "";
+    if (substr(trim($responsedata), -6) == "[DONE]") {
+        $responsedata = substr(trim($responsedata), 0, -6) . "{";
     }
+    $responsearr = explode("}\n\ndata: {", $responsedata);
+
+    foreach ($responsearr as $msg) {
+        $contentarr = json_decode("{" . trim($msg) . "}", true);
+        if (isset($contentarr['choices'][0]['delta']['content'])) {
+            $answer .= $contentarr['choices'][0]['delta']['content'];
+        }
+    }
+    return $answer;
 }
+$answer = build_answer($responsedata);
 $questionarr = json_decode($postData, true);
 $filecontent = $_SERVER["REMOTE_ADDR"] . " | " . date("Y-m-d H:i:s") . "\n";
 $filecontent .= "Q:" . end($questionarr['messages'])['content'] . "\nA:" . trim($answer) . "\n----------------\n";

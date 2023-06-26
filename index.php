@@ -1,4 +1,13 @@
 ﻿<?php
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/logic.php';
+
+// 获取用户名
+$username = getUsernameFromCookie();
+
+// 在数据库中插入或更新用户
+$user = insertOrUpdateUser($username);
+
 $type = "个人";
 ?>
 <html lang="zh-CN">
@@ -11,7 +20,7 @@ $type = "个人";
     <title>ChatGPT
         <?=$type?>专用版
     </title>
-    <link rel="stylesheet" href="css/common.css?v=<?= time()?>">
+    <link rel="stylesheet" href="css/common.css?v=<?=time()?>">
     <link rel="stylesheet" href="css/wenda.css?v1.1">
     <link rel="stylesheet" href="css/hightlight.css">
 </head>
@@ -22,6 +31,12 @@ $type = "个人";
             <button class="new-chat-button" id="newChatBtn">新建聊天</button>
             <ul id="conversationList">
             </ul>
+            <div class="control-panel">
+                <div class="username">用户名: <span><?=htmlspecialchars($username)?></span></div>
+                <div class="recharge-button">充值</div>
+                <div class="credits">积分: <span id="balance"><?=htmlspecialchars($user['balance'] / 100)?></span></div>
+                <div class="invite-link">邀请链接</div>
+            </div>
         </div>
         <div class="main-content">
             <header class="layout-header">
@@ -37,13 +52,8 @@ $type = "个人";
                     <article class="article" id="article">
                         <div class="article-box">
                             <div class="precast-block" data-flex="main:left">
-                                <!--
-                            <div class="input-group">
-                                <span style="text-align: center;color:#9ca2a8">&nbsp;&nbsp;API-KEY&nbsp;&nbsp;</span>
-                                <input type="password" id="key" style="border:1px solid grey;display:block;max-width:270px;width:calc(100% - 70px);" onload="this.focus();">
-                            </div>
--->
-                                <div class="input-group">
+
+                                <div class="input-group" style="display:none">
                                     <span style="text-align: center;color:#9ca2a8">&nbsp;&nbsp;连续对话：</span>
                                     <input type="checkbox" id="keep" checked="" style="min-width:220px;">
                                     <label for="keep"></label>

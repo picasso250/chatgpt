@@ -234,6 +234,9 @@ $(document).ready(function () {
                     case "model_overloaded":
                         layer.msg("OpenAI模型超负荷，请重新发起请求");
                         break;
+                    case "insufficient_balance":
+                        layer.msg("余额不足");
+                        break;
                     case null:
                         layer.msg("OpenAI服务器访问超时或未知类型错误");
                         break;
@@ -320,13 +323,16 @@ $(document).ready(function () {
                     es.close();
                     return;
                 }
+
                 var json = eval("(" + event.data + ")");
-                if (json.choices[0].delta.hasOwnProperty("content")) {
+                if (json.choices && json.choices[0].delta.hasOwnProperty("content")) {
                     if (alltext == "") {
                         alltext = json.choices[0].delta.content.replace(/^\n+/, ''); //去掉回复消息中偶尔开头就存在的连续换行符
                     } else {
                         alltext += json.choices[0].delta.content;
                     }
+                } else if (json.newBalance) {
+                    $("#balance").text(json.newBalance / 100);
                 }
             }
         }
