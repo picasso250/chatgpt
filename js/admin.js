@@ -25,55 +25,10 @@ function checkLogin() {
         $('#login').hide();
     } else {
         // 未登录，显示登录链接
-        showLoginBox();
+        location.href = 'adminxlogin.php';
     }
 }
 
-// 处理登出操作
-function logout() {
-    // 发送登出的请求
-    window.location.href = '?action=logout';
-}
 $(function () {
     checkLogin();
-})// 显示登录框
-function showLoginBox() {
-    layer.open({
-        title: '登录',
-        content: `
-          <form id="loginForm">
-            <label for="username">用户名</label>
-            <input type="text" id="username" name="username">
-            <br>
-            <label for="password">密码</label>
-            <input type="password" id="password" name="password">
-            <br>
-            <button class="btn" type="button" onclick="submitLoginForm()">登录</button>
-          </form>
-        `
-    });
-}
-
-// 提交登录表单
-function submitLoginForm() {
-    var username = $('#username').val();
-    var password = $('#password').val();
-
-    $.ajax({
-        url: '?action=login', // 登录请求的处理页面
-        type: 'POST',
-        data: {
-            username: username,
-            password: password
-        },
-        success: function (response) {
-            // 处理登录结果
-            if (response === 'ok') {
-                layer.msg('登录成功！');
-                location.reload(); // 刷新页面
-            } else {
-                layer.msg('登录失败，请检查用户名和密码！');
-            }
-        }
-    });
-}
+});

@@ -17,12 +17,14 @@ if (isset($argv[1])) {
 $password = generateRandomCode(12, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{}|;:,.<>?');
 
 try {
-    
-    registerUser($username, $password);
+    if (isset($argv[2]) && $argv[2] === 'reset') {
+        changePassword($username, $password);
+    } else {
+        registerUser($username, $password);
+    }
 
     echo "$password\n";
 
-    echo "新用户已成功添加！";
 } catch (PDOException $e) {
     echo "错误信息：" . $e->getMessage();
 }

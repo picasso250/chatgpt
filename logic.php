@@ -141,3 +141,22 @@ function registerUser($username, $password)
     // 执行预处理语句
     executePreparedStmt($sql, $params);
 }
+function changePassword($username, $newPassword)
+{
+    $sql = "UPDATE admin_users SET password = :newPassword WHERE username = :username";
+    $params = array(
+        ':newPassword' => password_hash($newPassword, PASSWORD_DEFAULT),
+        ':username' => $username
+    );
+
+    try {
+        $stmt = executePreparedStmt($sql, $params);
+        if ($stmt->rowCount() > 0) {
+            return true;
+        }
+    } catch (PDOException $e) {
+        // 错误处理
+    }
+
+    return false;
+}
