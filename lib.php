@@ -6,6 +6,6 @@ function log_data($msg)
 
 function log_info($msg)
 {
-    $logMessage = "INFO: $msg\n";
+    $logMessage = date('c') . " INFO: $msg\n";
     error_log($logMessage, 3, __DIR__ . '/info.log');
 }

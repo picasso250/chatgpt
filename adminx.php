@@ -1,10 +1,16 @@
 <?php
 
+require_once 'lib.php';
 require_once 'logic.php';
 
 define('IN_ADMIN', 1);
 
 session_start();
+
+if(empty($_SESSION['user'])){
+    die("not login");
+}
+$username = $_SESSION['user']["username"];
 
 if (isset($_GET['action']) && $_GET['action'] === 'gen_user') {
     $balance = intval($_POST['balance']);
@@ -19,6 +25,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'gen_user') {
     }
 
     batchInsertUser($userList, $balance);
+    log_info("$username gen_user userCount=$userCount balance=$balance ".json_encode($userList));
 
     // Format the user list as HTML
     $userListHTML = '<ul>';
