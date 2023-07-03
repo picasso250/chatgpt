@@ -24,39 +24,12 @@ if ($user['balance'] <= 0) {
     die("data: $msg\n\n\n\n");
 }
 
-//下面这段代码是从文件中获取apikey，采用轮询方式调用。配置apikey请访问key.php
-$content = "<?php header('HTTP/1.1 404 Not Found');exit; ?>\n";
-$line = 0;
-$handle = fopen(__DIR__ . "/apikey.php", "r") or die("Writing file failed.");
-if ($handle) {
-    while (($buffer = fgets($handle)) !== false) {
-        $line++;
-        if ($line == 2) {
-            $OPENAI_API_KEY = str_replace("\n", "", $buffer);
-        }
-        if ($line > 2) {
-            $content .= $buffer;
-        }
-    }
-    fclose($handle);
-}
-$content .= $OPENAI_API_KEY . "\n";
-$handle = fopen(__DIR__ . "/apikey.php", "w") or die("Writing file failed.");
-if ($handle) {
-    fwrite($handle, $content);
-    fclose($handle);
-}
 
 //如果首页开启了输入自定义apikey，则采用用户输入的apikey
 if (isset($_SESSION['key'])) {
     $OPENAI_API_KEY = $_SESSION['key'];
 }
 session_write_close();
-$headers = [
-    'Accept: application/json',
-    'Content-Type: application/json',
-    'Authorization: Bearer ' . $OPENAI_API_KEY,
-];
 
 setcookie("errcode", ""); //EventSource无法获取错误信息，通过cookie传递
 setcookie("errmsg", "");

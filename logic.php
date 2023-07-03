@@ -36,7 +36,7 @@ function insertOrUpdateUser($username)
 
         $last_ip = $_SERVER['REMOTE_ADDR'];
 
-        $sql = "INSERT INTO users (username, balance, last_ip) VALUES (:username, 100, :last_ip)
+        $sql = "INSERT INTO users (username, balance, last_ip,email,password) VALUES (:username, 100, :last_ip,'','')
         ON DUPLICATE KEY UPDATE last_updated = CURRENT_TIMESTAMP, last_ip = :last_ip2";
         $params = [
             ':username' => $username,
@@ -102,7 +102,7 @@ function getMaxIdFromRows($rows)
 function batchInsertUser($userList, $balance)
 {
     // Prepare the SQL statement for insertion
-    $sql = "INSERT INTO users (username, balance) VALUES (?, ?)";
+    $sql = "INSERT INTO users (username, balance,email,password) VALUES (?, ?,'','')";
 
     // Iterate over each user
     foreach ($userList as $user) {
@@ -130,7 +130,7 @@ function registerUser($username, $password)
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // 构建SQL语句
-    $sql = "INSERT INTO admin_users (username, password) VALUES (:username, :password)";
+    $sql = "INSERT INTO admin_users (username, password,email) VALUES (:username, :password,'')";
 
     // 准备参数
     $params = array(

@@ -7,9 +7,9 @@
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>ChatGPT
-        <?=$type?>专用版
+        <?php echo $type?>专用版
     </title>
-    <link rel="stylesheet" href="css/common.css?v=<?=time()?>">
+    <link rel="stylesheet" href="css/common.css?v=<?php echo time()?>">
     <link rel="stylesheet" href="css/wenda.css?v1.1">
     <link rel="stylesheet" href="css/hightlight.css">
 </head>
@@ -21,9 +21,9 @@
             <ul id="conversationList">
             </ul>
             <div class="control-panel">
-                <div class="username">用户名: <span><?=htmlspecialchars($username)?></span></div>
+                <div class="username">用户名: <span><?php echo htmlspecialchars($username)?></span></div>
                 <div class="recharge-button" id="rechargeButton">充值</div>
-                <div class="credits">积分: <span id="balance"><?=htmlspecialchars($user['balance'] / 100)?></span></div>
+                <div class="credits">积分: <span id="balance"><?php echo htmlspecialchars($user['balance'] / 100)?></span></div>
                 <div class="invite-link" id="inviteLink">邀请链接</div>
             </div>
 
@@ -57,6 +57,11 @@
                                     <select id="preset-text" onchange="insertPresetText()"
                                         style="width:calc(100% - 90px);max-width:280px;">
                                         <option value="">请选择</option>
+                                        <option
+                                            value="You are ChatGPT, a large language model trained by OpenAI.
+                                            Knowledge cutoff: 2021-09
+                                            Current date: <?php echo date('c')?>">
+                                            ChatGPT</option>
                                         <option
                                             value="我想让你充当 Linux 终端。我将输入命令，您将回复终端应显示的内容。我希望您只在一个唯一的代码块内回复终端输出，而不是其他任何内容。不要写解释。除非我指示您这样做，否则不要键入命令。当我需要用英语告诉你一些事情时，我会把文字放在中括号内[就像这样]。我的第一个命令是 pwd">
                                             充当 Linux 终端</option>
@@ -422,7 +427,7 @@
     <script src="js/jquery-3.6.4.min.js"></script>
     <script src="js/jquery.cookie.min.js"></script>
     <script src="js/layer.min.js"></script>
-    <script src="js/chat.js?v=<?=time()?>"></script>
+    <script src="js/chat.js?v=<?php echo time()?>"></script>
     <script src="js/highlight.min.js"></script>
     <script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">

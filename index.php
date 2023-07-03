@@ -13,4 +13,4 @@ $user = insertOrUpdateUser($username);
 
 $type = "个人";
 
-include 'index.html';
+include 'i.html';
