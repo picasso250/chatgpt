@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 定义源文件目录和目标机器信息
-source_dir="."
+source_dir="html"
 target_host="xct7gm@104.225.145.121"
 target_dir="/var/www/html/"
 

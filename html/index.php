@@ -2,8 +2,8 @@
 
 define('IN_PHP', 1);
 
-require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/logic.php';
+require_once 'db.php';
+require_once 'logic.php';
 
 // 获取用户名
 $username = getUsernameFromCookie();

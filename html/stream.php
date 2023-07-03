@@ -92,7 +92,7 @@ $callback = function ($ch, $data) use ($user, $postData) {
     return strlen($data);
 };
 
-$configFile = 'config.ini';
+$configFile = '../config/config.ini';
 $appConfig = parse_ini_file($configFile);
 
 if (!empty($appConfig['https_proxy'])) {

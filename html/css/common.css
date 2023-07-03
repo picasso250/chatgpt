@@ -852,7 +852,7 @@ html {
 }
 
 body {
-    background-color: var(--zhuluan-custom-ff-color)
+    background: #232628;
 }
 
 @font-face {
@@ -2269,9 +2269,9 @@ a.unlinks-deco {
 
 /* Add styles for the new sidebar */
 .sidebar {
-    width: 30%;
+    width: 26%;
     /* Adjust this value as needed */
-    background-color: #f4f4f4;
+    background-color: #232628;
     /* Add desired background color */
     float: left;
     padding: 20px;
@@ -2300,10 +2300,16 @@ a.unlinks-deco {
 .conversation {
     cursor: pointer;
     padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+    padding-left: 18px;
 }
 
+#conversationList{
+    margin-bottom: 10px;
+}
 .conversation:hover {
-    background-color: #f5f5f5;
+    background-color: #646672;
 }
 
 .conversation:active {
@@ -2326,12 +2332,19 @@ a.unlinks-deco {
 /* 新建聊天按钮样式 */
 .new-chat-button {
     margin-bottom: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
+    background-color: #232628;
+    color: #e6e6eb;
+    border: 1px solid #68696d;
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
+    border-radius: 5px;
+}
+
+.new-chat-button:hover {
+    background-color: #4d545f;
+    color: #d5d6e1;
+    border: 1px solid #68696d;
 }
 
 .delete-button {
@@ -2347,4 +2360,8 @@ a.unlinks-deco {
     border: none;
     border-bottom: 1px solid black;
     width: 30em;
+}
+
+.control-panel{
+    color:#fff;
 }
