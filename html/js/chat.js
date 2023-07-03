@@ -123,7 +123,10 @@ $(document).ready(function () {
     initcode();
     autoresize();
     $("#kw-target").on('keydown', function (event) {
-        if (event.keyCode == 13 && event.ctrlKey) {
+        if (event.keyCode == 13 && event.shiftKey) {
+            $("#kw-target").val($("#kw-target").val()+"\r\n");
+            return false;
+        } else if (event.keyCode == 13) {
             send_post();
             return false;
         }
@@ -472,16 +475,15 @@ function newChat() {
     conversation_list[active_conversation].context = contextarray;
     contextarray = [];
 }
-$(document).ready(function() {
-    $("#rechargeButton").click(function() {
-      layer.open({
-        type: 1,
-        title: false,
-        closeBtn: 1,
-        area: ['300px', '150px'],
-        shadeClose: true,
-        content: $('#qqGroup').html()
-      });
+$(document).ready(function () {
+    $("#rechargeButton").click(function () {
+        layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 1,
+            area: ['300px', '150px'],
+            shadeClose: true,
+            content: $('#qqGroup').html()
+        });
     });
-  });
-  
+});
