@@ -81,13 +81,11 @@ $callback = function ($ch, $data) use ($user, $postData) {
             $datanb = json_encode(["newBalance" => $newBalance]);
             echo preg_replace($pattern, "data: $datanb\n\n" . 'data: [DONE]', $data);
             flush();
-
         } else {
             echo $data;
             $responsedata .= $data;
             flush();
         }
-
     }
     return strlen($data);
 };
@@ -108,14 +106,6 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Authorization: Bearer ' . $OPENAI_API_KEY,
 ));
 curl_setopt($ch, CURLOPT_POST, true);
-// curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
-//     'model' => 'gpt-3.5-turbo',
-//     'messages' => array(
-//         array('role' => 'user', 'content' => 'Say this is a test!')
-//     ),
-//     'temperature' => 0.7,
-//     'stream'=>true,
-// )));
 curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 log_data($postData);
 curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
@@ -144,8 +134,5 @@ function build_answer($responsedata)
 }
 $answer = build_answer($responsedata);
 $questionarr = json_decode($postData, true);
-$filecontent = $_SERVER["REMOTE_ADDR"] . " | " . date("Y-m-d H:i:s") . "\n";
-$filecontent .= "Q:" . end($questionarr['messages'])['content'] . "\nA:" . trim($answer) . "\n----------------\n";
-$myfile = fopen(__DIR__ . "/chatlog.php", "a") or die("Writing file failed.");
-fwrite($myfile, $filecontent);
-fclose($myfile);
+
+addChatLog($_SESSION['user_ses']['id'], $questionarr, $answer);

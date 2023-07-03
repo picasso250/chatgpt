@@ -160,3 +160,17 @@ function changePassword($username, $newPassword)
 
     return false;
 }
+
+
+function addChatLog($uid, $question, $answer)
+{
+    $last_ip = $_SERVER['REMOTE_ADDR'];
+
+    $sql = "INSERT INTO chatlog (uid,question,answer,ip) VALUES (?,?,?,?)";
+    $params = [
+        $uid, json_encode($question), $answer, $last_ip,
+    ];
+
+    // 执行SQL语句
+    $stmt = executePreparedStmt($sql, $params);
+}
