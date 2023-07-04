@@ -2302,12 +2302,13 @@ a.unlinks-deco {
     padding: 10px;
     border-radius: 5px;
     color: #fff;
-    padding-left: 18px;
+    padding-left: 8px;
 }
 
-#conversationList{
+#conversationList {
     margin-bottom: 10px;
 }
+
 .conversation:hover {
     background-color: #646672;
 }
@@ -2362,6 +2363,21 @@ a.unlinks-deco {
     width: 30em;
 }
 
-.control-panel{
-    color:#fff;
+.control-panel {
+    color: #fff;
 }
+
+.conversation-icon {
+    width: 16px;
+    height: 16px;
+    fill: #fff;
+    margin-right: 6px;
+}
+
+.conversation-icon svg {
+    margin-top: 0;
+}
+
+.conversation-icon {
+    vertical-align: sub; /* 图标与文本垂直居中对齐 */
+  }
