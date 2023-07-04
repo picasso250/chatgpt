@@ -2407,17 +2407,20 @@ a.unlinks-deco {
     border: 1px solid #555252;
 }
 
-.sidebar {
-    position: relative;
-    height: 100%;
-}
+@media (min-width: 769px) {
 
-.control-panel {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 4px 10px;
+    .sidebar {
+        position: relative;
+        height: 100%;
+    }
+
+    .control-panel {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 4px 10px;
+    }
 }
 
 .btn {
