@@ -125,6 +125,7 @@ $(document).ready(function () {
     $("#kw-target").on('keydown', function (event) {
         if (event.keyCode == 13 && event.shiftKey) {
             $("#kw-target").val($("#kw-target").val() + "\r\n");
+            autoresize();
             return false;
         } else if (event.keyCode == 13) {
             send_post();

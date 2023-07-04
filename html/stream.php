@@ -61,7 +61,6 @@ $callback = function ($ch, $data) use ($user, $postData, &$price) {
     } else {
         log_data($data);
         $pattern = '/^data: \\[DONE\\]/m';
-        log_data("!!!" . (preg_match($pattern, $data)));
         if (preg_match($pattern, $data)) {
             $responsedata .= $data;
             $answer = build_answer($responsedata);
