@@ -124,7 +124,7 @@ $(document).ready(function () {
     autoresize();
     $("#kw-target").on('keydown', function (event) {
         if (event.keyCode == 13 && event.shiftKey) {
-            $("#kw-target").val($("#kw-target").val()+"\r\n");
+            $("#kw-target").val($("#kw-target").val() + "\r\n");
             return false;
         } else if (event.keyCode == 13) {
             send_post();
@@ -370,7 +370,7 @@ $(document).ready(function () {
                     streaming();
 
                     if (is_new) {
-                        var conversationText = prompt.substr(0, 10); // 获取对话的前10个字符
+                        var conversationText = prompt.substr(0, 30); // 获取对话的前10个字符
                         var conversationItem = {
                             context: contextarray,
                             text: conversationText
@@ -447,8 +447,9 @@ function displayConversationList(conversationList) {
     var ulElement = $('#conversationList').empty('');
 
     $.each(conversationList, function (index, conversationItem) {
-        var liElement = $('<li class="conversation"></li>').text(conversationItem.text);
-        liElement.prepend('<span class="conversation-icon">        <svg role="img" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>The Conversation</title><path d="M23.996 10.543c-.131-4.91-4.289-8.773-9.2-8.773H9.005a8.997 8.997 0 0 0-5.957 15.746L1.05 22.23l4.942-2.98c.95.36 1.964.524 3.012.524h6.024c5.04 0 9.099-4.156 8.969-9.23zm-8.937 5.958H9.07c-2.587 0-5.205-2.03-5.696-4.583a5.724 5.724 0 0 1 5.63-6.874h5.99c2.586 0 5.205 2.03 5.696 4.582.688 3.667-2.095 6.875-5.63 6.875z"/></svg>      </span>');
+        var liElement = $('<li class="conversation"></li>');
+        liElement.prepend('<span class="conversation-icon">' + '<svg role="img" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>The Conversation</title><path d="M23.996 10.543c-.131-4.91-4.289-8.773-9.2-8.773H9.005a8.997 8.997 0 0 0-5.957 15.746L1.05 22.23l4.942-2.98c.95.36 1.964.524 3.012.524h6.024c5.04 0 9.099-4.156 8.969-9.23zm-8.937 5.958H9.07c-2.587 0-5.205-2.03-5.696-4.583a5.724 5.724 0 0 1 5.63-6.874h5.99c2.586 0 5.205 2.03 5.696 4.582.688 3.667-2.095 6.875-5.63 6.875z"/></svg>      </span>');
+        liElement.append($('<span class="conversation-list-item-text"></span>').text(conversationItem.text));
         liElement.append('<button class="delete-button" >&times;</button>');
         ulElement.append(liElement);
     });

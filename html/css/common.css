@@ -2326,7 +2326,7 @@ a.unlinks-deco {
     background: none;
     border: none;
     font-size: 16px;
-    color: #ff0000;
+    color: #9a1734;
     cursor: pointer;
 }
 
@@ -2433,8 +2433,6 @@ a.unlinks-deco {
     /* 文字居中 */
     text-decoration: none;
     /* 去除下划线 */
-    display: inline-block;
-    /* 设置为行内块元素 */
     font-size: 16px;
     /* 设置字体大小 */
     cursor: pointer;
@@ -2450,4 +2448,17 @@ a.unlinks-deco {
 
 #copyBtn {
     margin-top: 10px;
+}
+
+.conversation-list-item-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conversation {
+    display: flex;
+    /* 使用Flex布局 */
+    align-items: center;
+    /* 图标和文本垂直居中对齐 */
 }
