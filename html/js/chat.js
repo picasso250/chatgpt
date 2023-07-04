@@ -460,6 +460,8 @@ function newChat() {
     // 刷新右侧区域的代码
     $('#article-wrapper').empty();
     is_new = true;
-    conversation_list[active_conversation].context = contextarray;
+    if (conversation_list[active_conversation]) {
+        conversation_list[active_conversation].context = contextarray;
+    }
     contextarray = [];
 }
