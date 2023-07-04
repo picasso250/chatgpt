@@ -174,3 +174,13 @@ function addChatLog($uid, $question, $answer, $price)
     // 执行SQL语句
     $stmt = executePreparedStmt($sql, $params);
 }
+
+
+function adminUserList()
+{
+    $sql = "SELECT * from admin_users ";
+
+    $stmt = executePreparedStmt($sql, []);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
