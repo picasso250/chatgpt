@@ -162,13 +162,13 @@ function changePassword($username, $newPassword)
 }
 
 
-function addChatLog($uid, $question, $answer)
+function addChatLog($uid, $question, $answer, $price)
 {
     $last_ip = $_SERVER['REMOTE_ADDR'];
 
-    $sql = "INSERT INTO chatlog (uid,question,answer,ip) VALUES (?,?,?,?)";
+    $sql = "INSERT INTO chatlog (uid,question,answer,ip,money) VALUES (?,?,?,?,?)";
     $params = [
-        $uid, json_encode($question), $answer, $last_ip,
+        $uid, json_encode($question), $answer, $last_ip, $price,
     ];
 
     // 执行SQL语句

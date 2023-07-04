@@ -1,0 +1,1 @@
+ALTER TABLE `chatlog` ADD `money` INT UNSIGNED NOT NULL AFTER `uid`;

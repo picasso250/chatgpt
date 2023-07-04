@@ -34,7 +34,9 @@ session_write_close();
 setcookie("errcode", ""); //EventSource无法获取错误信息，通过cookie传递
 setcookie("errmsg", "");
 
-$callback = function ($ch, $data) use ($user, $postData) {
+$price = 0;
+
+$callback = function ($ch, $data) use ($user, $postData, &$price) {
     global $responsedata;
     $complete = json_decode($data);
     if (isset($complete->error)) {
@@ -135,4 +137,4 @@ function build_answer($responsedata)
 $answer = build_answer($responsedata);
 $questionarr = json_decode($postData, true);
 
-addChatLog($_SESSION['user_ses']['id'], $questionarr, $answer);
+addChatLog($_SESSION['user_ses']['id'], $questionarr, $answer, $price);
