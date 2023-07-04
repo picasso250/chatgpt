@@ -5,10 +5,19 @@ source_dir="html"
 target_host="xct7gm@104.225.145.121"
 target_dir="/var/www/html/"
 
-# 复制 PHP 文件和 HTML 文件
-scp -P 27417 -r "$source_dir"/*.php "$target_host":"$target_dir"
-scp -P 27417 -r "$source_dir"/*.html "$target_host":"$target_dir"
+# before deploy
+/C/xampp/php/php.exe script/html.php
 
-# 复制 CSS 和 JS 文件夹中的文件
-scp -P 27417 -r "$source_dir"/css "$target_host":"$target_dir"
-scp -P 27417 -r "$source_dir"/js "$target_host":"$target_dir"
+# 创建临时目录并将所有文件压缩成tar文件
+tar_file="deploy.tar.gz"
+tar -czf "$tar_file" "$source_dir"
+
+# 将tar文件传输到目标机器的/tmp目录
+scp -P 27417 "$tar_file" "$target_host:/tmp"
+
+# 在目标机器上解压tar文件并移动到目标目录
+ssh -p 27417 "$target_host" "cd $target_dir.. && tar -xzf /tmp/$tar_file && rm /tmp/$tar_file"
+# echo "cd $target_dir.. && tar -xzf /tmp/$tar_file && rm /tmp/$tar_file"
+
+# 清理临时文件和目录
+rm -rf "$tar_file"

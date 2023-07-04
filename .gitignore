@@ -1,3 +1,4 @@
 *.log
 *.ini
 stream_cli.php
+deploy.tar.gz
