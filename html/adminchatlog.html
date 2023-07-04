@@ -27,11 +27,10 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>用户名</th>
-                    <th>余额</th>
-                    <th>最后更新时间</th>
-                    <th>最后IP地址</th>
-                    <th>操作</th>
+                    <th>问题</th>
+                    <th>答案</th>
+                    <th>时间</th>
+                    <th>IP地址</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,20 +39,17 @@
                     <td>
                         <?php echo htmlspecialchars($row['id']); ?>
                     </td>
-                    <td>
-                        <?php echo htmlspecialchars($row['username']); ?>
+                    <td class="json-pretty">
+                        <?php echo htmlspecialchars($row['question']); ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($row['balance'] / 100); ?>
+                        <?php echo htmlspecialchars($row['answer']); ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($row['last_updated']); ?>
+                        <?php echo htmlspecialchars($row['created']); ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($row['last_ip']); ?>
-                    </td>
-                    <td>
-                        <a href="adminxchatlog.php?uid=<?php echo $row['id']; ?>">聊天记录</a>
+                        <?php echo htmlspecialchars($row['ip']); ?>
                     </td>
                 </tr>
                 <?php endforeach;?>
@@ -63,18 +59,18 @@
         <!-- 显示分页链接 -->
         <?php echo $pagination; ?>
     </div>
-    <div id="function-area">
-        <div>
-            生成用户的数量: <input type="number" id="user-count" value="1"> <!-- 初始默认数量为1 -->
-        </div>
-
-        <div>
-            余额: <input type="number" id="balance" value="10"> <!-- 初始默认余额为10 -->
-        </div>
-        <button class="btn" onclick="generateUsers()">生成用户</button> <!-- 点击按钮生成用户 -->
-    </div>
 
     <script src="js/admin.js?v=d813769125c0bb75b952cd00a44e03c7"></script>
+
+    <script>
+        $(function () {
+            $('.json-pretty').each(function () {
+                let j = JSON.parse($(this).text());
+                let p = JSON.stringify(j, undefined, 2);
+                $(this).empty().append($('<pre></pre>').text(p));
+            });
+        });
+    </script>
 </body>
 
 </html>

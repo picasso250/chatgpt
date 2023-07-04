@@ -4,7 +4,7 @@ if (php_sapi_name() !== 'cli') {
     die("This script must be run from the command line.");
 }
 
-require_once '../html/logic.php';
+require_once dirname(__DIR__) . '/html/logic.php';
 
 // 检查是否提供了用户名作为命令行参数
 if (isset($argv[1])) {
@@ -24,7 +24,6 @@ try {
     }
 
     echo "$password\n";
-
 } catch (PDOException $e) {
     echo "错误信息：" . $e->getMessage();
 }
