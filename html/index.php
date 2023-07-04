@@ -14,6 +14,11 @@ $username = getUsernameFromCookie();
 $user = insertOrUpdateUser($username);
 $_SESSION['user_ses'] = $user;
 
+if (isset($_GET['action']) && $_GET['action'] === 'UserInfo') {
+    echo json_encode($user);
+    exit();
+}
+
 $type = "个人";
 
 include 'i.html';

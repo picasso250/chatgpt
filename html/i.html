@@ -7,7 +7,7 @@
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>ChatGPT</title>
-    <link rel="stylesheet" href="css/common.css?v=8e1304f08bde37616b407efad5b7e31f">
+    <link rel="stylesheet" href="css/common.css?v=217a0c988b847284ec086b5ab06e48eb">
     <link rel="stylesheet" href="css/wenda.css?v=513008bd492f1a113ede213413eda110">
     <link rel="stylesheet" href="css/hightlight.css?v=90b173591f7eca4200441661fc65a1ef">
 </head>
@@ -19,7 +19,7 @@
             <ul id="conversationList">
             </ul>
             <div class="control-panel">
-                <div class="username">用户名: <span><?php echo htmlspecialchars($username)?></span></div>
+                <div class="username">用户名: <span id="username"><?php echo htmlspecialchars($username)?></span></div>
                 <div class="recharge-button" id="rechargeButton">充值</div>
                 <div class="credits">积分: <span id="balance"><?php echo htmlspecialchars($user['balance'] / 100)?></span></div>
                 <div class="invite-link" id="inviteLink">邀请链接</div>
@@ -418,7 +418,8 @@
     <script src="js/jquery-3.6.4.min.js?v=954f70f07f05742168adceba796dda72"></script>
     <script src="js/jquery.cookie.min.js?v=34f2c35185e06a0fad464f954b00d3dc"></script>
     <script src="js/layer.min.js?v=7cdb23d7e49febe634c90bcd40470bea"></script>
-    <script src="js/chat.js?v=3ef45ac0a166a94864cb2f6b637f08af"></script>
+    <script src="js/chat.js?v=7bef44eb5d3b100c86b3dcc5068bf528"></script>
+    <script src="js/user.js?v=7bef44eb5d3b100c86b3dcc5068bf528"></script>
     <script src="js/highlight.min.js?v=50c2f77a78e301a99399169c72b5d2c1"></script>
     <script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">

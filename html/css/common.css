@@ -2379,5 +2379,75 @@ a.unlinks-deco {
 }
 
 .conversation-icon {
-    vertical-align: sub; /* 图标与文本垂直居中对齐 */
-  }
+    vertical-align: sub;
+}
+
+#username,
+#rechargeButton,
+#inviteLink {
+    cursor: pointer;
+}
+
+.control-panel>div {
+    /* display: inline-block; */
+    margin-top: 10px;
+    /* 调整每个div之间的间距 */
+    margin-bottom: 10px;
+    border-radius: 5px;
+    /* 添加圆角 */
+    /* background-color: #444242; */
+    /* 设置背景颜色 */
+    padding: 5px 14px;
+    /* 调整内边距 */
+    color: #fff;
+    /* 设置文字颜色 */
+    cursor: pointer;
+    /* 添加鼠标指针样式 */
+    line-height: 31px;
+    border: 1px solid #555252;
+}
+
+.sidebar {
+    position: relative;
+    height: 100%;
+}
+
+.control-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 4px 10px;
+}
+
+.btn {
+    background-color: #4CAF50;
+    /* 设置背景颜色 */
+    border: none;
+    /* 去除边框 */
+    color: white;
+    /* 设置文字颜色 */
+    padding: 10px 20px;
+    /* 设置内边距 */
+    text-align: center;
+    /* 文字居中 */
+    text-decoration: none;
+    /* 去除下划线 */
+    display: inline-block;
+    /* 设置为行内块元素 */
+    font-size: 16px;
+    /* 设置字体大小 */
+    cursor: pointer;
+    /* 鼠标悬停时显示手型 */
+    border-radius: 5px;
+    /* 设置圆角 */
+}
+
+.btn:hover {
+    background-color: #45a049;
+    /* 鼠标悬停时改变背景颜色 */
+}
+
+#copyBtn {
+    margin-top: 10px;
+}

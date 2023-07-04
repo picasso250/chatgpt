@@ -48,7 +48,7 @@ function insertOrUpdateUser($username)
         $stmt = executePreparedStmt($sql, $params);
 
         // 查询并返回关联数组
-        $selectSql = "SELECT * FROM users WHERE username = :username";
+        $selectSql = "SELECT id,username, balance FROM users WHERE username = :username";
         $selectParams = [':username' => $username];
         $selectStmt = executePreparedStmt($selectSql, $selectParams);
         $result = $selectStmt->fetch(PDO::FETCH_ASSOC);

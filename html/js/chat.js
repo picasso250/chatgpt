@@ -438,21 +438,6 @@ $(document).ready(function () {
         contextarray = conversation.context;
     });
 
-    $('#inviteLink').click(function () {
-        var username = $.cookie('user_cookie'); // 从cookie中获取username
-        var url = location.href + '?invite_from=' + username; // 拼接url
-        var content = '<div>邀请一个人可以获取10个积分</div>' +
-            '<div><input type="text" value="' + url + '" id="urlInput" readonly></div>' +
-            '<div><button id="copyBtn">复制邀请链接</button></div>'; // 弹层内容
-        layer.open({ title: '邀请链接', content: content, btn: [], closeBtn: 1, shadeClose: true, });
-    });
-    $(document).on('click', '#copyBtn', function () {
-        var input = document.getElementById('urlInput');
-        input.select();
-        document.execCommand('copy');
-        layer.msg('已复制到剪贴板');
-    });
-
 });
 function deleteConversation(index) {
     conversation_list.splice(index, 1); // 从对话列表中移除对应索引的对话项
@@ -476,15 +461,3 @@ function newChat() {
     conversation_list[active_conversation].context = contextarray;
     contextarray = [];
 }
-$(document).ready(function () {
-    $("#rechargeButton").click(function () {
-        layer.open({
-            type: 1,
-            title: false,
-            closeBtn: 1,
-            area: ['300px', '150px'],
-            shadeClose: true,
-            content: $('#qqGroup').html()
-        });
-    });
-});
