@@ -7,7 +7,7 @@
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>ChatGPT</title>
-    <link rel="stylesheet" href="css/common.css?v=7669b104ff3342d028fffee08681817c">
+    <link rel="stylesheet" href="css/common.css?v=24457024821bb64fc1ff3becf490fca1">
     <link rel="stylesheet" href="css/wenda.css?v=513008bd492f1a113ede213413eda110">
     <link rel="stylesheet" href="css/hightlight.css?v=90b173591f7eca4200441661fc65a1ef">
 </head>
@@ -19,19 +19,23 @@
             <ul id="conversationList">
             </ul>
             <div class="control-panel">
-                <div class="username">用户名: <span id="username"><?php echo htmlspecialchars($username)?></span></div>
+                <div class="username">用户名: <span id="username">
+                        <?php echo htmlspecialchars($username)?>
+                    </span></div>
                 <div class="recharge-button" id="rechargeButton">充值</div>
-                <div class="credits">积分: <span id="balance"><?php echo htmlspecialchars($user['balance'] / 100)?></span></div>
+                <div class="credits">积分: <span id="balance">
+                        <?php echo htmlspecialchars($user['balance'] / 100)?>
+                    </span></div>
                 <div class="invite-link" id="inviteLink">邀请链接</div>
             </div>
 
-<div id="qqGroup" style="display:none;">
-  <p>请加入客服QQ群：123456789，联系客服进行充值。</p>
-</div>
+            <div id="qqGroup" style="display:none;">
+                <p>请加入客服QQ群：123456789，联系客服进行充值。</p>
+            </div>
 
         </div>
         <div class="main-content">
-            
+
             <div class="layout-content">
                 <div class="container">
                     <article class="article" id="article">
@@ -48,8 +52,7 @@
                                     <select id="preset-text" onchange="insertPresetText()"
                                         style="width:calc(100% - 90px);max-width:280px;">
                                         <option value="">请选择</option>
-                                        <option
-                                            value="You are ChatGPT, a large language model trained by OpenAI.
+                                        <option value="You are ChatGPT, a large language model trained by OpenAI.
                                             Knowledge cutoff: 2021-09
                                             Current date: <?php echo date('c')?>">
                                             ChatGPT</option>
@@ -376,6 +379,23 @@
 
                                     </select>
                                 </div>
+                                <div class="input-group">
+                                    <span style="text-align: center;color:#9ca2a8">&nbsp;&nbsp;性格：</span>
+                                    <select id="preset-temp" onchange="onTempChange()"
+                                        style="width:calc(100% - 90px);max-width:6em;">
+                                        <option value="0">严谨</option>
+                                        <option value="0.5">均衡</option>
+                                        <option value="0.9">创意</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <span style="text-align: center;color:#9ca2a8">&nbsp;&nbsp;模型：</span>
+                                    <select id="preset-model" onchange="onModelChange()"
+                                        style="width:calc(100% - 90px);max-width:6em;">
+                                        <option value="gpt-3.5-turbo">GPT3.5</option>
+                                        <option value="gpt-4">GPT4</option>
+                                    </select>
+                                </div>
                             </div>
                             <ul id="article-wrapper">
                             </ul>
@@ -385,8 +405,8 @@
                             <div id="fixed-block">
                                 <div class="precast-block" id="kw-target-box" data-flex="main:left cross:center">
                                     <div id="target-box" class="box">
-                                        <textarea name="kw-target" placeholder="在此提问，按 Enter 发送，按 Shift+Enter 换行" id="kw-target"
-                                            autofocus rows=1></textarea>
+                                        <textarea name="kw-target" placeholder="在此提问，按 Enter 发送，按 Shift+Enter 换行"
+                                            id="kw-target" autofocus rows=1></textarea>
                                     </div>
                                     <div class="right-btn layout-bar">
                                         <p class="btn ai-btn bright-btn" id="ai-btn"
@@ -406,7 +426,7 @@
     <script src="js/jquery-3.6.4.min.js?v=954f70f07f05742168adceba796dda72"></script>
     <script src="js/jquery.cookie.min.js?v=34f2c35185e06a0fad464f954b00d3dc"></script>
     <script src="js/layer.min.js?v=7cdb23d7e49febe634c90bcd40470bea"></script>
-    <script src="js/chat.js?v=acec142fdf6835d132f0e8ecbfb7d014"></script>
+    <script src="js/chat.js?v=8ccd473c161656addb3fd325384bb5f4"></script>
     <script src="js/user.js?v=53a4be0227d0cb1f0d5a75e4b7120b79"></script>
     <script src="js/highlight.min.js?v=50c2f77a78e301a99399169c72b5d2c1"></script>
     <script src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -428,7 +448,7 @@
             }
         });
     </script>
-    
+
 </body>
 
 </html>

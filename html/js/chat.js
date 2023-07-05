@@ -80,6 +80,14 @@ function insertPresetText() {
     $("#kw-target").val($('#preset-text').val());
     autoresize();
 }
+var temperature = 0;
+function onTempChange() {
+    temperature = +$('#preset-temp').val();
+}
+var model = 'gpt-3.5-turbo';
+function onModelChange() {
+    temperature = +$('#preset-model').val();
+}
 
 function initcode() {
 }

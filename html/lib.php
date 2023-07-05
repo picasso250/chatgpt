@@ -1,7 +1,7 @@
 <?php
 function log_data($msg)
 {
-    error_log("$msg\n", 3, __DIR__ . '/../log/data.log');
+    error_log("$msg\n", 3, '/tmp/php_data.log');
 }
 
 function log_info($msg)

@@ -2465,3 +2465,46 @@ a.unlinks-deco {
     align-items: center;
     /* 图标和文本垂直居中对齐 */
 }
+
+/* 隐藏默认样式 */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 14px;
+    color: #333;
+}
+
+/* 自定义下拉箭头 */
+select::-ms-expand {
+    display: none;
+}
+
+select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+/* 鼠标悬停效果 */
+select:hover {
+    border-color: #999;
+}
+
+/* 选中效果 */
+select:focus {
+    outline: none;
+    border-color: #555;
+}
+
+/* 禁用状态样式 */
+select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
