@@ -86,7 +86,7 @@ function onTempChange() {
 }
 var model = 'gpt-3.5-turbo';
 function onModelChange() {
-    temperature = +$('#preset-model').val();
+    model = $('#preset-model').val();
 }
 
 function initcode() {
