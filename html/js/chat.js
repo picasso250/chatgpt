@@ -370,6 +370,8 @@ $(document).ready(function () {
                 type: "POST",
                 url: "setsession.php",
                 data: {
+                    temperature: temperature,
+                    model: model,
                     message: prompt,
                     context: (!($("#keep").length) || ($("#keep").prop("checked"))) ? JSON.stringify(contextarray) : '[]',
                     key: ($("#key").length) ? ($("#key").val()) : '',

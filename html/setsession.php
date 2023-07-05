@@ -8,8 +8,8 @@ if (mb_substr($_POST["message"], 0, 1, 'UTF-8') === '画') {
     ];
 } else {
     $postData = [
-        "model" => "gpt-3.5-turbo",
-        "temperature" => 0,
+        "model" => isset($_POST['model']) ? $_POST['model'] : "gpt-3.5-turbo",
+        "temperature" => isset($_POST['temperature']) ? $_POST['temperature'] : 0,
         "stream" => true,
         "messages" => [],
     ];
