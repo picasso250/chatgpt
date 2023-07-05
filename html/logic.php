@@ -99,6 +99,27 @@ function getMaxIdFromRows($rows)
     }
     return $maxId;
 }
+function getMinIdFromRows($rows)
+{
+    $minId = PHP_INT_MAX;
+    foreach ($rows as $row) {
+        if ($row['id'] < $minId) {
+            $minId = $row['id'];
+        }
+    }
+    return $minId;
+}
+function buildQueryString($params)
+{
+    // 排除 'lt' 和 'gt' 参数
+    $filteredParams = array_diff_key($_GET, ['lt' => '', 'gt' => '']);
+    $filteredParams = array_merge($filteredParams, $params);
+
+    // 构建查询字符串
+    $query = http_build_query($filteredParams);
+    return $query;
+}
+
 function batchInsertUser($userList, $balance)
 {
     // Prepare the SQL statement for insertion

@@ -7,7 +7,7 @@ define('IN_ADMIN', 1);
 
 session_start();
 
-if(empty($_SESSION['user'])){
+if (empty($_SESSION['user'])) {
     die("not login");
 }
 $username = $_SESSION['user']["username"];
@@ -25,7 +25,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'gen_user') {
     }
 
     batchInsertUser($userList, $balance);
-    log_info("$username gen_user userCount=$userCount balance=$balance ".json_encode($userList));
+    log_info("$username gen_user userCount=$userCount balance=$balance " . json_encode($userList));
 
     // Format the user list as HTML
     $userListHTML = '<ul>';
@@ -37,14 +37,36 @@ if (isset($_GET['action']) && $_GET['action'] === 'gen_user') {
     // Return the generated user list as a response
     echo $userListHTML;
     exit();
-} 
+}
+
+$params=[];
+$where=[];
 
 // 获取用户列表（包括分页）
-$gt = isset($_GET['gt']) ? intval($_GET['gt']) : 0;
+if (isset($_GET['gt'])) {
+    $gt = isset($_GET['gt']) ? intval($_GET['gt']) : 0;
+    $where []= "id>?";
+    $params = [$gt];
+} else if (isset($_GET['lt'])) {
+    $lt = isset($_GET['lt']) ? intval($_GET['lt']) : 0;
+    $where []= "id<?";
+    $params = [$lt];
+}
+$username = isset($_GET['username']) ? trim($_GET['username']) : '';
 $limit = 10; // 每页显示的记录数
 
-$sql = "SELECT * FROM users where id>? LIMIT $limit";
-$stmt = executePreparedStmt($sql, [$gt]);
+if ($username) {
+    $where []= "username like ?";
+    $params[] = "%$username%";
+}
+
+if ($where) {
+    $where = "WHERE ". implode(' AND ', $where);
+} else {
+    $where = '';
+}
+$sql = "SELECT * FROM users $where order by id asc LIMIT $limit";
+$stmt = executePreparedStmt($sql, $params);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $sql = "SELECT COUNT(*) as count FROM users ";
@@ -60,10 +82,15 @@ if ($totalRowCount > 0) {
 
     $pagination .= '<div class="pagination">';
 
+    if (1) {
+        $prevPageId = getMinIdFromRows($rows);
+        $pagination .= '<a href="?' . buildQueryString(['lt' => $prevPageId]) . '">上一页</a>';
+    }
+
     // Next page link
     if ($totalRowCount > $limit) {
         $nextPageId = getMaxIdFromRows($rows);
-        $pagination .= '<a href="?gt=' . $nextPageId . '">下一页</a>';
+        $pagination .= '<a href="?' . buildQueryString(['gt' => $nextPageId]) . '">下一页</a>';
     }
 
     $pagination .= '</div>';

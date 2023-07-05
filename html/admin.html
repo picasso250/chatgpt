@@ -23,6 +23,12 @@
 
     <!-- 在 display-area 中显示用户列表 -->
     <div id="display-area">
+        <form action="?">
+            <label for="username">用户名:</label>
+            <input type="text" id="username" name="username"
+                value="<?php echo isset($_GET['username'])?trim(htmlentities($_GET['username'])):''; ?>">
+            <button type="submit">搜索</button>
+        </form>
         <table class="user-list-table">
             <thead>
                 <tr>
