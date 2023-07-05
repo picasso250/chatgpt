@@ -25,6 +25,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'gen_user') {
     }
 
     batchInsertUser($userList, $balance);
+    addAdminLog(
+        $_SESSION['user']['id'],
+        'batchInsertUser',
+        ['userCount' => $userCount, 'balance' => $balance, "userList" => $userList]
+    );
     log_info("$username gen_user userCount=$userCount balance=$balance " . json_encode($userList));
 
     // Format the user list as HTML
@@ -39,29 +44,29 @@ if (isset($_GET['action']) && $_GET['action'] === 'gen_user') {
     exit();
 }
 
-$params=[];
-$where=[];
+$params = [];
+$where = [];
 
 // 获取用户列表（包括分页）
 if (isset($_GET['gt'])) {
     $gt = isset($_GET['gt']) ? intval($_GET['gt']) : 0;
-    $where []= "id>?";
+    $where[] = "id>?";
     $params = [$gt];
 } else if (isset($_GET['lt'])) {
     $lt = isset($_GET['lt']) ? intval($_GET['lt']) : 0;
-    $where []= "id<?";
+    $where[] = "id<?";
     $params = [$lt];
 }
 $username = isset($_GET['username']) ? trim($_GET['username']) : '';
 $limit = 10; // 每页显示的记录数
 
 if ($username) {
-    $where []= "username like ?";
+    $where[] = "username like ?";
     $params[] = "%$username%";
 }
 
 if ($where) {
-    $where = "WHERE ". implode(' AND ', $where);
+    $where = "WHERE " . implode(' AND ', $where);
 } else {
     $where = '';
 }

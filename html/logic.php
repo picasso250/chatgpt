@@ -140,7 +140,7 @@ function validateUser($username, $password)
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($row && password_verify($password, $row['password'])) {
-        return true;
+        return $row;
     }
 
     return false;
@@ -204,4 +204,26 @@ function adminUserList()
     $stmt = executePreparedStmt($sql, []);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * 向 admin_log 表中插入管理员日志。
+ *
+ * @param int $adminId 管理员的 ID。
+ * @param string $action 执行的操作。
+ * @param array $detail 详细信息数组。
+ * @return boolean 插入操作是否成功。
+ * @throws PDOException 如果查询执行失败。
+ */
+function addAdminLog($adminId, $action, $detail = null)
+{
+    $data = [
+        'aid' => $adminId,
+        'action' => $action,
+    ];
+    if ($detail) {
+        $data['detail'] = json_encode($detail);
+    }
+
+    return insertIntoTable('admin_log', $data);
 }

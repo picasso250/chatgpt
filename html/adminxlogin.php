@@ -14,11 +14,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
     $password = $_POST['password'];
 
     $validUser = validateUser($username, $password);
+    addAdminLog(
+        0,
+        'login_' . ($validUser ? 'ok' : 'fail'),
+        ['username' => $username, 'ip' => $_SERVER['REMOTE_ADDR']]
+    );
     log_info("$username try login, " . ($validUser ? 'ok' : 'fail') . " with ip $_SERVER[REMOTE_ADDR]");
 
     if ($validUser) {
         // 设置用户会话
         $_SESSION['user'] = array(
+            'id' => $validUser['id'],
             "username" => $username,
         );
 
@@ -32,6 +38,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
     if (isset($_GET['action']) && $_GET['action'] == 'logout') {
 
         $username = $_SESSION['user']["username"];
+        addAdminLog($_SESSION['user']['id'], 'logout', ['ip' => $_SERVER['REMOTE_ADDR']]);
         log_info("$username logout, with ip $_SERVER[REMOTE_ADDR]");
 
         // 清空用户会话
@@ -54,13 +61,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
             // 执行密码更改逻辑
             if (changePassword($username, $newPassword)) {
                 echo '修改成功';
+                addAdminLog($_SESSION['user']['id'], 'changepassword', ['ip' => $_SERVER['REMOTE_ADDR']]);
                 log_info("$username changepassword ok with ip $_SERVER[REMOTE_ADDR]");
+                exit();
             } else {
                 echo 'fail';
             }
         } else {
             echo '你的密码错误';
         }
+        addAdminLog($_SESSION['user']['id'], 'changepassword_fail', ['ip' => $_SERVER['REMOTE_ADDR']]);
         exit();
     }
 
