@@ -29,39 +29,27 @@ function getUsernameFromCookie()
 
 function insertOrUpdateUser($username)
 {
-    $pdo = getInitializedPDO();
-    try {
-        // 开启事务
-        $pdo->beginTransaction();
 
-        $last_ip = $_SERVER['REMOTE_ADDR'];
+    $last_ip = $_SERVER['REMOTE_ADDR'];
 
-        $sql = "INSERT INTO users (username, balance, last_ip,email,password) VALUES (:username, 100, :last_ip,'','')
+    $sql = "INSERT INTO users (username, balance, last_ip,email,password) VALUES (:username, 100, :last_ip,'','')
         ON DUPLICATE KEY UPDATE last_updated = CURRENT_TIMESTAMP, last_ip = :last_ip2";
-        $params = [
-            ':username' => $username,
-            ':last_ip' => $last_ip,
-            ':last_ip2' => $last_ip,
-        ];
+    $params = [
+        ':username' => $username,
+        ':last_ip' => $last_ip,
+        ':last_ip2' => $last_ip,
+    ];
 
-        // 执行SQL语句
-        $stmt = executePreparedStmt($sql, $params);
+    // 执行SQL语句
+    $stmt = executePreparedStmt($sql, $params);
 
-        // 查询并返回关联数组
-        $selectSql = "SELECT id,username, balance FROM users WHERE username = :username";
-        $selectParams = [':username' => $username];
-        $selectStmt = executePreparedStmt($selectSql, $selectParams);
-        $result = $selectStmt->fetch(PDO::FETCH_ASSOC);
+    // 查询并返回关联数组
+    $selectSql = "SELECT id,username, balance FROM users WHERE username = :username";
+    $selectParams = [':username' => $username];
+    $selectStmt = executePreparedStmt($selectSql, $selectParams);
+    $result = $selectStmt->fetch(PDO::FETCH_ASSOC);
 
-        // 提交事务
-        $pdo->commit();
-
-        return $result;
-    } catch (PDOException $e) {
-        // 回滚事务
-        $pdo->rollBack();
-        throw $e;
-    }
+    return $result;
 }
 
 function deductUserBalance($userId, $cost)
@@ -226,4 +214,101 @@ function addAdminLog($adminId, $action, $detail = null)
     }
 
     return insertIntoTable('admin_log', $data);
+}
+
+// 获取指定conversation_id的所有conversation_records
+function getConversationRecords($conversationId)
+{
+
+    // 准备查询语句
+    $sql = "SELECT * FROM conversation_records WHERE conversation_id = :conversationId order by id asc";
+
+    // 执行预处理语句
+    $stmt = executePreparedStmt($sql, ['conversationId' => $conversationId]);
+
+    // 获取查询结果的数组
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result;
+}
+function addConversationRecord($conversationId, $message, $answer, $price)
+{
+    $data = [
+        'conversation_id' => $conversationId,
+        'user_message' => $message,
+        'assistant_message' => $answer,
+        'price' => $price
+    ];
+
+    insertIntoTable('conversation_records', $data);
+}
+
+function build_answer($responsedata)
+{
+    $answer = "";
+    if (substr(trim($responsedata), -6) == "[DONE]") {
+        $responsedata = substr(trim($responsedata), 0, -6) . "{";
+    }
+    $responsearr = explode("}\n\ndata: {", $responsedata);
+
+    foreach ($responsearr as $msg) {
+        $contentarr = json_decode("{" . trim($msg) . "}", true);
+        if (isset($contentarr['choices'][0]['delta']['content'])) {
+            $answer .= $contentarr['choices'][0]['delta']['content'];
+        }
+    }
+    return $answer;
+}
+
+// 根据uid获取所有的conversation，并连接conversations表
+function getUserConversations($userId)
+{
+    // 假设已经建立了数据库连接，$pdo 是你的 PDO 对象
+
+    // 准备查询语句，使用INNER JOIN连接user_conversations和conversations表
+    $sql = "SELECT uc.*,c.* 
+            FROM user_conversations uc
+            INNER JOIN conversations c ON uc.conversation_id = c.id
+            WHERE uc.user_id = :userId order by c.id desc limit 100";
+
+    // 执行预处理语句
+    $params = array(':userId' => $userId);
+    $stmt = executePreparedStmt($sql, $params);
+
+    // 获取查询结果的数组
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result;
+}
+
+// 创建新的对话
+function createConversation($user_id, $type, $message)
+{
+
+    // 准备对话数据，包括类型和创建时间
+    $conversationData = [
+        'type' => $type,
+        'title' => mb_substr($message, 0, 30),
+        'created_at' => date('Y-m-d H:i:s'),
+    ];
+
+    // 执行插入操作，获取生成的对话ID
+    $conversationId = insertIntoTable('conversations', $conversationData);
+
+    insertUserConversation($user_id, $conversationId);
+
+    return $conversationId;
+}
+function insertUserConversation($userId, $conversationId)
+{
+
+    // Prepare user_conversations data
+    $userConversationData = [
+        'user_id' => $userId,
+        'conversation_id' => $conversationId,
+        'created_at' => date('Y-m-d H:i:s'),
+    ];
+
+    // Execute the insert operation
+    insertIntoTable('user_conversations', $userConversationData);
 }

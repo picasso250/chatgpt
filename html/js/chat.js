@@ -1,7 +1,7 @@
 var contextarray = [];
 var conversation_list = [];
 var is_new = true;
-var active_conversation = 0;
+var active_conversation_id = 0;
 
 var defaults = {
     html: false,        // Enable HTML tags in source
@@ -212,12 +212,33 @@ $(document).ready(function () {
                 if (!isMobile()) $("#kw-target").focus();
             }, "json");
         }
+        function http_build_query(params) {
+            let query = "";
+            for (let key in params) {
+                if (params.hasOwnProperty(key)) {
+                    if (query !== "") {
+                        query += "&";
+                    }
+                    query += encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+                }
+            }
+            return query;
+        }
         function streaming() {
-            var es = new EventSource("stream.php");
+            var data = {
+                temperature: temperature,
+                model: model,
+                message: prompt,
+                conversation_id: active_conversation_id,
+            };
+
+            var es = new EventSource("stream.php?" + http_build_query(data));
+
             var isstarted = true;
             var alltext = "";
             var isalltext = false;
             es.onerror = function (event) {
+                console.log('onerror', event)
                 layer.close(loading);
                 var errcode = getCookie("errcode");
                 switch (errcode) {
@@ -259,6 +280,7 @@ $(document).ready(function () {
                 return;
             }
             es.onmessage = function (event) {
+                console.log(event.data);
                 if (isstarted) {
                     layer.close(loading);
                     $("#kw-target").val("请耐心等待AI把话说完……");
@@ -303,19 +325,6 @@ $(document).ready(function () {
                                 if (!isMobile()) $("#kw-target").focus();
                             }
                         }
-                        //let arr = strforcode.split("```");
-                        //for (var j = 0; j <= arr.length; j++) {
-                        //    if (j % 2 == 0) {
-                        //        arr[j] = arr[j].replace(/\n\n/g, '\n');
-                        //        arr[j] = arr[j].replace(/\n/g, '\n\n');
-                        //        arr[j] = arr[j].replace(/\t/g, '\\t');
-                        //        arr[j] = arr[j].replace(/\n {4}/g, '\n\\t');
-                        //        arr[j] = $("<div>").text(arr[j]).html();
-                        //    }
-                        //}
-
-                        //var converter = new showdown.Converter();
-                        //newalltext = converter.makeHtml(arr.join("```"));
                         newalltext = mdHtml.render(strforcode);
                         //newalltext = newalltext.replace(/\\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
                         $("#" + answer).html(newalltext);
@@ -325,7 +334,7 @@ $(document).ready(function () {
                             $(this).html("<button onclick='copycode(this);' class='codebutton'>复制</button>" + $(this).html());
                         });
                         document.getElementById("article-wrapper").scrollTop = 100000;
-                    }, 30);
+                    }, 3);
                 }
                 if (event.data == "[DONE]") {
                     isalltext = true;
@@ -344,6 +353,9 @@ $(document).ready(function () {
                     }
                 } else if (json.newBalance) {
                     $("#balance").text(json.newBalance / 100);
+                } else if (json.conversation_id) {
+                    $('#conversationList .conversation').eq(0).data('id', json.conversation_id);
+                    active_conversation_id = json.conversation_id;
                 }
             }
         }
@@ -365,38 +377,37 @@ $(document).ready(function () {
                 }
             });
         } else {
-            $.ajax({
-                cache: true,
-                type: "POST",
-                url: "setsession.php",
-                data: {
-                    temperature: temperature,
-                    model: model,
-                    message: prompt,
-                    context: (!($("#keep").length) || ($("#keep").prop("checked"))) ? JSON.stringify(contextarray) : '[]',
-                    key: ($("#key").length) ? ($("#key").val()) : '',
-                },
-                dataType: "json",
-                success: function (results) {
-                    streaming();
+            // $.ajax({
+            //     cache: true,
+            //     type: "POST",
+            //     url: "setsession.php",
+            //     data: {
+            //         temperature: temperature,
+            //         model: model,
+            //         message: prompt,
+            //         context: (!($("#keep").length) || ($("#keep").prop("checked"))) ? JSON.stringify(contextarray) : '[]',
+            //         key: ($("#key").length) ? ($("#key").val()) : '',
+            //     },
+            //     dataType: "json",
+            //     success: function (results) {
+            streaming();
 
-                    if (is_new) {
-                        var conversationText = prompt.substr(0, 30); // 获取对话的前10个字符
-                        var conversationItem = {
-                            context: contextarray,
-                            text: conversationText
-                        };
-                        conversation_list.unshift(conversationItem); // 将新对话添加到对话列表的开头
+            if (is_new) {
+                var conversationText = prompt.substr(0, 30); // 获取对话的前10个字符
+                var conversationItem = {
+                    context: contextarray,
+                    text: conversationText
+                };
+                conversation_list.unshift(conversationItem); // 将新对话添加到对话列表的开头
 
-                        displayConversationList(conversation_list);
+                prependConversation(conversationText);
 
-                        is_new = false;
-                        active_conversation = 0;
-                    }
-                }
-            });
+                is_new = false;
+                active_conversation_id = 0;
+            }
+            // }
+            // });
         }
-
 
     }
 
@@ -419,59 +430,70 @@ $(document).ready(function () {
         deleteConversation(index);
         console.log('删除对话' + (index + 1));
     });
+
     $('#conversationList').on('click', 'li', function (event) {
-        // 保存当前contextarray到conversation_list[active_conversation]
-        conversation_list[active_conversation].context = contextarray;
 
         // 设置被点击的li元素的样式为active
         $(this).closest('li').addClass('active').siblings().removeClass('active');
 
         // 获取被点击的li元素的索引
         var index = $(this).closest('li').index();
-        active_conversation = index;
+        active_conversation_id = index;
 
-        // 设置#article-wrapper里的内容为conversation_list[active_conversation]并显示
-        var conversation = conversation_list[active_conversation];
-        $("#article-wrapper").empty();
-        for (var i = 0; i < conversation.context.length; i++) {
-            var message = conversation.context[i];
-            var answer = randomString(16);
-            $("#article-wrapper").append('<li class="article-title" id="q' + answer + '"><pre></pre></li>');
-            for (var j = 0; j < message[0].length; j++) {
-                $("#q" + answer).children('pre').text($("#q" + answer).children('pre').text() + message[0][j]);
-            }
-            $("#article-wrapper").append('<li class="article-content" id="' + answer + '"></li>');
-            for (var j = 0; j < message[1].length; j++) {
-                $("#" + answer).text($("#" + answer).text() + message[1][j]);
-            }
-        }
+        $.ajax({
+            dataType: "json",
+            url: '?',
+            data: { action: 'GetConversation', conversation_id: $(this).closest('li').data('id') },
+            success: function (ret) {
+                // 设置#article-wrapper里的内容为conversation_list[active_conversation_id]并显示
+                $("#article-wrapper").empty();
+                for (var i = 0; i < ret.length; i++) {
+                    var message = ret[i];
+                    var answer = randomString(16);
+                    $("#article-wrapper").append('<li class="article-title" id="q' + answer + '"><pre></pre></li>');
+                    // for (var j = 0; j < message.length; j++) {
+                    $("#q" + answer).children('pre').text($("#q" + answer).children('pre').text() + message.user_message);
+                    // }
+                    $("#article-wrapper").append('<li class="article-content" id="' + answer + '"></li>');
+                    // for (var j = 0; j < message.length; j++) {
+                    $("#" + answer).text($("#" + answer).text() + message.assistant_message);
+                    // }
 
-        contextarray = conversation.context;
+                    newalltext = mdHtml.render(message.assistant_message);
+                    $("#" + answer).html(newalltext);
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                    $("#" + answer + " pre code").each(function () {
+                        $(this).html("<button onclick='copycode(this);' class='codebutton'>复制</button>" + $(this).html());
+                    });
+                }
+
+            }
+        });
+
     });
 
 });
+
 function deleteConversation(index) {
     conversation_list.splice(index, 1); // 从对话列表中移除对应索引的对话项
 }
 
-function displayConversationList(conversationList) {
-    var ulElement = $('#conversationList').empty('');
+function prependConversation(conversationTitle) {
+    var ulElement = $('#conversationList');
 
-    $.each(conversationList, function (index, conversationItem) {
-        var liElement = $('<li class="conversation"></li>');
-        liElement.prepend('<span class="conversation-icon">' + '<svg role="img" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>The Conversation</title><path d="M23.996 10.543c-.131-4.91-4.289-8.773-9.2-8.773H9.005a8.997 8.997 0 0 0-5.957 15.746L1.05 22.23l4.942-2.98c.95.36 1.964.524 3.012.524h6.024c5.04 0 9.099-4.156 8.969-9.23zm-8.937 5.958H9.07c-2.587 0-5.205-2.03-5.696-4.583a5.724 5.724 0 0 1 5.63-6.874h5.99c2.586 0 5.205 2.03 5.696 4.582.688 3.667-2.095 6.875-5.63 6.875z"/></svg>      </span>');
-        liElement.append($('<span class="conversation-list-item-text"></span>').text(conversationItem.text));
-        liElement.append('<button class="delete-button" >&times;</button>');
-        ulElement.append(liElement);
-    });
+    var liElement = $('<li class="conversation"></li>').data('id', 0);
+    liElement.prepend('<span class="conversation-icon">' + '<svg role="img" width="16px" height="16px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>The Conversation</title><path d="M23.996 10.543c-.131-4.91-4.289-8.773-9.2-8.773H9.005a8.997 8.997 0 0 0-5.957 15.746L1.05 22.23l4.942-2.98c.95.36 1.964.524 3.012.524h6.024c5.04 0 9.099-4.156 8.969-9.23zm-8.937 5.958H9.07c-2.587 0-5.205-2.03-5.696-4.583a5.724 5.724 0 0 1 5.63-6.874h5.99c2.586 0 5.205 2.03 5.696 4.582.688 3.667-2.095 6.875-5.63 6.875z"/></svg>      </span>');
+    liElement.append($('<span class="conversation-list-item-text"></span>').text(conversationTitle));
+    liElement.append('<button class="delete-button" >&times;</button>');
+    ulElement.prepend(liElement);
 }
+
 // 新建聊天按钮点击事件
 function newChat() {
     // 刷新右侧区域的代码
     $('#article-wrapper').empty();
     is_new = true;
-    if (conversation_list[active_conversation]) {
-        conversation_list[active_conversation].context = contextarray;
-    }
+    active_conversation_id = 0;
     contextarray = [];
+    $('#conversationList li').removeClass('active');
 }

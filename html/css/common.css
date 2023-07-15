@@ -2314,11 +2314,11 @@ a.unlinks-deco {
 }
 
 .conversation:active {
-    background-color: #ebebeb;
+    background-color: #646672;
 }
 
 .conversation.active {
-    background-color: #ebebeb;
+    background-color: #646672;
 }
 
 /* 添加删除按钮样式 */

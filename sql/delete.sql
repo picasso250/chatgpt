@@ -1,0 +1,1 @@
+DELETE FROM conversations; DELETE FROM conversation_records; DELETE FROM user_conversations;

@@ -7,7 +7,9 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/event-stream");
 header("X-Accel-Buffering: no");
 set_time_limit(0);
+
 session_start();
+
 $postData = $_SESSION['data'];
 $responsedata = "";
 $OPENAI_API_KEY = "";
@@ -24,12 +26,35 @@ if ($user['balance'] <= 0) {
     die("data: $msg\n\n\n\n");
 }
 
+// 从GET参数获取conversation_id
+$conversationId = isset($_GET['conversation_id']) ? $_GET['conversation_id'] : 0;
+$message = isset($_GET['message']) ? $_GET['message'] : '';
+$model = isset($_GET['model']) ? $_GET['model'] : "gpt-3.5-turbo";
 
-//如果首页开启了输入自定义apikey，则采用用户输入的apikey
-if (isset($_SESSION['key'])) {
-    $OPENAI_API_KEY = $_SESSION['key'];
+// 如果conversation_id为0，则创建一个新的对话
+if ($conversationId == 0) {
+    $conversationId =  createConversation($user['id'], $model, $message);
+    echo "data: " . json_encode(['conversation_id' => $conversationId]) . "\n\n";
 }
-session_write_close();
+
+// 获取指定conversation_id的所有conversation_records
+$records = getConversationRecords($conversationId);
+
+// 获取GET参数中的message，并与conversation_records结合构建messages数组
+$messages = [];
+foreach ($records as $record) {
+    $messages[] = ['role' => 'user', 'content' => $record['user_message']];
+    $messages[] = ['role' => 'assistant', 'content' => $record['assistant_message']];
+}
+$messages[] = ['role' => 'user', 'content' => $message];
+
+// 构建postData数组
+$postData = [
+    "model" => $model,
+    "temperature" => isset($_GET['temperature']) ? floatval($_GET['temperature']) : 0,
+    "stream" => true,
+    "messages" => $messages,
+];
 
 setcookie("errcode", ""); //EventSource无法获取错误信息，通过cookie传递
 setcookie("errmsg", "");
@@ -59,7 +84,7 @@ $callback = function ($ch, $data) use ($user, $postData, &$price) {
         }
         $responsedata = $data;
     } else {
-        log_data($data);
+        log_debug($data);
         $pattern = '/^data: \\[DONE\\]/m';
         if (preg_match($pattern, $data)) {
             $responsedata .= $data;
@@ -67,7 +92,7 @@ $callback = function ($ch, $data) use ($user, $postData, &$price) {
 
             putenv("https_proxy="); // unset the https_proxy environment variable
 
-            $token_size = strlen($postData . $answer);
+            $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE) . $answer);
 
             $pricePerToken = 0.003 / 1e3 * 7.3;
 
@@ -107,8 +132,8 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, array(
     'Authorization: Bearer ' . $OPENAI_API_KEY,
 ));
 curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-log_data($postData);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData, JSON_UNESCAPED_UNICODE));
+log_debug(json_encode($postData, JSON_UNESCAPED_UNICODE));
 curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($ch, CURLOPT_TIMEOUT, 0);
@@ -117,23 +142,6 @@ curl_setopt($ch, CURLOPT_VERBOSE, true);
 $response = curl_exec($ch);
 curl_close($ch);
 
-function build_answer($responsedata)
-{
-    $answer = "";
-    if (substr(trim($responsedata), -6) == "[DONE]") {
-        $responsedata = substr(trim($responsedata), 0, -6) . "{";
-    }
-    $responsearr = explode("}\n\ndata: {", $responsedata);
-
-    foreach ($responsearr as $msg) {
-        $contentarr = json_decode("{" . trim($msg) . "}", true);
-        if (isset($contentarr['choices'][0]['delta']['content'])) {
-            $answer .= $contentarr['choices'][0]['delta']['content'];
-        }
-    }
-    return $answer;
-}
 $answer = build_answer($responsedata);
-$questionarr = json_decode($postData, true);
 
-addChatLog($_SESSION['user_ses']['id'], $questionarr, $answer, $price);
+addConversationRecord($conversationId, $message, $answer, $price);

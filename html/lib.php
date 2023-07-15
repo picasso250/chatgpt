@@ -1,12 +1,20 @@
 <?php
-function log_data($msg)
+function log_debug($msg)
 {
-    $tmp = sys_get_temp_dir();
-    error_log("$msg\n", 3, $tmp . '/php_data.log');
+    error_log("DEBUG\t$msg");
 }
 
 function log_info($msg)
 {
     $logMessage = date('c') . " INFO: $msg\n";
     error_log($logMessage, 3, __DIR__ . '/../log/info.log');
+}
+function _get($key, $default = '')
+{
+    return isset($_GET[$key]) ? trim($_GET[$key]) : $default;
+}
+
+function _post($key, $default = '')
+{
+    return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
 }
