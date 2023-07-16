@@ -437,8 +437,9 @@ $(document).ready(function () {
         $(this).closest('li').addClass('active').siblings().removeClass('active');
 
         // 获取被点击的li元素的索引
-        var index = $(this).closest('li').index();
-        active_conversation_id = index;
+        var id = $(this).closest('li').data('id');
+        active_conversation_id = id;
+        is_new = false;
 
         $.ajax({
             dataType: "json",

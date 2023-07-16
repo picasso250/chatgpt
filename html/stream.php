@@ -10,7 +10,6 @@ set_time_limit(0);
 
 session_start();
 
-$postData = $_SESSION['data'];
 $responsedata = "";
 $OPENAI_API_KEY = "";
 

@@ -1,0 +1,1 @@
+ALTER TABLE `conversations` CHANGE `type` `type` ENUM('chatgpt-3.5','gpt-3.5-turbo','chatgpt-4') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
