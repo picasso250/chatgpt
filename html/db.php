@@ -1,5 +1,7 @@
 <?php
 
+require_once 'lib.php';
+
 function getInitializedPDO()
 {
     static $pdo;

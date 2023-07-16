@@ -29,6 +29,8 @@
                 value="<?php echo isset($_GET['username'])?trim(htmlentities($_GET['username'])):''; ?>">
             <button type="submit">搜索</button>
         </form>
+
+        <div>共有 <?php echo $totalRowCount ?> 个用户</div>
         <table class="user-list-table">
             <thead>
                 <tr>

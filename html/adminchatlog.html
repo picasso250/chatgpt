@@ -27,10 +27,9 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>问题</th>
-                    <th>答案</th>
+                    <th>主题</th>
                     <th>时间</th>
-                    <th>IP地址</th>
+                    <th>详情</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,17 +38,14 @@
                     <td>
                         <?php echo htmlspecialchars($row['id']); ?>
                     </td>
-                    <td class="json-pretty">
-                        <?php echo htmlspecialchars($row['question']); ?>
+                    <td>
+                        <?php echo htmlspecialchars($row['title']); ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($row['answer']); ?>
+                        <?php echo htmlspecialchars($row['created_at']); ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($row['created']); ?>
-                    </td>
-                    <td>
-                        <?php echo htmlspecialchars($row['ip']); ?>
+                        <a href="?cid=<?php echo $row['conversation_id']; ?>">详情</a>
                     </td>
                 </tr>
                 <?php endforeach;?>
