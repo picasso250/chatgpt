@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # 定义源文件目录和目标机器信息
 source_dir="html"
 target_host="xct7gm@104.225.145.121"
@@ -10,6 +12,7 @@ target_dir="/var/www/html/"
 
 # 创建临时目录并将所有文件压缩成tar文件
 tar_file="deploy.tar.gz"
+set -x
 tar -czf "$tar_file" "$source_dir"
 
 # 将tar文件传输到目标机器的/tmp目录
