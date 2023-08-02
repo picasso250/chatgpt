@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD INDEX `idx_ip` (`last_ip`(12));

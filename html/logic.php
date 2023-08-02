@@ -12,6 +12,33 @@ function generateRandomCode($length = 9, $characters = '0123456789abcdefghijklmn
     }
     return $code;
 }
+function generateRandomUsername(){
+    return generateRandomCode();
+}
+function getClientIP() {
+    // Check for the most common headers containing the client's IP address
+    $headers = array(
+        'HTTP_CLIENT_IP',
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_X_FORWARDED',
+        'HTTP_X_CLUSTER_CLIENT_IP',
+        'HTTP_FORWARDED_FOR',
+        'HTTP_FORWARDED',
+        'REMOTE_ADDR'
+    );
+
+    foreach ($headers as $header) {
+        if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
+            $ip = $_SERVER[$header];
+            // Extract the first IP address in the list if multiple IP addresses are provided
+            $ip = explode(',', $ip)[0];
+            return $ip;
+        }
+    }
+
+    // Return a default IP address (e.g., localhost) if none of the headers are found
+    return '127.0.0.1';
+}
 
 // 检查用户是否已访问过，并返回用户名
 function getUsernameFromCookie()
@@ -27,28 +54,64 @@ function getUsernameFromCookie()
     }
 }
 
-function insertOrUpdateUser($username)
+function insertOrUpdateUser($username, $ip)
 {
+    // Step 1: 检查是否有ip和username都匹配的用户
+    $selectSql = "SELECT id, username, balance FROM users WHERE username = :username AND last_ip = :last_ip";
+    $selectParams = [
+        ':username' => $username,
+        ':last_ip' => $ip
+    ];
+    $selectStmt = executePreparedStmt($selectSql, $selectParams);
+    $matchingUser = $selectStmt->fetch(PDO::FETCH_ASSOC);
 
-    $last_ip = $_SERVER['REMOTE_ADDR'];
+    if ($matchingUser) {
+        // 如果有ip和username都匹配的用户，直接返回该用户信息
+        return $matchingUser;
+    }
 
-    $sql = "INSERT INTO users (username, balance, last_ip,email,password) VALUES (:username, 100, :last_ip,'','')
-        ON DUPLICATE KEY UPDATE last_updated = CURRENT_TIMESTAMP, last_ip = :last_ip2";
+    // Step 2: 检查是否有相同ip的用户
+    $selectSql = "SELECT id, username, balance FROM users WHERE last_ip = :last_ip";
+    $selectParams = [
+        ':last_ip' => $ip
+    ];
+    $selectStmt = executePreparedStmt($selectSql, $selectParams);
+    $existingUser = $selectStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existingUser) {
+        // 如果有相同ip的用户，返回false
+        return false;
+    }
+
+    // Step 3: 插入新用户并返回插入后的用户信息
+    $sql = "INSERT INTO users (username, balance, last_ip, email, password) VALUES (:username, 100, :last_ip, '', '')";
     $params = [
         ':username' => $username,
-        ':last_ip' => $last_ip,
-        ':last_ip2' => $last_ip,
+        ':last_ip' => $ip,
     ];
 
     // 执行SQL语句
     $stmt = executePreparedStmt($sql, $params);
 
-    // 查询并返回关联数组
-    $selectSql = "SELECT id,username, balance FROM users WHERE username = :username";
+    // 查询并返回插入后的用户信息
+    $selectSql = "SELECT id, username, balance FROM users WHERE username = :username";
     $selectParams = [':username' => $username];
     $selectStmt = executePreparedStmt($selectSql, $selectParams);
     $result = $selectStmt->fetch(PDO::FETCH_ASSOC);
 
+    return $result;
+}
+
+function getUserByUsername($username)
+{
+    $sql = "SELECT id, username, balance FROM users WHERE username = :username";
+    $params = [':username' => $username];
+
+    // Execute the SQL query
+    $stmt = executePreparedStmt($sql, $params);
+
+    // Fetch and return the associative array
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result;
 }
 

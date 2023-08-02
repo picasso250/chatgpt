@@ -1,37 +1,48 @@
-$(function(){
+// Function to perform the AJAX request and populate the elements
+function populateElements() {
+    // Check if the 'username' key exists in the cookie
+    var usernameFromCookie = $.cookie('username');
 
-    $('#username').click(function () {
-        layer.prompt({
-            title: '请输入新的用户名',
-            formType: 0,
-            btn: ['确定', '取消'],
-            yes: function (index, layero) {
-                var newUsername = layero.find('.layui-layer-input').val();
-    
-                $.cookie('user_cookie', newUsername);
-    
-                $('#balance').text('载入中...');
-                $('#username').text(newUsername);
-    
-                var url = location.href + '?invite_from=' + newUsername; // 拼接url
-                $('#urlInput').val(url);
-    
-                layer.close(index);
-                $.ajax({
-                    url: '?action=UserInfo',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (response) {
-                        // 更新#balance元素
-                        $('#balance').text(response.balance / 100);
-                    },
-                    error: function () {
-                        // 处理错误情况
-                    }
-                });
+    // Prepare the request URL with the username if available in the cookie
+    var requestUrl = 'ajax.php?action=Index';
+    if (usernameFromCookie) {
+        requestUrl += '&username=' + encodeURIComponent(usernameFromCookie);
+    }
+
+    $.ajax({
+        url: requestUrl, // Use the modified request URL
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            if (data.error) {
+                layer.msg(data.error);
+                return;
             }
-        });
+            // Populate the elements with the data received from the API
+            $('#username').text(data.user.username);
+
+            var conversationList = $('#conversationList');
+            conversationList.empty(); // Clear previous list items
+            data.conversations.forEach(function (conversation) {
+                var li = createConversationElement(conversation.id, conversation.title);
+                conversationList.append(li);
+            });
+
+            $('#balance').text(data.user.balance);
+        },
+        error: function (xhr, status, error) {
+            // Handle the error if any
+            console.error('Error while fetching data: ', error);
+        }
     });
+}
+
+// Call the function when the page is loaded
+$(document).ready(function () {
+    populateElements();
+});
+
+$(function () {
 
     $('#inviteLink').on('click', function () {
         var username = $.cookie('user_cookie'); // 从cookie中获取username
