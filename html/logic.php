@@ -115,6 +115,19 @@ function getUserByUsername($username)
     return $result;
 }
 
+function getUserById($id)
+{
+    $sql = "SELECT id, username, balance FROM users WHERE id = :id";
+    $params = [':id' => $id];
+
+    // Execute the SQL query
+    $stmt = executePreparedStmt($sql, $params);
+
+    // Fetch and return the associative array
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
+
 function deductUserBalance($userId, $cost)
 {
     // Prepare the SQL statement
@@ -293,6 +306,21 @@ function getConversationRecords($conversationId)
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     return $result;
+}
+function getConversationForest($conversationId)
+{
+    $records = getConversationRecords($conversationId);
+
+    // Build the forest by finding the roots (records with 'prev' as null)
+    $forest = array();
+    foreach ($records as $record) {
+        if ($record['prev'] === null) {
+            $tree = buildTreeFromRoot($record, $records);
+            $forest[] = $tree;
+        }
+    }
+
+    return $forest;
 }
 function addConversationRecord($conversationId, $message, $answer, $price)
 {

@@ -443,7 +443,7 @@ $(document).ready(function () {
 
         $.ajax({
             dataType: "json",
-            url: '?',
+            url: 'ajax.php',
             data: { action: 'GetConversation', conversation_id: $(this).closest('li').data('id') },
             success: function (ret) {
                 // 设置#article-wrapper里的内容为conversation_list[active_conversation_id]并显示

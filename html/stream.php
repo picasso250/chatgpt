@@ -13,11 +13,8 @@ session_start();
 $responsedata = "";
 $OPENAI_API_KEY = "";
 
-// 获取用户名
-$username = getUsernameFromCookie();
-
-// 在数据库中插入或更新用户
-$user = insertOrUpdateUser($username);
+$user_id = $_SESSION['user_ses']['id'];
+$user = getUserById($user_id);
 
 if ($user['balance'] <= 0) {
     $msg = json_encode(['error' => ['code' => 42, 'message' => '余额不足']]);
