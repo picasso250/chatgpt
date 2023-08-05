@@ -12,10 +12,12 @@ function generateRandomCode($length = 9, $characters = '0123456789abcdefghijklmn
     }
     return $code;
 }
-function generateRandomUsername(){
+function generateRandomUsername()
+{
     return generateRandomCode();
 }
-function getClientIP() {
+function getClientIP()
+{
     // Check for the most common headers containing the client's IP address
     $headers = array(
         'HTTP_CLIENT_IP',
@@ -403,7 +405,8 @@ function insertUserConversation($userId, $conversationId)
     // Execute the insert operation
     insertIntoTable('user_conversations', $userConversationData);
 }
-function createNewUser($username, $email, $password, $ipAddress) {
+function createNewUser($username, $email, $password, $ipAddress)
+{
     // Create a new user with initial points of 100
     $newUser = [
         'username' => $username,
@@ -413,4 +416,13 @@ function createNewUser($username, $email, $password, $ipAddress) {
         'last_ip' => $ipAddress
     ];
     return insertIntoTable('users', $newUser);
+}
+function getInvitedUsersCount($inviterId)
+{
+    $sql = "SELECT COUNT(DISTINCT invitee_id) AS invitedUsersCount FROM invite WHERE inviter_id = ?";
+    $params = array($inviterId);
+    $stmt = executePreparedStmt($sql, $params);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result['invitedUsersCount'];
 }

@@ -35,7 +35,8 @@ if ($inviter) {
         executePreparedStmt($sql, $params);
 
         // Create a new user with initial points of 100
-        $invitee_id = createNewUser(generateRandomUsername(), '', '', $ipAddress);
+        $inviteeUsername = generateRandomUsername();
+        $invitee_id = createNewUser($inviteeUsername, '', '', $ipAddress);
 
         // Insert the invite record into the invite table
         $inviteData = [
@@ -48,6 +49,8 @@ if ($inviter) {
     }
 }
 
-// 4. Redirect to index.html
-header('Location: index.html');
+// // 4. Redirect to index.html
+$queryParams = array('username' => $inviteeUsername);
+$queryString = http_build_query($queryParams);
+header('Location: index.html?' . $queryString);
 exit();
