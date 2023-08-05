@@ -334,7 +334,7 @@ $(document).ready(function () {
                             $(this).html("<button onclick='copycode(this);' class='codebutton'>复制</button>" + $(this).html());
                         });
                         document.getElementById("article-wrapper").scrollTop = 100000;
-                    }, 3);
+                    }, 20);
                 }
                 if (event.data == "[DONE]") {
                     isalltext = true;
