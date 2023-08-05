@@ -66,7 +66,7 @@ $(function () {
                 var invitedUsersCount = response.invitedUsersCount;
 
                 var content = '<div>已邀请用户数量：' + invitedUsersCount + '</div>' +
-                    '<div>邀请一个人可以获取1000个积分</div>' +
+                    '<div>邀请一个人可以获取100个积分</div>' +
                     '<div><input type="text" value="' + url + '" id="urlInput" readonly></div>' +
                     '<div><button id="copyBtn" class="btn">复制邀请链接</button></div>'; // 弹层内容
 

@@ -25,8 +25,8 @@ if ($inviter) {
     }
 
     if ($eligible) {
-        // Add points (10*100 points) to the inviter's balance
-        $pointsToAdd = 1000;
+        // Add points (1*100 points) to the inviter's balance
+        $pointsToAdd = 100;
         $inviterBalance = $inviter['balance'] + $pointsToAdd;
 
         // Update the inviter's balance in the users table
