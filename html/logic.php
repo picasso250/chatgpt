@@ -403,3 +403,14 @@ function insertUserConversation($userId, $conversationId)
     // Execute the insert operation
     insertIntoTable('user_conversations', $userConversationData);
 }
+function createNewUser($username, $email, $password, $ipAddress) {
+    // Create a new user with initial points of 100
+    $newUser = [
+        'username' => $username,
+        'email' => $email,
+        'password' => $password,
+        'balance' => 100,
+        'last_ip' => $ipAddress
+    ];
+    return insertIntoTable('users', $newUser);
+}

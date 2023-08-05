@@ -76,7 +76,9 @@ class ConversationForestTest
         // Call the getConversationForest function with a conversation_id (e.g., 1)
         $conversationId = 1;
         $forest = getConversationForest($conversationId);
-        print_r($forest);
+        // print_r($forest);
+        foreach ($forest as $tree)
+            echo prettyPrintTree($tree), PHP_EOL;
 
         // Assert the result contains the correct number of trees (branches)
         $this->assertCount(2, $forest);
@@ -143,3 +145,14 @@ class ConversationForestTest
 // Run the tests
 $testRunner = new ConversationForestTest();
 $testRunner->runTests();
+
+function prettyPrintTree($tree, $indent = 0)
+{
+    $output = str_repeat('  ', $indent) . $tree['id'] . PHP_EOL;
+
+    foreach ($tree['children'] as $child) {
+        $output .= prettyPrintTree($child, $indent + 1);
+    }
+
+    return $output;
+}

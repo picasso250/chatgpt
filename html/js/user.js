@@ -46,7 +46,7 @@ $(function () {
 
     $('#inviteLink').on('click', function () {
         var username = $.cookie('user_cookie'); // 从cookie中获取username
-        var url = location.href + '?invite_from=' + username; // 拼接url
+        var url = location.href + 'invite.php?from=' + username; // 拼接url
         var content = '<div>邀请一个人可以获取10个积分</div>' +
             '<div><input type="text" value="' + url + '" id="urlInput" readonly></div>' +
             '<div><button id="copyBtn" class="btn">复制邀请链接</button></div>'; // 弹层内容
