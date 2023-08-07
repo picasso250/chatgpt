@@ -426,3 +426,12 @@ function getInvitedUsersCount($inviterId)
 
     return $result['invitedUsersCount'];
 }
+// 辅助函数：实际的充值逻辑
+function rechargeUser($user_id, $point)
+{
+    $sql = "UPDATE users SET balance = balance + :pointsToAdd WHERE id = :id";
+    $params = [':pointsToAdd' => $point, ':id' => $user_id];
+    executePreparedStmt($sql, $params);
+
+    return true; // 充值成功
+}

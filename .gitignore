@@ -3,3 +3,6 @@
 stream_cli.php
 deploy.tar.gz
 .vscode/launch.json
+bot/__pycache__/*.pyc
+wxpy_puid.pkl
+bot/chat_records.db

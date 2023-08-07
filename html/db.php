@@ -8,7 +8,7 @@ function getInitializedPDO()
     if ($pdo) {
         return $pdo;
     }
-    $config = parse_ini_file(dirname(__DIR__) . '/config/db.ini');
+    $config = get_config_data('db.ini');
 
     $pdo = new PDO($config['dsn'], $config['username'], $config['password']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

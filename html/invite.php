@@ -27,12 +27,7 @@ if ($inviter) {
     if ($eligible) {
         // Add points (1*100 points) to the inviter's balance
         $pointsToAdd = 100;
-        $inviterBalance = $inviter['balance'] + $pointsToAdd;
-
-        // Update the inviter's balance in the users table
-        $sql = "UPDATE users SET balance = balance + :pointsToAdd WHERE id = :id";
-        $params = [':pointsToAdd' => $pointsToAdd, ':id' => $inviter['id']];
-        executePreparedStmt($sql, $params);
+        rechargeUser($inviter['id'], $pointsToAdd);
 
         // Create a new user with initial points of 100
         $inviteeUsername = generateRandomUsername();

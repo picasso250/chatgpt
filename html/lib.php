@@ -1,4 +1,15 @@
 <?php
+
+function get_config_data($filename = 'config.ini') {
+    static $configData = [];
+
+    if (empty($configData[$filename])) {
+        $configData[$filename] = parse_ini_file(dirname(__DIR__) . '/config/' . $filename);
+    }
+
+    return $configData[$filename];
+}
+
 function log_debug($msg)
 {
     error_log("DEBUG\t$msg");
