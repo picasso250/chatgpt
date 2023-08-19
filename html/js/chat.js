@@ -80,7 +80,7 @@ function insertPresetText() {
     $("#kw-target").val($('#preset-text').val());
     autoresize();
 }
-var temperature = 0;
+var temperature = 0.7;
 function onTempChange() {
     temperature = +$('#preset-temp').val();
 }

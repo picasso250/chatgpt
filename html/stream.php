@@ -3,12 +3,17 @@
 require_once 'lib.php';
 require_once 'logic.php';
 
+$start_time = microtime(true);
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: text/event-stream");
 header("X-Accel-Buffering: no");
 set_time_limit(0);
 
 session_start();
+
+$configFile = '../config/config.ini';
+$appConfig = parse_ini_file($configFile);
 
 $responsedata = "";
 $OPENAI_API_KEY = "";
@@ -37,7 +42,9 @@ if ($conversationId == 0) {
 $records = getConversationRecords($conversationId);
 
 // 获取GET参数中的message，并与conversation_records结合构建messages数组
-$messages = [];
+$messages = [
+    ["role" => "system", "content" => "You are a helpful assistant."]
+];
 foreach ($records as $record) {
     $messages[] = ['role' => 'user', 'content' => $record['user_message']];
     $messages[] = ['role' => 'assistant', 'content' => $record['assistant_message']];
@@ -46,18 +53,25 @@ $messages[] = ['role' => 'user', 'content' => $message];
 
 // 构建postData数组
 $postData = [
-    "model" => $model,
     "temperature" => isset($_GET['temperature']) ? floatval($_GET['temperature']) : 0,
     "stream" => true,
     "messages" => $messages,
 ];
+if ($appConfig['OPENAI_TYPE'] == 'OPENAI') {
+    $postData["model"] = $model;
+}
 
 setcookie("errcode", ""); //EventSource无法获取错误信息，通过cookie传递
 setcookie("errmsg", "");
 
 $price = 0;
 
-$callback = function ($ch, $data) use ($user, $postData, &$price) {
+$callback = function ($ch, $data) use ($user, $postData, &$price, $start_time) {
+
+    $end_time = microtime(true);
+    $execution_time = ($end_time - $start_time) * 1000;
+    error_log("运行时间：$execution_time 毫秒");
+
     global $responsedata;
     $complete = json_decode($data);
     if (isset($complete->error)) {
@@ -90,7 +104,7 @@ $callback = function ($ch, $data) use ($user, $postData, &$price) {
 
             $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE) . $answer);
 
-            $pricePerToken = 0.003 / 1e3 * 7.3;
+            $pricePerToken = 0.004 / 1e3 * 7.4;
 
             $price = $pricePerToken * $token_size;
             $price *= 100;
@@ -101,6 +115,7 @@ $callback = function ($ch, $data) use ($user, $postData, &$price) {
             // Save the updated balance back to the user's data
             $newBalance = deductUserBalance($user['id'], $price);
             $datanb = json_encode(["newBalance" => $newBalance]);
+            log_debug(var_export(preg_replace($pattern, "data: $datanb\n\n" . 'data: [DONE]', $data)));
             echo preg_replace($pattern, "data: $datanb\n\n" . 'data: [DONE]', $data);
             flush();
         } else {
@@ -112,28 +127,30 @@ $callback = function ($ch, $data) use ($user, $postData, &$price) {
     return strlen($data);
 };
 
-$configFile = '../config/config.ini';
-$appConfig = parse_ini_file($configFile);
-
 if (!empty($appConfig['https_proxy'])) {
     putenv("https_proxy=$appConfig[https_proxy]");
 }
 $OPENAI_API_KEY = $appConfig['OPENAI_API_KEY'];
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'https://api.openai.com/v1/chat/completions');
+curl_setopt($ch, CURLOPT_URL, $appConfig['END_POINT_URL']);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+$headers = array(
     'Content-Type: application/json',
-    'Authorization: Bearer ' . $OPENAI_API_KEY,
-));
+);
+if ($appConfig['OPENAI_TYPE'] == 'AZURE') {
+    $headers[] = 'api-key: ' . $OPENAI_API_KEY;
+} else {
+    $headers[] = 'Authorization: Bearer ' . $OPENAI_API_KEY;
+}
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData, JSON_UNESCAPED_UNICODE));
 log_debug(json_encode($postData, JSON_UNESCAPED_UNICODE));
 curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($ch, CURLOPT_TIMEOUT, 0);
-curl_setopt($ch, CURLOPT_VERBOSE, true);
+// curl_setopt($ch, CURLOPT_VERBOSE, true);
 
 $response = curl_exec($ch);
 curl_close($ch);
