@@ -13,6 +13,10 @@ function getInitializedPDO()
     $pdo = new PDO($config['dsn'], $config['username'], $config['password']);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
+    $stmt = $pdo->prepare("SET time_zone = '+00:00';");
+    $stmt->execute();
+
     return $pdo;
 }
 

@@ -53,9 +53,17 @@ $(document).ready(function () {
 
 $(function () {
 
+    var inviteContent = $('#inviteContent').clone(); // Clone the content
+    $('#inviteContent').remove();
+    inviteContent.show();
+
     $('#inviteLink').on('click', function () {
         var username = $.cookie('username'); // 从cookie中获取username
         var url = location.origin + '/invite.php?from=' + username; // 拼接url
+
+        // Load the HTML content from the pre-written structure
+        layer.open({ title: '邀请链接', content: inviteContent.prop('outerHTML'), btn: [], closeBtn: 1, shadeClose: true });
+        $('#urlInput').val(url);
 
         // 发送ajax请求获取邀请用户数量
         $.ajax({
@@ -65,12 +73,9 @@ $(function () {
             success: function (response) {
                 var invitedUsersCount = response.invitedUsersCount;
 
-                var content = '<div>已邀请用户数量：' + invitedUsersCount + '</div>' +
-                    '<div>邀请一个人可以获取100个积分</div>' +
-                    '<div><input type="text" value="' + url + '" id="urlInput" readonly></div>' +
-                    '<div><button id="copyBtn" class="btn">复制邀请链接</button></div>'; // 弹层内容
+                // Update the fetched data using find and attr methods
+                $('#inviteContent').find('div:first-child').text('已邀请用户数量：' + invitedUsersCount);
 
-                layer.open({ title: '邀请链接', content: content, btn: [], closeBtn: 1, shadeClose: true, });
             },
             error: function (xhr, status, error) {
                 console.log(error);

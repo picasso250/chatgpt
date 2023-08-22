@@ -32,3 +32,20 @@ function checkLogin() {
 $(function () {
     checkLogin();
 });
+
+$(document).ready(function () {
+    // 获取当前浏览器的时区偏移（以分钟为单位）
+    var timezoneOffset = new Date().getTimezoneOffset();
+
+    // 遍历所有带有data-time属性的元素
+    $('[data-time]').each(function () {
+        var $element = $(this);
+        var utcTime = $element.data('time'); // 获取data-time属性的UTC时间
+        var localTime = new Date(utcTime);    // 创建本地时间对象
+        localTime.setMinutes(localTime.getMinutes() - timezoneOffset); // 调整为当前时区时间
+
+        // 格式化本地时间并更新元素的文本内容
+        var formattedLocalTime = localTime.toLocaleString(); // 根据浏览器语言格式化时间
+        $element.text(formattedLocalTime);
+    });
+});

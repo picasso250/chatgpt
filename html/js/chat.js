@@ -352,7 +352,7 @@ $(document).ready(function () {
                         alltext += json.choices[0].delta.content;
                     }
                 } else if (json.newBalance) {
-                    $("#balance").text(json.newBalance / 100);
+                    $("#balance").text(json.newBalance);
                 } else if (json.conversation_id) {
                     $('#conversationList .conversation').eq(0).data('id', json.conversation_id);
                     active_conversation_id = json.conversation_id;

@@ -54,8 +54,7 @@
                     <td>
                         <?php echo htmlspecialchars($row['balance'] / 100); ?>
                     </td>
-                    <td>
-                        <?php echo htmlspecialchars($row['last_updated']); ?>
+                    <td data-time="<?php echo htmlspecialchars($row['last_updated']); ?>">
                     </td>
                     <td>
                         <?php echo htmlspecialchars($row['last_ip']); ?>
