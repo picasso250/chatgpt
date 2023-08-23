@@ -103,3 +103,24 @@ $(document).ready(function () {
         });
     });
 });
+$(document).ready(function () {
+    $('.username').click(function () {
+        layer.prompt({
+            title: '改换用户名(如果遗忘之前的用户名,将无法找回)',
+            formType: 0,
+            value: $('#username').text(),
+            btn: ['Change', 'Cancel'],
+            yes: function (index, layero) {
+                var newUsername = layero.find('.layui-layer-input').val();
+                if (newUsername.trim() !== "") {
+                    $('#username').text(newUsername);
+                    $.cookie('username', newUsername);
+                    populateElements();
+                    layer.close(index);
+                } else {
+                    layer.msg('Please enter a valid username.');
+                }
+            }
+        });
+    });
+});

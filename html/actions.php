@@ -25,6 +25,10 @@ function action_Index()
     } else {
         // If 'username' is provided, fetch the user and conversations from the database
         $user = getUserByUsername($username);
+        if (!$user) {
+            echo json_encode(['error' => '没有这个用户']);
+            return;
+        }
     }
 
     // Store the user information in the session
