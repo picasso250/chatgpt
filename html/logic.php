@@ -523,7 +523,7 @@ function getOrderDetails($orderNumber)
     return $result->fetch(PDO::FETCH_ASSOC); // Fetch the order details as an associative array
 }
 
-function insertOrder($order_number, $total_fee, $username, $user_id, $responseData)
+function insertOrder($order_number, $total_fee, $username, $user_id, $request_id)
 {
     // Prepare the SQL statement
     $sql = "INSERT INTO orders (order_time, order_number, payment_amount, username, user_id, request_id, is_paid) 
@@ -535,7 +535,7 @@ function insertOrder($order_number, $total_fee, $username, $user_id, $responseDa
         'payment_amount' => $total_fee,
         'username' => $username,
         'user_id' => $user_id,
-        'request_id' => $responseData['data']['request_id'],
+        'request_id' => $request_id,
         'is_paid' => 0 // Order is not paid yet
     ];
 

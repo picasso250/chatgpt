@@ -91,7 +91,7 @@ if ($err) {
 
     $order_number = $out_trade_no;
 
-    insertOrder($order_number, $total_fee, $username, $user['id'], $responseData);
+    insertOrder($order_number, $total_fee, $username, $user['id'], $responseData['request_id']);
 
     include 'recharge.html';
 }
