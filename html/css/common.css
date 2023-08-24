@@ -2432,6 +2432,32 @@ a.unlinks-deco {
         overflow-y: auto;
         overflow-x: hidden;
     }
+
+    /* 滚动条的整体样式 */
+    #conversationList::-webkit-scrollbar {
+        width: 10px;
+        /* 设置滚动条宽度 */
+    }
+
+    /* 滚动条轨道 */
+    #conversationList::-webkit-scrollbar-track {
+        background-color: #f1f1f13c;
+        /* 设置轨道背景颜色 */
+    }
+
+    /* 滚动条滑块 */
+    #conversationList::-webkit-scrollbar-thumb {
+        background-color: #888;
+        /* 设置滑块颜色 */
+        border-radius: 5px;
+        /* 设置滑块圆角 */
+    }
+
+    /* 滚动条滑块悬停状态 */
+    #conversationList::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+        /* 设置悬停时的滑块颜色 */
+    }
 }
 
 .btn {
@@ -2479,7 +2505,7 @@ a.unlinks-deco {
     justify-content: space-between;
 }
 
-.conversation >span{
+.conversation>span {
     max-width: 100%;
     display: flex;
 }
