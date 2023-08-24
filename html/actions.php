@@ -186,3 +186,20 @@ function action_GetUserInfo()
         echo json_encode(['error' => 'Error: ' . $e->getMessage()]);
     }
 }
+function action_PayEvent()
+{
+    $num = $_GET['order_num'] ?? null;
+
+    $orderDetails = getOrderDetails($num);
+
+    if (!$orderDetails) {
+        echo 'no';
+        return;
+    }
+
+    if ($orderDetails['is_paid'] == 1) {
+        echo 'ok';
+    } else {
+        echo 'ing';
+    }
+}

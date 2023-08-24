@@ -20,7 +20,7 @@
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
+            border-radius: 0 0 15px 15px;
         }
 
         h1 {
@@ -89,12 +89,34 @@
         </div>
         <img src="<?php echo $qrCodeUrl; ?>" alt="QR Code" class="qr-code">
 
+        <script src="js/jquery-3.6.4.min.js?v=954f70f07f05742168adceba796dda72"></script>
         <script>
             document.getElementById("copyButton").addEventListener("click", function () {
                 var usernameInput = document.getElementById("usernameInput");
                 usernameInput.select();
                 document.execCommand("copy");
             });
+
+            function checkPaymentStatus(orderNum) {
+                $.ajax({
+                    url: 'ajax.php?action=PayEvent&order_num=' + orderNum,
+                    method: 'GET',
+                    success: function (response) {
+                        if (response === 'ok') {
+                            window.location.href = '/'; // Redirect to homepage
+                        } else {
+                            setTimeout(function () {
+                                checkPaymentStatus(orderNum); // Retry after 1 second
+                            }, 1000);
+                        }
+                    }
+                });
+            }
+
+            // Call the function with the initial order number
+            var initialOrderNum = '<?php echo $order_number; ?>';
+            checkPaymentStatus(initialOrderNum);
+
         </script>
 
     </div>

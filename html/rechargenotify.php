@@ -5,7 +5,7 @@ require_once 'logic.php';
 
 // Log the entire POST body
 $body = file_get_contents('php://input');
-error_log("echargenotify.php Received POST body:\n" . $body);
+error_log("rechargenotify.php Received POST body:\n" . $body);
 
 if ($_POST['code'] != 0) {
     http_response_code(500);
