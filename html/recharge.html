@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,19 +41,63 @@
             max-width: 100%;
             height: auto;
         }
+
+        /* 容器样式 */
+        .username-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* 输入框样式 */
+        #usernameInput {
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        /* 按钮样式 */
+        #copyButton {
+            padding: 4px 8px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 按钮悬停效果 */
+        #copyButton:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>请扫以下二维码完成微信支付</h1>
         <?php
-            $amount = $_GET['amount'];
-            $points = $amount * 100;
+        $amount = $_GET['amount'];
+        $points = $amount * 100;
 
-            echo '<div class="amount">金额：' . htmlspecialchars($amount) . '</div>';
-            echo '<div class="points">对应积分：' . htmlspecialchars($points) . '</div>';
-            echo '<img src="' . $qrCodeUrl . '" alt="二维码" class="qr-code">';
+        echo '<div class="amount">金额：' . htmlspecialchars($amount) . '</div>';
+        echo '<div class="points">对应积分：' . htmlspecialchars($points) . '</div>';
         ?>
+        <div class="username-container">
+            请记住唯一凭证用户名
+            <input type="text" id="usernameInput" value="<?php echo htmlspecialchars($_COOKIE['username']); ?>"
+                readonly>
+            <button id="copyButton">复制</button>
+        </div>
+        <img src="<?php echo $qrCodeUrl; ?>" alt="QR Code" class="qr-code">
+
+        <script>
+            document.getElementById("copyButton").addEventListener("click", function () {
+                var usernameInput = document.getElementById("usernameInput");
+                usernameInput.select();
+                document.execCommand("copy");
+            });
+        </script>
+
     </div>
 </body>
+
 </html>
