@@ -2354,6 +2354,7 @@ a.unlinks-deco {
     background: none;
     border: none;
     cursor: pointer;
+    display: flex;
 }
 
 #urlInput {
@@ -2429,6 +2430,7 @@ a.unlinks-deco {
     #conversationList {
         max-height: calc(100% - var(--control-panel-height));
         overflow-y: auto;
+        overflow-x: hidden;
     }
 }
 
@@ -2466,6 +2468,7 @@ a.unlinks-deco {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
 }
 
 .conversation {
@@ -2474,6 +2477,11 @@ a.unlinks-deco {
     align-items: center;
     /* 图标和文本垂直居中对齐 */
     justify-content: space-between;
+}
+
+.conversation >span{
+    max-width: 100%;
+    display: flex;
 }
 
 /* 隐藏默认样式 */
