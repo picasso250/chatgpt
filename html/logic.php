@@ -435,3 +435,37 @@ function rechargeUser($user_id, $point)
 
     return true; // 充值成功
 }
+
+function isIPAddressEligible($ipAddress)
+{
+    $sql = "SELECT id FROM invite WHERE ip_address = :ip";
+    $params = [':ip' => $ipAddress];
+    $stmt = executePreparedStmt($sql, $params);
+
+    return $stmt->rowCount() === 0;
+}
+
+function isEligibleForPoints($ipAddress, $inviterUsername)
+{
+    // Check if the IP address is different from the inviter's IP
+    $inviterIP = getInviterIPAddressByUsername($inviterUsername);
+
+    if ($ipAddress === $inviterIP) {
+        return false; // IP addresses are the same
+    }
+
+    // Check if the IP address is eligible based on invite table
+    $isIPAddressEligible = isIPAddressEligible($ipAddress);
+
+    return $isIPAddressEligible;
+}
+
+function getInviterIPAddressByUsername($inviterUsername)
+{
+    $sql = "SELECT last_updated FROM users WHERE username = :username";
+    $params = [':username' => $inviterUsername];
+    $stmt = executePreparedStmt($sql, $params);
+
+    $row = $stmt->fetch();
+    return $row ? $row['last_updated'] : null;
+}

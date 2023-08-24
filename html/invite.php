@@ -11,18 +11,9 @@ $inviterUsername = _get('from');
 $inviter = getUserByUsername($inviterUsername);
 
 if ($inviter) {
-    // 3. Find out if the IP is eligible to add points (10*100 points)
+    // 3. Find out if the IP is eligible to add points (100 points)
     $ipAddress = getClientIP();
-    $eligible = true;
-
-    // Check if the IP address already exists in the invite table
-    $sql = "SELECT id FROM invite WHERE ip_address = :ip";
-    $params = [':ip' => $ipAddress];
-    $stmt = executePreparedStmt($sql, $params);
-
-    if ($stmt->rowCount() > 0) {
-        $eligible = false; // IP already used for an invite
-    }
+    $eligible = isEligibleForPoints($ipAddress, $inviterUsername);
 
     if ($eligible) {
         // Add points (1*100 points) to the inviter's balance
