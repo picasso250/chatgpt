@@ -156,15 +156,15 @@ function deductUserBalance($userId, $cost)
     return null; // Return null if balance fetching failed
 }
 
-function rechargeUserBalance($userId, $amount)
+function rechargeUserBalance($username, $amount)
 {
     // Prepare the SQL statement
-    $sql = "UPDATE users SET balance = balance + :amount WHERE id = :userId";
+    $sql = "UPDATE users SET balance = balance + :amount WHERE username = :username";
 
     // Define the parameters for the prepared statement
     $params = array(
         'amount' => $amount,
-        'userId' => $userId,
+        'username' => $username,
     );
 
     // Execute the prepared statement

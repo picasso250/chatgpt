@@ -62,7 +62,7 @@ try {
     }
 
     // Calculate the amount in cents (total_fee * 100)
-    $amountInCents = $orderDetails['total_fee'] * 100;
+    $amountInCents = $requestData['total_fee'] * 100;
 
     // Start a transaction
     $pdo->beginTransaction();
