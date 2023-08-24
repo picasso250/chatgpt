@@ -462,10 +462,10 @@ function isEligibleForPoints($ipAddress, $inviterUsername)
 
 function getInviterIPAddressByUsername($inviterUsername)
 {
-    $sql = "SELECT last_updated FROM users WHERE username = :username";
+    $sql = "SELECT last_ip FROM users WHERE username = :username";
     $params = [':username' => $inviterUsername];
     $stmt = executePreparedStmt($sql, $params);
 
     $row = $stmt->fetch();
-    return $row ? $row['last_updated'] : null;
+    return $row ? $row['last_ip'] : null;
 }
