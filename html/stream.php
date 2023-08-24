@@ -104,7 +104,7 @@ $callback = function ($ch, $data) use ($user, $postData, &$price, $start_time) {
 
             $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE) . $answer);
 
-            $pricePerToken = 0.004 / 1e3 * 7.4;
+            $pricePerToken = 0.004 / 1e3 * 7.4 * 2; // factor
 
             $price = $pricePerToken * $token_size;
             $price *= 100;

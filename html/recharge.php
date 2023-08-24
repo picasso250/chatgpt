@@ -1,6 +1,5 @@
 <?php
 
-
 require_once 'lib.php';
 require_once 'logic.php';
 
@@ -93,5 +92,7 @@ if ($err) {
 
     insertOrder($order_number, $total_fee, $username, $user['id'], $responseData['request_id']);
 
+    $amount = $_GET['amount'];
+    $points = $amount * 100;
     include 'recharge.html';
 }

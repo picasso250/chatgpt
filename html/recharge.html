@@ -75,9 +75,6 @@
     <div class="container">
         <h1>请扫以下二维码完成微信支付</h1>
         <?php
-        $amount = $_GET['amount'];
-        $points = $amount * 100;
-
         echo '<div class="amount">金额：' . htmlspecialchars($amount) . '</div>';
         echo '<div class="points">对应积分：' . htmlspecialchars($points) . '</div>';
         ?>
