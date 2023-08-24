@@ -85,6 +85,8 @@ if ($err) {
     // Display the QR code image
     // echo '<img src="' . $qrCodeUrl . '" alt="QR Code">';
 
+    $order_number = $out_trade_no;
+
     insertOrder($order_number, $total_fee, $username, $user_id, $responseData);
 
     include 'recharge.html';
