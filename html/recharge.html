@@ -68,6 +68,13 @@
         #copyButton:hover {
             background-color: #0056b3;
         }
+
+        img {
+            display: block;
+            margin: auto;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -79,11 +86,12 @@
         echo '<div class="points">对应积分：' . htmlspecialchars($points) . '</div>';
         ?>
         <div class="username-container">
-            请记住唯一凭证用户名
+            请记住唯一凭证用户名:
             <input type="text" id="usernameInput" value="<?php echo htmlspecialchars($_COOKIE['username']); ?>"
                 readonly>
             <button id="copyButton">复制</button>
         </div>
+        <img src="img/wechat-logo.png" alt="" class="" style="margin-top: 20px;">
         <img src="<?php echo $qrCodeUrl; ?>" alt="QR Code" class="qr-code">
 
         <script src="js/jquery-3.6.4.min.js?v=954f70f07f05742168adceba796dda72"></script>
