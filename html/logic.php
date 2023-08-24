@@ -394,33 +394,42 @@ function getUserConversations($userId)
 function createConversation($user_id, $type, $message)
 {
 
-    // 准备对话数据，包括类型和创建时间
-    $conversationData = [
+    // Prepare the SQL statement
+    $sql = "INSERT INTO conversations (type, title, created_at) 
+            VALUES (:type, :title, now())";
+
+    // Define the parameters
+    $params = [
         'type' => $type,
-        'title' => mb_substr($message, 0, 30),
-        'created_at' => date('Y-m-d H:i:s'),
+        'title' => mb_substr($message, 0, 30)
     ];
 
-    // 执行插入操作，获取生成的对话ID
-    $conversationId = insertIntoTable('conversations', $conversationData);
+    // Execute the prepared statement
+    executePreparedStmt($sql, $params);
+
+    $conversationId = getInitializedPDO()->lastInsertId();
 
     insertUserConversation($user_id, $conversationId);
 
     return $conversationId;
 }
+
 function insertUserConversation($userId, $conversationId)
 {
+    // Prepare the SQL statement
+    $sql = "INSERT INTO user_conversations (user_id, conversation_id, created_at) 
+            VALUES (:user_id, :conversation_id, now())";
 
-    // Prepare user_conversations data
-    $userConversationData = [
+    // Define the parameters
+    $params = [
         'user_id' => $userId,
-        'conversation_id' => $conversationId,
-        'created_at' => date('Y-m-d H:i:s'),
+        'conversation_id' => $conversationId
     ];
 
-    // Execute the insert operation
-    insertIntoTable('user_conversations', $userConversationData);
+    // Execute the prepared statement
+    executePreparedStmt($sql, $params);
 }
+
 function createNewUser($username, $email, $password, $ipAddress)
 {
     // Create a new user with initial points of 100
@@ -493,8 +502,7 @@ function sign(array $data, $key)
 }
 function updatePaymentStatus($orderNumber)
 {
-
-    $sql = "UPDATE orders SET is_paid = 1 WHERE order_number = ?";
+    $sql = "UPDATE orders SET is_paid = 1, payment_success_time = NOW() WHERE order_number = ?";
     $params = array($orderNumber);
 
     $stmt = executePreparedStmt($sql, $params);
@@ -504,6 +512,7 @@ function updatePaymentStatus($orderNumber)
 
     return $rowCount;
 }
+
 function getOrderDetails($orderNumber)
 {
     $sql = "SELECT * FROM orders WHERE order_number = :orderNumber";
@@ -512,4 +521,24 @@ function getOrderDetails($orderNumber)
     $result = executePreparedStmt($sql, $params);
 
     return $result->fetch(PDO::FETCH_ASSOC); // Fetch the order details as an associative array
+}
+
+function insertOrder($order_number, $total_fee, $username, $user_id, $responseData)
+{
+    // Prepare the SQL statement
+    $sql = "INSERT INTO orders (order_time, order_number, payment_amount, username, user_id, request_id, is_paid) 
+            VALUES (now(), :order_number, :payment_amount, :username, :user_id, :request_id, :is_paid)";
+
+    // Define the parameters
+    $params = [
+        'order_number' => $order_number,
+        'payment_amount' => $total_fee,
+        'username' => $username,
+        'user_id' => $user_id,
+        'request_id' => $responseData['data']['request_id'],
+        'is_paid' => 0 // Order is not paid yet
+    ];
+
+    // Execute the prepared statement
+    $stmt = executePreparedStmt($sql, $params);
 }

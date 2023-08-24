@@ -85,18 +85,7 @@ if ($err) {
     // Display the QR code image
     // echo '<img src="' . $qrCodeUrl . '" alt="QR Code">';
 
-    // Insert order information into the database
-    $orderData = [
-        'order_time' => date('Y-m-d H:i:s'),
-        'order_number' => $out_trade_no,
-        'payment_amount' => $total_fee,
-        'username' => $username,
-        'user_id' => $user_id,
-        'request_id' => $responseData['data']['request_id'],
-        'is_paid' => 0 // Order is not paid yet
-    ];
-
-    insertIntoTable('orders', $orderData);
+    insertOrder($order_number, $total_fee, $username, $user_id, $responseData);
 
     include 'recharge.html';
 }
