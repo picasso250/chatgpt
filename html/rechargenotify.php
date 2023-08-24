@@ -68,7 +68,7 @@ try {
     $pdo->beginTransaction();
 
     // Recharge user balance
-    rechargeUserBalance($orderDetails['attach'], $amountInCents);
+    rechargeUserBalance($requestData['attach'], $amountInCents);
 
     // Update payment status
     updatePaymentStatus($orderNumber);
