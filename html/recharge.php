@@ -9,8 +9,12 @@ session_start();
 $configFile = '../config/config.ini';
 $appConfig = parse_ini_file($configFile);
 
-$user_id = $_SESSION['user_ses']['id'];
 $username = $_COOKIE['username'];
+$user = getUserByUsername($username);
+if (!$user) {
+    echo "no user";
+    exit;
+}
 
 $amount = $_GET['amount']; // 获取充值金额参数
 
@@ -87,7 +91,7 @@ if ($err) {
 
     $order_number = $out_trade_no;
 
-    insertOrder($order_number, $total_fee, $username, $user_id, $responseData);
+    insertOrder($order_number, $total_fee, $username, $user['id'], $responseData);
 
     include 'recharge.html';
 }
