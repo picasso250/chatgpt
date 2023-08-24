@@ -74,7 +74,7 @@ curl_close($curl);
 if ($err) {
     echo "cURL Error #:" . $err;
 } else {
-    echo $response;
+    // echo $response;
 
     // Decode the JSON response
     $responseData = json_decode($response, true);
@@ -83,7 +83,7 @@ if ($err) {
     $qrCodeUrl = $responseData['data']['QRcode_url'];
 
     // Display the QR code image
-    echo '<img src="' . $qrCodeUrl . '" alt="QR Code">';
+    // echo '<img src="' . $qrCodeUrl . '" alt="QR Code">';
 
     // Insert order information into the database
     $orderData = [
@@ -97,4 +97,6 @@ if ($err) {
     ];
 
     insertIntoTable('orders', $orderData);
+
+    include 'recharge.html';
 }

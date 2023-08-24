@@ -13,10 +13,34 @@ if ($_POST['code'] != 0) {
     return;
 }
 
+$requestData = $_POST;
+
+$code = $requestData['code'];
+$timestamp = $requestData['timestamp'];
+$mch_id = $requestData['mch_id'];
+$order_no = $requestData['order_no'];
+$out_trade_no = $requestData['out_trade_no'];
+$pay_no = $requestData['pay_no'];
+$total_fee = $requestData['total_fee'];
+
+$data = array(
+    'code' => $code,
+    'timestamp' => $timestamp,
+    'mch_id' => $mch_id,
+    'order_no' => $order_no,
+    'out_trade_no' => $out_trade_no,
+    'pay_no' => $pay_no,
+    'total_fee' => $total_fee
+);
+
+if (sign($data, '6932ff1c91c71e872d40453eec4263f7') !== $requestData['sign']) {
+    http_response_code(500);
+    echo "bad sign";
+    return;
+}
+
 try {
     $pdo = getInitializedPDO();
-
-    $requestData = $_POST;
 
     $orderNumber = $requestData['out_trade_no'];
 
