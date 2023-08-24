@@ -97,7 +97,6 @@ $(document).ready(function () {
             type: 1,
             title: false,
             closeBtn: 1,
-            area: ['300px', '150px'],
             shadeClose: true,
             content: $('#qqGroup').html()
         });
@@ -124,3 +123,28 @@ $(document).ready(function () {
         });
     });
 });
+
+$(document).ready(function() {
+    $('#rechargeButton').click(function() {
+        layer.open({
+            type: 1,
+            title: '充值积分', // 添加标题
+            content: $('#rechargeDialog'),
+            area: ['400px', '400px']
+        });
+    });    
+
+    $('.rechargeOption').click(function() {
+        var amount = $(this).data('amount');
+    
+        layer.open({
+            type: 0,
+            content: '请记住唯一凭证用户名(请复制下来)：<br>' + $.cookie('username'),
+            btn: [ '充值' + amount + '元'], // 添加充值按钮
+            btn1: function(index) {
+                window.location.href = 'recharge.php?amount=' + amount; // 跳转到充值页面
+            }
+        });
+    });
+});
+

@@ -155,6 +155,22 @@ function deductUserBalance($userId, $cost)
 
     return null; // Return null if balance fetching failed
 }
+
+function rechargeUserBalance($userId, $amount)
+{
+    // Prepare the SQL statement
+    $sql = "UPDATE users SET balance = balance + :amount WHERE id = :userId";
+
+    // Define the parameters for the prepared statement
+    $params = array(
+        'amount' => $amount,
+        'userId' => $userId,
+    );
+
+    // Execute the prepared statement
+    executePreparedStmt($sql, $params);
+}
+
 function getMaxIdFromRows($rows)
 {
     $maxId = 0;
@@ -468,4 +484,32 @@ function getInviterIPAddressByUsername($inviterUsername)
 
     $row = $stmt->fetch();
     return $row ? $row['last_ip'] : null;
+}
+function sign(array $data, $key)
+{
+    ksort($data);
+    $sign = strtoupper(md5(urldecode(http_build_query($data)) . '&key=' . $key));
+    return $sign;
+}
+function updatePaymentStatus($orderNumber)
+{
+
+    $sql = "UPDATE orders SET is_paid = 1 WHERE order_number = ?";
+    $params = array($orderNumber);
+
+    $stmt = executePreparedStmt($sql, $params);
+
+    // Get the number of rows affected
+    $rowCount = $stmt->rowCount();
+
+    return $rowCount;
+}
+function getOrderDetails($orderNumber)
+{
+    $sql = "SELECT * FROM orders WHERE order_number = :orderNumber";
+    $params = array(':orderNumber' => $orderNumber);
+
+    $result = executePreparedStmt($sql, $params);
+
+    return $result->fetch(PDO::FETCH_ASSOC); // Fetch the order details as an associative array
 }
