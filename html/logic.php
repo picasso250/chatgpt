@@ -574,3 +574,35 @@ function subscribeUserToPlan($username, $days) {
     $updateParams = array(":username" => $username);
     return executePreparedStmt($updateSql, $updateParams);
 }
+
+function getConversationById($conversationId)
+{
+    $sql = "SELECT * FROM conversations WHERE id = :conversationId";
+    $params = array(':conversationId' => $conversationId);
+    
+    $stmt = executePreparedStmt($sql, $params); // Assuming you have the executePreparedStmt function
+    
+    if ($stmt) {
+        $conversation = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $conversation;
+    } else {
+        return null; // Return null if conversation not found or an error occurred
+    }
+}
+function userOwnsConversation($userId, $conversationId) {
+    // Assuming you have a database connection established
+    
+    $sql = "SELECT COUNT(*) FROM user_conversations WHERE user_id = :userId AND conversation_id = :conversationId";
+    $params = array(':userId' => $userId, ':conversationId' => $conversationId);
+    
+    $stmt = executePreparedStmt($sql, $params); // Assuming you have the executePreparedStmt function
+    
+    if ($stmt) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $count = intval($row['COUNT(*)']);
+        
+        return $count > 0;
+    } else {
+        return false; // Error handling
+    }
+}

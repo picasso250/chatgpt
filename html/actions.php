@@ -203,3 +203,28 @@ function action_PayEvent()
         echo 'ing';
     }
 }
+function action_DeleteConversation()
+{
+    session_start();
+
+    if (isset($_POST['id'])) {
+        $userId = $_SESSION['user_ses']['id'];
+
+        $conversationId = $_POST['id'];
+
+        $sql = "DELETE FROM user_conversations WHERE conversation_id = :conversationId AND user_id = :userId";
+        $params = array(':conversationId' => $conversationId, ':userId' => $userId);
+
+        $stmt = executePreparedStmt($sql, $params);
+
+        if ($stmt) {
+            // Success message or any additional logic after deletion
+            echo "Conversation deleted successfully";
+        } else {
+            // Error message or handling for unsuccessful deletion
+            echo "Error deleting conversation";
+        }
+    } else {
+        echo "Invalid input";
+    }
+}
