@@ -92,17 +92,6 @@ $(function () {
 });
 
 $(document).ready(function () {
-    $("#rechargeButton").click(function () {
-        layer.open({
-            type: 1,
-            title: false,
-            closeBtn: 1,
-            shadeClose: true,
-            content: $('#qqGroup').html()
-        });
-    });
-});
-$(document).ready(function () {
     $('.username').click(function () {
         layer.prompt({
             title: '改换用户名(如果遗忘之前的用户名,将无法找回)',
