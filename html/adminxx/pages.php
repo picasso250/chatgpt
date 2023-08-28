@@ -25,7 +25,7 @@ $config = [
             'op' => [
                 'name' => '操作',
                 'func' => function ($value, $key, $row, $id) {
-                    return '<a class="btn" href="adminxchatlog.php?uid=' . $id . '">聊天记录</a>' .
+                    return '<a class="btn" href="adminchatlog.php?uid=' . $id . '">聊天记录</a>' .
                         '<a class="btn" href="adminxchatlog.php?uid=' . $id . '">充值</a>';
                 }
             ],

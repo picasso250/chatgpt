@@ -21,10 +21,7 @@ function generateTable($rows, $config)
                 : '';
             echo "<td $data>";
 
-            if (isset($fieldData['data'])) {
-                $dataKey = $fieldData['data'];
-                echo htmlspecialchars($row[$dataKey]);
-            } elseif (isset($fieldData['func']) && is_callable($fieldData['func'])) {
+            if (isset($fieldData['func']) && is_callable($fieldData['func'])) {
                 $value = isset($row[$fieldKey]) ? $row[$fieldKey] : null;
                 $id = isset($row['id']) ? $row['id'] : null;
                 echo $fieldData['func']($value, $fieldKey, $row, $id);

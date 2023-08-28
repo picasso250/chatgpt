@@ -16,6 +16,7 @@ function generateRandomUsername()
 {
     return generateRandomCode();
 }
+
 function getClientIP()
 {
     // Check for the most common headers containing the client's IP address
@@ -28,6 +29,17 @@ function getClientIP()
         'HTTP_FORWARDED',
         'REMOTE_ADDR'
     );
+
+    $ipAddresses = array();
+
+    foreach ($headers as $header) {
+        if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
+            $ip = $_SERVER[$header];
+            $ipAddresses[$header] = $ip;
+        }
+    }
+
+    log_info("Collected IP addresses: " . json_encode($ipAddresses));
 
     foreach ($headers as $header) {
         if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {

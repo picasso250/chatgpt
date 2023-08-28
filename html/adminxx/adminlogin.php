@@ -1,7 +1,7 @@
 <?php
 
-require_once 'lib.php';
-require_once 'logic.php';
+require_once '../lib.php';
+require_once '../logic.php';
 
 define('IN_ADMIN', 1);
 

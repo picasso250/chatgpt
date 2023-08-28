@@ -18,7 +18,14 @@ function log_debug($msg)
 function log_info($msg)
 {
     $logMessage = date('c') . " INFO: $msg\n";
-    error_log($logMessage, 3, __DIR__ . '/../log/info.log');
+
+    if (php_sapi_name() === 'fpm-fcgi') {
+        // Logic for PHP-FPM environment
+        error_log($logMessage, 3, '/tmp/fpm_info.log');
+    } else {
+        // Default logic for other environments
+        error_log($logMessage);
+    }
 }
 
 function _get($key, $default = '')

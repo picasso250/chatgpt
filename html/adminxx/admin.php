@@ -1,8 +1,8 @@
 <?php
 
-require_once 'lib.php';
-require_once 'logic.php';
-require_once 'adminxx/admin_page.php';
+require_once '../lib.php';
+require_once '../logic.php';
+require_once 'admin_page.php';
 
 define('IN_ADMIN', 1);
 
@@ -89,7 +89,7 @@ if ($totalRowCount > 0) {
     $pagination = generatePagination($totalRowCount, $page_num, $per_page);
 }
 
-$configPages = require('adminxx/pages.php');
+$configPages = require('pages.php');
 $config = $configPages['users'];
 
 include 'admin.html';
