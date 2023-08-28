@@ -2,6 +2,7 @@
 
 require_once 'lib.php';
 require_once 'logic.php';
+require_once 'adminxx/admin_page.php';
 
 define('IN_ADMIN', 1);
 
@@ -48,17 +49,20 @@ $params = [];
 $where = [];
 
 // 获取用户列表（包括分页）
-if (isset($_GET['gt'])) {
-    $gt = isset($_GET['gt']) ? intval($_GET['gt']) : 0;
-    $where[] = "id>?";
-    $params = [$gt];
-} else if (isset($_GET['lt'])) {
-    $lt = isset($_GET['lt']) ? intval($_GET['lt']) : 0;
-    $where[] = "id<?";
-    $params = [$lt];
+// 获取GET参数
+$page_num = isset($_GET['page_num']) ? intval($_GET['page_num']) : 1;
+$per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+
+// 设置默认值
+if ($page_num <= 0) {
+    $page_num = 1;
 }
+
+if ($per_page <= 0) {
+    $per_page = 10;
+}
+
 $username = isset($_GET['username']) ? trim($_GET['username']) : '';
-$limit = 10; // 每页显示的记录数
 
 if ($username) {
     $where[] = "username like ?";
@@ -70,11 +74,11 @@ if ($where) {
 } else {
     $where = '';
 }
-$sql = "SELECT * FROM users $where order by id asc LIMIT $limit";
+$sql = "SELECT * FROM users $where order by id asc LIMIT $per_page OFFSET " . (($page_num - 1) * $per_page);
 $stmt = executePreparedStmt($sql, $params);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$sql = "SELECT COUNT(*) as count FROM users ";
+$sql = "SELECT COUNT(*) as count FROM users $where";
 $stmt = executePreparedStmt($sql, []);
 $countResult = $stmt->fetch(PDO::FETCH_ASSOC);
 $totalRowCount = $countResult['count'];
@@ -82,23 +86,10 @@ $totalRowCount = $countResult['count'];
 $pagination = '';
 
 if ($totalRowCount > 0) {
-
-    $totalPages = ceil($totalRowCount / $limit);
-
-    $pagination .= '<div class="pagination">';
-
-    if (1) {
-        $prevPageId = getMinIdFromRows($rows);
-        $pagination .= '<a href="?' . buildQueryString(['lt' => $prevPageId]) . '">上一页</a>';
-    }
-
-    // Next page link
-    if ($totalRowCount > $limit) {
-        $nextPageId = getMaxIdFromRows($rows);
-        $pagination .= '<a href="?' . buildQueryString(['gt' => $nextPageId]) . '">下一页</a>';
-    }
-
-    $pagination .= '</div>';
+    $pagination = generatePagination($totalRowCount, $page_num, $per_page);
 }
+
+$configPages = require('adminxx/pages.php');
+$config = $configPages['users'];
 
 include 'admin.html';

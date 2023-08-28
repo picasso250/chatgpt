@@ -87,3 +87,8 @@ button.btn:hover {
 #logout {
     display: none;
 }
+
+.pagination .current-page {
+    margin-left: 5px;
+    font-weight: bold;
+}

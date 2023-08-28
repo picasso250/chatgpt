@@ -30,41 +30,11 @@
             <button type="submit">搜索</button>
         </form>
 
-        <div>共有 <?php echo $totalRowCount ?> 个用户</div>
+        <div>共有
+            <?php echo $totalRowCount ?> 个用户
+        </div>
         <table class="user-list-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>用户名</th>
-                    <th>余额</th>
-                    <th>最后更新时间</th>
-                    <th>最后IP地址</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($rows as $row): ?>
-                <tr>
-                    <td>
-                        <?php echo htmlspecialchars($row['id']); ?>
-                    </td>
-                    <td>
-                        <?php echo htmlspecialchars($row['username']); ?>
-                    </td>
-                    <td>
-                        <?php echo htmlspecialchars($row['balance'] / 100); ?>
-                    </td>
-                    <td data-time="<?php echo htmlspecialchars($row['last_updated']); ?>">
-                    </td>
-                    <td>
-                        <?php echo htmlspecialchars($row['last_ip']); ?>
-                    </td>
-                    <td>
-                        <a href="adminxchatlog.php?uid=<?php echo $row['id']; ?>">聊天记录</a>
-                    </td>
-                </tr>
-                <?php endforeach;?>
-            </tbody>
+            <?php generateTable($rows, $config); ?>
         </table>
 
         <!-- 显示分页链接 -->
