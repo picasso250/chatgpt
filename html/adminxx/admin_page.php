@@ -44,11 +44,11 @@ function generatePagination($totalRowCount, $page_num, $per_page)
     $pagination = '<div class="pagination">';
 
     // Button to go to the first page
-    $pagination .= '<a href="?' . buildQueryString(['page_num' => 1, 'per_page' => $per_page]) . '">第一页</a>';
+    $pagination .= '<a href="?' . buildQueryString(['page_num' => 1, 'per_page' => $per_page]) . '" class="btn" role="button">第一页</a>';
 
     if ($page_num > 1) {
         $prevPageNum = $page_num - 1;
-        $pagination .= '<a href="?' . buildQueryString(['page_num' => $prevPageNum, 'per_page' => $per_page]) . '">上一页</a>';
+        $pagination .= '<a href="?' . buildQueryString(['page_num' => $prevPageNum, 'per_page' => $per_page]) . '" class="btn" role="button">上一页</a>';
     }
 
     // Calculate the page numbers to show between "First Page" and "Last Page"
@@ -57,16 +57,16 @@ function generatePagination($totalRowCount, $page_num, $per_page)
 
     for ($i = $startPage; $i <= $endPage; $i++) {
         if ($i == $page_num) {
-            $pagination .= '<span class="current-page">' . $i . '</span>';
+            $pagination .= '<a class="btn current-page disabled" role="button">' . $i . '</a>';
         } else {
-            $pagination .= '<a href="?' . buildQueryString(['page_num' => $i, 'per_page' => $per_page]) . '">' . $i . '</a>';
+            $pagination .= '<a href="?' . buildQueryString(['page_num' => $i, 'per_page' => $per_page]) . '" class="btn" role="button">' . $i . '</a>';
         }
     }
 
     // Next page link
     if ($page_num < $totalPages) {
         $nextPageNum = $page_num + 1;
-        $pagination .= '<a href="?' . buildQueryString(['page_num' => $nextPageNum, 'per_page' => $per_page]) . '">下一页</a>';
+        $pagination .= '<a href="?' . buildQueryString(['page_num' => $nextPageNum, 'per_page' => $per_page]) . '" class="btn" role="button">下一页</a>';
     }
 
     $pagination .= '</div>';

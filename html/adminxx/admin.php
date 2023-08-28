@@ -79,7 +79,7 @@ $stmt = executePreparedStmt($sql, $params);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $sql = "SELECT COUNT(*) as count FROM users $where";
-$stmt = executePreparedStmt($sql, []);
+$stmt = executePreparedStmt($sql, $params);
 $countResult = $stmt->fetch(PDO::FETCH_ASSOC);
 $totalRowCount = $countResult['count'];
 

@@ -205,9 +205,7 @@ function getMinIdFromRows($rows)
 }
 function buildQueryString($params)
 {
-    // 排除 'lt' 和 'gt' 参数
-    $filteredParams = array_diff_key($_GET, ['lt' => '', 'gt' => '']);
-    $filteredParams = array_merge($filteredParams, $params);
+    $filteredParams = array_merge($_GET, $params);
 
     // 构建查询字符串
     $query = http_build_query($filteredParams);
