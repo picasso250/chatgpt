@@ -38,14 +38,46 @@ $(document).ready(function () {
     var timezoneOffset = new Date().getTimezoneOffset();
 
     // 遍历所有带有data-time属性的元素
-    $('[data-time]').each(function () {
+    $('[data-datetime]').each(function () {
         var $element = $(this);
-        var utcTime = $element.data('time'); // 获取data-time属性的UTC时间
+        var utcTime = $element.data('datetime'); // 获取data-time属性的UTC时间
+        if (!utcTime) return;
         var localTime = new Date(utcTime);    // 创建本地时间对象
         localTime.setMinutes(localTime.getMinutes() - timezoneOffset); // 调整为当前时区时间
 
         // 格式化本地时间并更新元素的文本内容
         var formattedLocalTime = localTime.toLocaleString(); // 根据浏览器语言格式化时间
         $element.text(formattedLocalTime);
+    });
+});
+$(document).ready(function() {
+    $('[data-boolean]').each(function() {
+        var value = $(this).attr('data-boolean');
+        if (value === '1') {
+            $(this).text('是');
+        } else if (value === '0') {
+            $(this).text('否');
+        }
+    });
+});
+$(document).ready(function() {
+    $('.recharge-btn').on('click', function() {
+        var uid = $(this).data('uid');
+
+        // Design your recharge interface here
+        var rechargeContent = `
+            <div class="recharge-container">
+                <h2>Recharge for UID: ${uid}</h2>
+                <!-- Your recharge form and elements go here -->
+            </div>
+        `;
+
+        // Open a layer with the recharge content
+        layui.layer.open({
+            type: 1,
+            title: 'Recharge Page',
+            content: rechargeContent,
+            area: ['500px', '300px'] // Adjust the size as needed
+        });
     });
 });

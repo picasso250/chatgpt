@@ -73,3 +73,28 @@ function generatePagination($totalRowCount, $page_num, $per_page)
 
     return $pagination;
 }
+
+// 函数：获取 page_num
+function getPageNum() {
+    $page_num = isset($_GET['page_num']) ? intval($_GET['page_num']) : 1;
+    
+    if ($page_num <= 0) {
+        $page_num = 1;
+    }
+    
+    return $page_num;
+}
+
+// 函数：获取 per_page，并限制最大数量为 100
+function getPerPage() {
+    $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+
+    if ($per_page <= 0) {
+        $per_page = 10;
+    } elseif ($per_page > 100) {
+        $per_page = 100;
+    }
+
+    return $per_page;
+}
+

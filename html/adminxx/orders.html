@@ -1,0 +1,58 @@
+<?php defined('IN_ADMIN') or die("not here"); // make vsc fmt happy ?>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Panel</title>
+
+    <link rel="stylesheet" href="bootstrap-5.3.1/css/bootstrap.min.css">
+
+    <script src="../js/jquery-3.6.4.min.js?v=954f70f07f05742168adceba796dda72"></script>
+    <script src="../js/jquery.cookie.min.js?v=34f2c35185e06a0fad464f954b00d3dc"></script>
+    <script src="../js/layer.min.js?v=7cdb23d7e49febe634c90bcd40470bea"></script>
+
+    <script src="bootstrap-5.3.1/js/bootstrap.min.js"></script>
+
+    <!-- 引入 admin.js -->
+    <script src="js/admin.js?v=050ac684ac2a9f1e795a2cbc9927381c"></script>
+    <!-- 引入 admin.css -->
+    <link rel="stylesheet" type="text/css" href="css/admin.css?v=6f7627385ae0f08a57d8bcd7bcd5e979">
+    <?php echo "<script>var user = " . json_encode($_SESSION['user']) . ";</script>"; ?>
+</head>
+
+<body>
+    <div class="login-area">
+        <h4 id="welcome"></h4>
+        <a class="btn" id="login" href="adminxlogin.php">登录</a>
+        <a class="btn" id="logout" style="display: none;" href="adminxlogin.php?action=logout">登出</a>
+    </div>
+
+    <?php include 'block_nav.html'; ?>
+
+    <!-- 在 display-area 中显示用户列表 -->
+    <div id="display-area">
+        <form action="?">
+            <label for="username">用户名:</label>
+            <input type="text" id="username" name="username"
+                value="<?php echo isset($_GET['username'])?trim(htmlentities($_GET['username'])):''; ?>">
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </form>
+
+        <div>共有
+            <?php echo $totalRowCount ?> 个订单
+        </div>
+        <table class="table  ">
+            <?php generateTable($rows, $config); ?>
+        </table>
+
+        <!-- 显示分页链接 -->
+        <?php echo $pagination; ?>
+    </div>
+
+    <script src="js/admin.js?v=050ac684ac2a9f1e795a2cbc9927381c"></script>
+</body>
+
+</html>
