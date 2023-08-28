@@ -19,7 +19,8 @@ function generateTable($rows, $config)
             $data = isset($fieldData['data']) ?
                 ('data-' . $fieldData['data'] . '="' . htmlentities($row[$fieldKey])) . '"'
                 : '';
-            echo "<td $data>";
+            $class = 'class="table-data-' . $fieldKey . '"';
+            echo "<td $data $class>";
 
             if (isset($fieldData['func']) && is_callable($fieldData['func'])) {
                 $value = isset($row[$fieldKey]) ? $row[$fieldKey] : null;
@@ -75,18 +76,20 @@ function generatePagination($totalRowCount, $page_num, $per_page)
 }
 
 // 函数：获取 page_num
-function getPageNum() {
+function getPageNum()
+{
     $page_num = isset($_GET['page_num']) ? intval($_GET['page_num']) : 1;
-    
+
     if ($page_num <= 0) {
         $page_num = 1;
     }
-    
+
     return $page_num;
 }
 
 // 函数：获取 per_page，并限制最大数量为 100
-function getPerPage() {
+function getPerPage()
+{
     $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
 
     if ($per_page <= 0) {
@@ -97,4 +100,3 @@ function getPerPage() {
 
     return $per_page;
 }
-

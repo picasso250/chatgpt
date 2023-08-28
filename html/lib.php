@@ -37,3 +37,8 @@ function _post($key, $default = '')
 {
     return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
 }
+
+function outputJson($data) {
+    header('Content-Type: application/json; charset=utf-8'); // Set charset to UTF-8
+    echo json_encode($data, JSON_UNESCAPED_UNICODE); // Use JSON_UNESCAPED_UNICODE to handle Unicode characters
+}

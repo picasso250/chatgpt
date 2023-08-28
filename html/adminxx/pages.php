@@ -27,9 +27,10 @@ $config = [
                 'name' => '操作',
                 'func' => function ($value, $key, $row, $id) {
                     return '<a class="btn" href="adminchatlog.php?uid=' . $id . '">聊天记录</a>' .
-                        '<a class="btn recharge-btn" data-uid='.htmlentities($id).' href="#">充值</a>' .
+                        '<input type="number" max="100" class="input-number" />' .
+                        '<a class="btn recharge-btn" data-uid='.htmlentities($id).' href="javascript:void(0);">充值</a>' .
                         '<a class="btn" href="orders.php?username=' . htmlentities($row['username']) . '">查看订单</a>';
-                }
+                }                
             ],
         ],
     ],

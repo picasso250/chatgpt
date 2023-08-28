@@ -3,10 +3,8 @@
 require_once '../lib.php';
 require_once '../logic.php';
 
-
 function action_Recharge()
 {
-
     // 获取user_id或username和point
     $user_id = _post('user_id');
     $username = _post('username');
@@ -34,7 +32,13 @@ function action_Recharge()
                 $result = rechargeUser($user_id, $point);
 
                 if ($result) {
-                    echo json_encode(['data' => "用户 $user[username] 充值成功。已添加积分：$point"]);
+                    // Get updated user information
+                    $updatedUser = getUserById($user_id);
+                    $data = [
+                        'message' => "用户 $user[username] 充值成功。已添加积分：$point",
+                        'balance' => $updatedUser['balance']
+                    ];
+                    outputJson(['data' => $data]);
                 } else {
                     echo json_encode(['error' => "Failed to recharge user $user_id."]);
                 }

@@ -82,8 +82,8 @@ $(document).ready(function () {
                 }, 3000);
 
                 // Update balance value in the table
-                var balanceValue = response.data.balance; // Assuming the response has a 'data' object with a 'balance' property
-                button.closest('td').siblings('.table-data-balance').text(balanceValue);
+                var balanceCell = button.closest('td').siblings('.table-data-balance');
+                balanceCell.text(response.data.balance); // Update balance value from the response
 
             },
             error: function () {
