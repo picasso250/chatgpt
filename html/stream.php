@@ -58,7 +58,7 @@ if ($freePackageEndUTC <= $currentUTC) {
 // 从GET参数获取conversation_id
 $conversationId = isset($_GET['conversation_id']) ? $_GET['conversation_id'] : 0;
 $message = isset($_GET['message']) ? $_GET['message'] : '';
-$model = isset($_GET['model']) ? $_GET['model'] : "gpt-3.5-turbo";
+$model = "gpt-35-turbo";
 
 // 如果conversation_id为0，则创建一个新的对话
 if ($conversationId == 0) {
@@ -85,6 +85,12 @@ $postData = [
     "stream" => true,
     "messages" => $messages,
 ];
+
+$token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE));
+if ($token_size > 4000) {
+    $model = 'gpt-35-turbo-16k';
+}
+
 if ($appConfig['OPENAI_TYPE'] == 'OPENAI') {
     $postData["model"] = $model;
 }

@@ -280,7 +280,6 @@ $(document).ready(function () {
                 return;
             }
             es.onmessage = function (event) {
-                console.log(event.data);
                 if (isstarted) {
                     layer.close(loading);
                     $("#kw-target").val("请耐心等待AI把话说完……");
