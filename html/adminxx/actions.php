@@ -10,6 +10,12 @@ function action_Recharge()
     $username = _post('username');
     $point = _post('point');
 
+    // Check if point is within the allowed range
+    if ($point > 100 * 100) {
+        outputJson(['error' => 'Point value cannot exceed 10000.']);
+        return;
+    }
+
     // Check if either user_id or username is provided
     if ((!empty($user_id) || !empty($username)) && is_numeric($point)) {
 
@@ -40,18 +46,18 @@ function action_Recharge()
                     ];
                     outputJson(['data' => $data]);
                 } else {
-                    echo json_encode(['error' => "Failed to recharge user $user_id."]);
+                    outputJson(['error' => "Failed to recharge user $user_id."]);
                 }
             } else {
                 // If the user does not exist, return an error message
-                echo json_encode(['error' => "User $user_id does not exist."]);
+                outputJson(['error' => "User $user_id does not exist."]);
             }
         } else {
             // If neither user_id nor username is valid, return an error message
-            echo json_encode(['error' => 'Invalid user_id or username.']);
+            outputJson(['error' => 'Invalid user_id or username.']);
         }
     } else {
         // If the user_id or point is missing or not numeric, return an error message
-        echo json_encode(['error' => 'Invalid user_id or point.']);
+        outputJson(['error' => 'Invalid user_id or point.']);
     }
 }
