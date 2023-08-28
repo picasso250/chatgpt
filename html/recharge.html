@@ -32,7 +32,7 @@
             margin-bottom: 10px;
         }
 
-        .points {
+        .points,.subscription {
             font-size: 18px;
             margin-bottom: 20px;
         }
@@ -81,10 +81,18 @@
 <body>
     <div class="container">
         <h1>请扫以下二维码完成微信支付</h1>
-        <?php
-        echo '<div class="amount">金额：' . htmlspecialchars($amount) . '</div>';
-        echo '<div class="points">对应积分：' . htmlspecialchars($points) . '</div>';
-        ?>
+        <div class="amount">金额：
+            <?= htmlspecialchars($amount) ?>
+        </div>
+        <?php if (isset($points)) : ?>
+        <div class="points">对应积分：
+            <?= htmlspecialchars($points) ?>
+        </div>
+        <?php else : ?>
+        <div class="subscription">订阅名字：
+            <?= htmlspecialchars($subscriptionName) ?>
+        </div>
+        <?php endif; ?>
         <div class="username-container">
             请记住唯一凭证用户名:
             <input type="text" id="usernameInput" value="<?php echo htmlspecialchars($_COOKIE['username']); ?>"

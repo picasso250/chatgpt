@@ -451,12 +451,22 @@
                 margin-top: 15px;
             }
         </style>
-        <p>请选择充值金额</p>
+        <p>请选择充值套餐</p>
+        <div class="rechargeOptions">
+            <button class="rechargeOption" data-amount="W">周卡 (19 元)</button>
+            <button class="rechargeOption" data-amount="M">月卡 (39 元)</button>
+        </div>
+        <p class="hint">
+            周卡: 7天畅聊<br>
+            月卡: 31天畅聊
+        </p>
+        <hr>
+        <p>或者选择充值金额</p>
         <div class="rechargeOptions">
             <button class="rechargeOption" data-amount="10">10 元</button>
-            <button class="rechargeOption" data-amount="20">20 元</button>
-            <button class="rechargeOption" data-amount="50">50 元</button>
-            <button class="rechargeOption" data-amount="100">100 元 </button>
+            <button class="rechargeOption" data-amount="20">20 元（送 100 积分）</button>
+            <button class="rechargeOption" data-amount="50">50 元（送 1000 积分）</button>
+            <button class="rechargeOption" data-amount="100">100 元（送 2000 积分）</button>
         </div>
         <p class="hint">
             我们支持并遵循 OpenAI API 的计价方法，按 Token 计费，1000 Token 约等于 500~750 字；100 积分 = ￥1<br>

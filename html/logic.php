@@ -106,7 +106,7 @@ function insertOrUpdateUser($username, $ip)
 
 function getUserByUsername($username)
 {
-    $sql = "SELECT id, username, balance FROM users WHERE username = :username";
+    $sql = "SELECT id, username, balance, free_package_end FROM users WHERE username = :username";
     $params = [':username' => $username];
 
     // Execute the SQL query
@@ -119,7 +119,7 @@ function getUserByUsername($username)
 
 function getUserById($id)
 {
-    $sql = "SELECT id, username, balance FROM users WHERE id = :id";
+    $sql = "SELECT id, username, balance, free_package_end FROM users WHERE id = :id";
     $params = [':id' => $id];
 
     // Execute the SQL query
@@ -523,11 +523,11 @@ function getOrderDetails($orderNumber)
     return $result->fetch(PDO::FETCH_ASSOC); // Fetch the order details as an associative array
 }
 
-function insertOrder($order_number, $total_fee, $username, $user_id, $request_id)
+function insertOrder($order_number, $total_fee, $username, $user_id, $request_id, $subscription_name = null)
 {
     // Prepare the SQL statement
-    $sql = "INSERT INTO orders (order_time, order_number, payment_amount, username, user_id, request_id, is_paid) 
-            VALUES (now(), :order_number, :payment_amount, :username, :user_id, :request_id, :is_paid)";
+    $sql = "INSERT INTO orders (order_time, order_number, payment_amount, username, user_id, request_id, subscription_name, is_paid) 
+            VALUES (now(), :order_number, :payment_amount, :username, :user_id, :request_id, :subscription_name, :is_paid)";
 
     // Define the parameters
     $params = [
@@ -536,9 +536,31 @@ function insertOrder($order_number, $total_fee, $username, $user_id, $request_id
         'username' => $username,
         'user_id' => $user_id,
         'request_id' => $request_id,
+        'subscription_name' => $subscription_name,
         'is_paid' => 0 // Order is not paid yet
     ];
 
     // Execute the prepared statement
     $stmt = executePreparedStmt($sql, $params);
+}
+
+function isFreePackageExpired($freePackageEnd) {
+    // Convert UTC free_package_end to a DateTime object
+    $freePackageEndUTC = new DateTime($freePackageEnd, new DateTimeZone('UTC'));
+
+    // Get the current UTC date and time
+    $currentUTC = new DateTime('now', new DateTimeZone('UTC'));
+
+    return $freePackageEndUTC < $currentUTC;
+}
+
+function subscribeUserToPlan($username, $days) {
+    
+    // Calculate the interval in days for the subscription
+    $interval = "INTERVAL {$days} DAY";
+    
+    // Update the user's subscription information with the new expiration date
+    $updateSql = "UPDATE users SET free_package_end = NOW() + {$interval} WHERE username = :username";
+    $updateParams = array(":username" => $username);
+    return executePreparedStmt($updateSql, $updateParams);
 }

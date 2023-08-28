@@ -21,9 +21,37 @@ $OPENAI_API_KEY = "";
 $user_id = $_SESSION['user_ses']['id'];
 $user = getUserById($user_id);
 
-if ($user['balance'] <= 0) {
-    $msg = json_encode(['error' => ['code' => 42, 'message' => '余额不足']]);
-    setcookie("errcode", "insufficient_balance");
+$dontDeductFlag = false;
+
+// Check if free_package_end is null
+if ($user['free_package_end'] === null) {
+    if ($user['balance'] < 0) {
+        $msg = json_encode(['error' => ['code' => 42, 'message' => '余额不足']]);
+        setcookie("errcode", "insufficient_balance");
+        die("data: $msg\n\n\n\n");
+    }
+}
+// Check if free_package_end is expired
+elseif (isFreePackageExpired($user['free_package_end'])) {
+    if ($user['balance'] < 0) {
+        $msg = json_encode(['error' => ['code' => 42, 'message' => '余额不足']]);
+        setcookie("errcode", "insufficient_balance");
+        die("data: $msg\n\n\n\n");
+    }
+} else {
+    // Set "不扣款" flag to true
+    $dontDeductFlag = true;
+}
+
+// Convert UTC free_package_end to a DateTime object
+$freePackageEndUTC = new DateTime($user['free_package_end'], new DateTimeZone('UTC'));
+
+// Get the current UTC date and time
+$currentUTC = new DateTime('now', new DateTimeZone('UTC'));
+
+if ($freePackageEndUTC <= $currentUTC) {
+    $msg = json_encode(['error' => ['code' => 43, 'message' => '免费套餐已过期']]);
+    setcookie("errcode", "free_package_expired");
     die("data: $msg\n\n\n\n");
 }
 
@@ -66,7 +94,7 @@ setcookie("errmsg", "");
 
 $price = 0;
 
-$callback = function ($ch, $data) use ($user, $postData, &$price, $start_time) {
+$callback = function ($ch, $data) use ($user, $postData, &$price, $start_time, $dontDeductFlag) {
 
     $end_time = microtime(true);
     $execution_time = ($end_time - $start_time) * 1000;
@@ -96,7 +124,7 @@ $callback = function ($ch, $data) use ($user, $postData, &$price, $start_time) {
     } else {
         log_debug($data);
         $pattern = '/^data: \\[DONE\\]/m';
-        if (preg_match($pattern, $data)) {
+        if (preg_match($pattern, $data) && !$dontDeductFlag) {
             $responsedata .= $data;
             $answer = build_answer($responsedata);
 

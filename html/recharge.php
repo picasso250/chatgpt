@@ -17,10 +17,35 @@ if (!$user) {
 
 $amount = $_GET['amount']; // 获取充值金额参数
 
-if (!is_numeric($amount) || $amount <= 0 || $amount > 100) {
-    // 校验金额是否合法
-    header('Location: error.php'); // 重定向到错误页面
-    exit();
+// 引入配置文件
+$configurations = require(dirname(__DIR__) . '/config/com.php');
+
+// 获取优惠规则映射和周卡月卡规则映射
+$discountMap = $configurations['discountMap'];
+$subscriptionMap = $configurations['subscriptionMap'];
+
+$productName = "人工智能小助手";
+$productInfo = "";
+$subscriptionName = null;
+
+if (is_numeric($amount)) {
+    if (!is_numeric($amount) || $amount <= 0 || $amount > 100) {
+        // 校验金额是否合法
+        header('Location: error.php'); // 重定向到错误页面
+        exit();
+    }
+    // 根据优惠规则匹配积分
+    if (isset($discountMap[$amount])) {
+        $points = ($amount  + $discountMap[$amount]) * 100;
+        $productInfo = $productName . $points;
+    }
+} elseif (isset($subscriptionMap[$amount])) {
+    // 根据周卡月卡规则设置价格和名称
+    $subscription = $subscriptionMap[$amount];
+    $subscriptionName = $subscription['name'];
+    $subscriptionPrice = $subscription['price'];
+    $amount = $subscriptionPrice;
+    $productInfo = $productName . $subscriptionName;
 }
 
 $curl = curl_init();
@@ -39,7 +64,7 @@ $data = [
     "mch_id" => "1651412424",
     "out_trade_no" => $out_trade_no,
     "total_fee" => $total_fee,
-    "body" => "人工智能小助手",
+    "body" => $productInfo,
     "timestamp" => $timestamp,
     "notify_url" => "https://chatgptmagic.net/rechargenotify.php"
 ];
@@ -90,9 +115,7 @@ if ($err) {
 
     $order_number = $out_trade_no;
 
-    insertOrder($order_number, $total_fee, $username, $user['id'], $responseData['request_id']);
+    insertOrder($order_number, $total_fee, $username, $user['id'], $responseData['request_id'], $subscriptionName);
 
-    $amount = $_GET['amount'];
-    $points = $amount * 100;
     include 'recharge.html';
 }

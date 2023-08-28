@@ -61,20 +61,75 @@ try {
         exit;
     }
 
-    // Calculate the amount in cents (total_fee * 100)
-    $amountInCents = $requestData['total_fee'] * 100;
+    // 引入配置文件
+    $configurations = require(dirname(__DIR__) . '/config/com.php');
 
-    // Start a transaction
-    $pdo->beginTransaction();
+    // 获取优惠规则映射和周卡月卡规则映射
+    $discountMap = $configurations['discountMap'];
+    $subscriptionMap = $configurations['subscriptionMap'];
 
-    // Recharge user balance
-    rechargeUserBalance($requestData['attach'], $amountInCents);
+    // Logic implementation
+    $amount = $requestData['total_fee'];
 
-    // Update payment status
-    updatePaymentStatus($orderNumber);
+    $isSubscription = false;
+    $subscriptionType = '';
 
-    // Commit the transaction
-    $pdo->commit();
+    // Check if the amount corresponds to a subscription
+    foreach ($subscriptionMap as $type => $subscription) {
+        if ($amount === $subscription['price']) {
+            $isSubscription = true;
+            $subscriptionType = $type;
+            break;
+        }
+    }
+
+    $eligibleDiscount = false;
+    $discountPercentage = 0;
+
+    // Check if the amount meets the discount criteria
+    foreach ($discountMap as $threshold => $percentage) {
+        if ($amount >= $threshold) {
+            $eligibleDiscount = true;
+            $discountPercentage = $percentage;
+            break;
+        }
+    }
+
+    $username = $requestData['attach'];
+
+    if ($isSubscription) {
+        // Logic for handling subscription payment
+        $subscriptionPrice = $total_fee;
+
+        // Start a transaction
+        $pdo->beginTransaction();
+
+        // Get the corresponding days from the subscription map
+        $days = $subscriptionMap[$subscriptionType]['days'];
+
+        // Subscribe user to the selected plan
+        subscribeUserToPlan($username, $days);
+
+        // Update subscription status
+        updatePaymentStatus($orderNumber);
+
+        // Commit the transaction
+        $pdo->commit();
+    } else {
+        // Calculate the amount in cents (total_fee * 100)
+        $amountInCents = ($requestData['total_fee'] + $discountPercentage) * 100;
+        // Start a transaction
+        $pdo->beginTransaction();
+
+        // Recharge user balance
+        rechargeUserBalance($username, $amountInCents);
+
+        // Update payment status
+        updatePaymentStatus($orderNumber);
+
+        // Commit the transaction
+        $pdo->commit();
+    }
 
     // Send a successful response
     http_response_code(200);
