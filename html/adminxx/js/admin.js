@@ -29,7 +29,7 @@ function checkLogin() {
     }
 }
 
-$(function () {
+$(document).ready(function () {
     checkLogin();
 });
 
@@ -49,9 +49,8 @@ $(document).ready(function () {
         var formattedLocalTime = localTime.toLocaleString(); // 根据浏览器语言格式化时间
         $element.text(formattedLocalTime);
     });
-});
-$(document).ready(function() {
-    $('[data-boolean]').each(function() {
+
+    $('[data-boolean]').each(function () {
         var value = $(this).attr('data-boolean');
         if (value === '1') {
             $(this).text('是');
@@ -60,24 +59,39 @@ $(document).ready(function() {
         }
     });
 });
-$(document).ready(function() {
-    $('.recharge-btn').on('click', function() {
+$(document).ready(function () {
+    $('.recharge-btn').click(function () {
+        var button = $(this);
+        var originalText = button.text();
         var uid = $(this).data('uid');
+        var amount = $(this).prev('input').val();
 
-        // Design your recharge interface here
-        var rechargeContent = `
-            <div class="recharge-container">
-                <h2>Recharge for UID: ${uid}</h2>
-                <!-- Your recharge form and elements go here -->
-            </div>
-        `;
+        button.text('充值中...');
 
-        // Open a layer with the recharge content
-        layui.layer.open({
-            type: 1,
-            title: 'Recharge Page',
-            content: rechargeContent,
-            area: ['500px', '300px'] // Adjust the size as needed
+        $.ajax({
+            url: 'ajax.php?action=Recharge', // Replace with the actual URL for the recharge action
+            type: 'POST',
+            data: {
+                'user_id': uid,
+                'point': amount * 100,
+            },
+            success: function (response) {
+                button.text('充值成功');
+                setTimeout(function () {
+                    button.text(originalText);
+                }, 3000);
+
+                // Update balance value in the table
+                var balanceValue = response.data.balance; // Assuming the response has a 'data' object with a 'balance' property
+                button.closest('td').siblings('.table-data-balance').text(balanceValue);
+
+            },
+            error: function () {
+                button.text('充值失败'); // Display an error message if the request fails
+                setTimeout(function () {
+                    button.text(originalText);
+                }, 3000);
+            }
         });
     });
 });
