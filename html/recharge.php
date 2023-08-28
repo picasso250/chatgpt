@@ -3,6 +3,8 @@
 require_once 'lib.php';
 require_once 'logic.php';
 
+define('IN_APP',1);
+
 session_start();
 
 $configFile = '../config/config.ini';
