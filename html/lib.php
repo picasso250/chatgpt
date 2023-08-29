@@ -12,12 +12,20 @@ function get_config_data($filename = 'config.ini') {
 
 function log_debug($msg)
 {
-    error_log("DEBUG\t$msg");
+    $logMessage = date('c') . "\tDEBUG: $msg\n";
+
+    if (php_sapi_name() === 'fpm-fcgi') {
+        // Logic for PHP-FPM environment
+        error_log($logMessage, 3, '/tmp/fpm_debug.log');
+    } else {
+        // Default logic for other environments
+        error_log($logMessage);
+    }
 }
 
 function log_info($msg)
 {
-    $logMessage = date('c') . " INFO: $msg\n";
+    $logMessage = date('c') . "\tINFO: $msg\n";
 
     if (php_sapi_name() === 'fpm-fcgi') {
         // Logic for PHP-FPM environment

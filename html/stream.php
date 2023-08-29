@@ -43,18 +43,6 @@ elseif (isFreePackageExpired($user['free_package_end'])) {
     $dontDeductFlag = true;
 }
 
-// Convert UTC free_package_end to a DateTime object
-$freePackageEndUTC = new DateTime($user['free_package_end'], new DateTimeZone('UTC'));
-
-// Get the current UTC date and time
-$currentUTC = new DateTime('now', new DateTimeZone('UTC'));
-
-if ($freePackageEndUTC <= $currentUTC) {
-    $msg = json_encode(['error' => ['code' => 43, 'message' => '免费套餐已过期']]);
-    setcookie("errcode", "free_package_expired");
-    die("data: $msg\n\n\n\n");
-}
-
 // 从GET参数获取conversation_id
 $conversationId = isset($_GET['conversation_id']) ? $_GET['conversation_id'] : 0;
 $message = isset($_GET['message']) ? $_GET['message'] : '';
@@ -107,7 +95,7 @@ $callback = function ($ch, $data) use ($user, $postData, &$price, $start_time, $
 
     $end_time = microtime(true);
     $execution_time = ($end_time - $start_time) * 1000;
-    error_log("运行时间：$execution_time 毫秒");
+    log_debug("运行时间：$execution_time 毫秒");
 
     global $responsedata;
     $complete = json_decode($data);
@@ -183,7 +171,8 @@ if ($appConfig['OPENAI_TYPE'] == 'AZURE') {
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData, JSON_UNESCAPED_UNICODE));
-log_debug(json_encode($postData, JSON_UNESCAPED_UNICODE));
+log_info("Request URL: " . $api_url); // Logging the request URL
+log_info("Request Data: " . json_encode($postData, JSON_UNESCAPED_UNICODE)); // Logging the request data
 curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 curl_setopt($ch, CURLOPT_TIMEOUT, 0);
