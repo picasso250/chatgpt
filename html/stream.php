@@ -86,9 +86,12 @@ $postData = [
     "messages" => $messages,
 ];
 
+$api_url = $appConfig['END_POINT_URL'] . '/openai/deployments/gpt35turbo/chat/completions?api-version=2023-05-15';
+
 $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE));
 if ($token_size > 4000) {
     $model = 'gpt-35-turbo-16k';
+    $api_url = $appConfig['END_POINT_URL'] . '/openai/deployments/gtp35turbo16k/chat/completions?api-version=2023-05-15';
 }
 
 if ($appConfig['OPENAI_TYPE'] == 'OPENAI') {
@@ -167,7 +170,7 @@ if (!empty($appConfig['https_proxy'])) {
 $OPENAI_API_KEY = $appConfig['OPENAI_API_KEY'];
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $appConfig['END_POINT_URL']);
+curl_setopt($ch, CURLOPT_URL, $api_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $headers = array(
     'Content-Type: application/json',
