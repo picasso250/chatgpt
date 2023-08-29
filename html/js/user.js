@@ -27,6 +27,7 @@ function populateElements() {
                 layer.msg(data.error);
                 return;
             }
+
             // Populate the elements with the data received from the API
             $('#username').text(data.user.username);
 
@@ -38,6 +39,28 @@ function populateElements() {
             });
 
             $('#balance').text(data.user.balance);
+
+            var freePackageEnd = data.user.free_package_end;
+            if (freePackageEnd !== null) {
+                var expirationDate = new Date(freePackageEnd);
+                var now = new Date();
+
+                // Convert UTC to local time
+                expirationDate.setMinutes(expirationDate.getMinutes() - expirationDate.getTimezoneOffset());
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+                var daysRemaining = ((expirationDate - now) / (1000 * 60 * 60 * 24)).toFixed(1); // Round to 1 decimal place
+
+                var expirationText;
+                if (daysRemaining < 0) {
+                    expirationText = "畅聊卡已过期" + Math.abs(daysRemaining) + "天";
+                } else {
+                    expirationText = "畅聊卡还有" + daysRemaining + "天到期";
+                }
+
+                $('#balance').append(" | " + expirationText);
+
+            }
         },
         error: function (xhr, status, error) {
             // Handle the error if any
@@ -130,7 +153,7 @@ $(document).ready(function () {
 
 });
 
-$('.feedback').click(function() {
+$('.feedback').click(function () {
     layer.open({
         title: '客户反馈渠道',
         content: `
@@ -141,7 +164,7 @@ $('.feedback').click(function() {
             </div>
         `,
         btn: ['关闭'],
-        btn1: function(index, layero){
+        btn1: function (index, layero) {
             layer.close(index);
         }
     });
