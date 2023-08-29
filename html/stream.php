@@ -50,7 +50,7 @@ $model = "gpt-35-turbo";
 
 // 如果conversation_id为0，则创建一个新的对话
 if ($conversationId == 0) {
-    $conversationId =  createConversation($user['id'], $model, $message);
+    $conversationId =  createConversation($user['id'], $message);
     echo "data: " . json_encode(['conversation_id' => $conversationId]) . "\n\n";
 }
 
@@ -183,4 +183,4 @@ curl_close($ch);
 
 $answer = build_answer($responsedata);
 
-addConversationRecord($conversationId, $message, $answer, $price);
+addConversationRecord($conversationId, $message, $answer, $price, $model);

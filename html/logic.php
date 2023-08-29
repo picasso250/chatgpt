@@ -350,13 +350,15 @@ function getConversationForest($conversationId)
 
     return $forest;
 }
-function addConversationRecord($conversationId, $message, $answer, $price)
+
+function addConversationRecord($conversationId, $message, $answer, $price, $type)
 {
     $data = [
         'conversation_id' => $conversationId,
         'user_message' => $message,
         'assistant_message' => $answer,
-        'price' => $price
+        'price' => $price,
+        'type' => $type
     ];
 
     insertIntoTable('conversation_records', $data);
@@ -401,16 +403,15 @@ function getUserConversations($userId)
 }
 
 // 创建新的对话
-function createConversation($user_id, $type, $message)
+function createConversation($user_id, $message)
 {
 
     // Prepare the SQL statement
-    $sql = "INSERT INTO conversations (type, title, created_at) 
-            VALUES (:type, :title, now())";
+    $sql = "INSERT INTO conversations (title, created_at) 
+            VALUES (:title, now())";
 
     // Define the parameters
     $params = [
-        'type' => $type,
         'title' => mb_substr($message, 0, 30)
     ];
 
