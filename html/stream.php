@@ -91,63 +91,24 @@ setcookie("errmsg", "");
 
 $price = 0;
 
-$callback = function ($ch, $data) use ($user, $postData, &$price, $start_time, $dontDeductFlag) {
+$callback = function ($ch, $data) {
 
-    $end_time = microtime(true);
-    $execution_time = ($end_time - $start_time) * 1000;
-    log_debug("运行时间：$execution_time 毫秒");
+    // $end_time = microtime(true);
+    // $execution_time = ($end_time - $start_time) * 1000;
+    // log_debug("运行时间：$execution_time 毫秒");
 
     global $responsedata;
     $complete = json_decode($data);
     if (isset($complete->error)) {
         setcookie("errcode", $complete->error->code);
         setcookie("errmsg", $data);
-        if (strpos($complete->error->message, "Rate limit reached") === 0) { //访问频率超限错误返回的code为空，特殊处理一下
-            setcookie("errcode", "rate_limit_reached");
-        }
-        if (strpos($complete->error->message, "Your access was terminated") === 0) { //违规使用，被封禁，特殊处理一下
-            setcookie("errcode", "access_terminated");
-        }
-        if (strpos($complete->error->message, "You didn't provide an API key") === 0) { //未提供API-KEY
-            setcookie("errcode", "no_api_key");
-        }
-        if (strpos($complete->error->message, "You exceeded your current quota") === 0) { //API-KEY余额不足
-            setcookie("errcode", "insufficient_quota");
-        }
-        if (strpos($complete->error->message, "That model is currently overloaded") === 0) { //OpenAI模型超负荷
-            setcookie("errcode", "model_overloaded");
-        }
         $responsedata = $data;
+        echo $data;
+        flush();
     } else {
-        log_debug($data);
-        $pattern = '/^data: \\[DONE\\]/m';
-        if (preg_match($pattern, $data) && !$dontDeductFlag) {
-            $responsedata .= $data;
-            $answer = build_answer($responsedata);
-
-            putenv("https_proxy="); // unset the https_proxy environment variable
-
-            $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE) . $answer);
-
-            $pricePerToken = 0.004 / 1e3 * 7.3 * 1.4; // factor
-
-            $price = $pricePerToken * $token_size;
-            $price *= 100;
-            if ($price < 1) {
-                $price = 1;
-            }
-
-            // Save the updated balance back to the user's data
-            $newBalance = deductUserBalance($user['id'], $price);
-            $datanb = json_encode(["newBalance" => $newBalance]);
-            log_debug(var_export(preg_replace($pattern, "data: $datanb\n\n" . 'data: [DONE]', $data)));
-            echo preg_replace($pattern, "data: $datanb\n\n" . 'data: [DONE]', $data);
-            flush();
-        } else {
-            echo $data;
-            $responsedata .= $data;
-            flush();
-        }
+        echo $data;
+        $responsedata .= $data;
+        flush();
     }
     return strlen($data);
 };
@@ -182,5 +143,8 @@ $response = curl_exec($ch);
 curl_close($ch);
 
 $answer = build_answer($responsedata);
+
+if (!$dontDeductFlag)
+    calculateAndDeductPrice($postData, $answer, $user);
 
 addConversationRecord($conversationId, $message, $answer, $price, $model);

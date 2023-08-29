@@ -607,3 +607,15 @@ function userOwnsConversation($userId, $conversationId) {
         return false; // Error handling
     }
 }
+
+function calculateAndDeductPrice($postData, $answer, $user) {
+    $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE) . $answer);
+    $pricePerToken = 0.004 / 1e3 * 7.3 * 1.4; // factor
+    $price = $pricePerToken * $token_size;
+    $price *= 100;
+    if ($price < 1) {
+        $price = 1;
+    }
+    $newBalance = deductUserBalance($user['id'], $price);
+    return $newBalance;
+}

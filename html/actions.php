@@ -228,3 +228,17 @@ function action_DeleteConversation()
         echo "Invalid input";
     }
 }
+
+function action_UserBalance()
+{
+    session_start();
+
+    // Store the user information in the session
+    $user = $_SESSION['user_ses'];
+
+    // Fetch conversations for the user
+    $user = getUserById($user['id']);
+
+    // Output the JSON-encoded data
+    echo json_encode(compact('user'));
+}

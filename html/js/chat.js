@@ -338,8 +338,16 @@ $(document).ready(function () {
                 if (event.data == "[DONE]") {
                     isalltext = true;
                     contextarray.push([prompt, alltext]);
-                    contextarray = contextarray.slice(-5); //只保留最近5次对话作为上下文，以免超过最大tokens限制
+                    contextarray = contextarray.slice(-5);
                     es.close();
+
+                    $.ajax({
+                        url: 'ajax.php?action=UserBalance',
+                        success: function (data) {
+                            var balance = data.user.balance;
+                            $("#balance").text(balance);
+                        }
+                    });
                     return;
                 }
 
