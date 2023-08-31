@@ -7,6 +7,8 @@ require_once 'logic.php'; // Assuming getUserByUsername() function is defined he
 // 1. Check for the "from" parameter in the URL
 $inviterUsername = _get('from');
 
+$inviteeUsername = '';
+
 // 2. Find the inviter user information from the database
 $inviter = getUserByUsername($inviterUsername);
 
@@ -35,7 +37,7 @@ if ($inviter) {
     }
 }
 
-// // 4. Redirect to index.html
+// 4. Redirect to index.html
 $queryParams = array('username' => $inviteeUsername);
 $queryString = http_build_query($queryParams);
 header('Location: index.html?' . $queryString);
