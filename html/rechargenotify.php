@@ -5,11 +5,11 @@ require_once 'logic.php';
 
 // Log the entire POST body
 $body = file_get_contents('php://input');
-log_info("rechargenotify.php Received POST body:\n" . $body);
+log_info("rechargenotify.php Received POST body: " . $body);
 
 if ($_POST['code'] != 0) {
     http_response_code(500);
-    echo "Error occurred";
+    echo "Error occurred on code";
     return;
 }
 
@@ -76,7 +76,7 @@ try {
 
     // Check if the amount corresponds to a subscription
     foreach ($subscriptionMap as $type => $subscription) {
-        if ($amount === $subscription['price']) {
+        if (intval($amount) === $subscription['price']) {
             $isSubscription = true;
             $subscriptionType = $type;
             break;

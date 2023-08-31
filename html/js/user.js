@@ -41,7 +41,7 @@ function populateElements() {
             $('#balance').text(data.user.balance);
 
             var freePackageEnd = data.user.free_package_end;
-            if (freePackageEnd !== null && !freePackageEnd === '0000-00-00 00:00:00') {
+            if (freePackageEnd !== null && freePackageEnd !== '0000-00-00 00:00:00') {
                 var expirationDate = new Date(freePackageEnd);
                 var now = new Date();
 
