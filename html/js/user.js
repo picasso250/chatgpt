@@ -47,7 +47,6 @@ function populateElements() {
 
                 // Convert UTC to local time
                 expirationDate.setMinutes(expirationDate.getMinutes() - expirationDate.getTimezoneOffset());
-                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
                 var daysRemaining = ((expirationDate - now) / (1000 * 60 * 60 * 24)).toFixed(1); // Round to 1 decimal place
 
