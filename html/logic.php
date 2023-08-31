@@ -571,7 +571,7 @@ function subscribeUserToPlan($username, $days) {
     $interval = "INTERVAL {$days} DAY";
     
     // Update the user's subscription information with the new expiration date
-    $updateSql = "UPDATE users SET free_package_end = NOW() + {$interval} WHERE username = :username";
+    $updateSql = "UPDATE users SET free_package_end = GREATEST(free_package_end, NOW()) + {$interval} WHERE username = :username";
     $updateParams = array(":username" => $username);
     return executePreparedStmt($updateSql, $updateParams);
 }

@@ -62,7 +62,7 @@ try {
     }
 
     // 引入配置文件
-    $configurations = require(dirname(__DIR__) . '/config/com.php');
+    $configurations = require('com.php');
 
     // 获取优惠规则映射和周卡月卡规则映射
     $discountMap = $configurations['discountMap'];
