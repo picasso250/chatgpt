@@ -240,5 +240,5 @@ function action_UserBalance()
     $user = getUserById($user['id']);
 
     // Output the JSON-encoded data
-    echo json_encode(compact('user'));
+    outputJson(compact('user'));
 }

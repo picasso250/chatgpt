@@ -76,11 +76,11 @@ $postData = [
 
 $api_url = $appConfig['END_POINT_URL'] . '/openai/deployments/gpt35turbo/chat/completions?api-version=2023-05-15';
 
-$token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE));
-if ($token_size > 4000) {
-    $model = 'gpt-35-turbo-16k';
-    $api_url = $appConfig['END_POINT_URL'] . '/openai/deployments/gtp35turbo16k/chat/completions?api-version=2023-05-15';
-}
+// $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE));
+// if ($token_size > 4000) {
+//     $model = 'gpt-35-turbo-16k';
+//     $api_url = $appConfig['END_POINT_URL'] . '/openai/deployments/gtp35turbo16k/chat/completions?api-version=2023-05-15';
+// }
 
 if ($appConfig['OPENAI_TYPE'] == 'OPENAI') {
     $postData["model"] = $model;
@@ -92,7 +92,7 @@ setcookie("errmsg", "");
 $price = 0;
 
 $callback = function ($ch, $data) {
-
+    
     // $end_time = microtime(true);
     // $execution_time = ($end_time - $start_time) * 1000;
     // log_debug("运行时间：$execution_time 毫秒");
@@ -104,7 +104,6 @@ $callback = function ($ch, $data) {
         setcookie("errmsg", $data);
         $responsedata = $data;
         echo $data;
-        flush();
     } else {
         echo $data;
         $responsedata .= $data;
@@ -148,3 +147,5 @@ if (!$dontDeductFlag)
     calculateAndDeductPrice($postData, $answer, $user);
 
 addConversationRecord($conversationId, $message, $answer, $price, $model);
+
+echo "\n"; // for fix!

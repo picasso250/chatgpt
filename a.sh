@@ -1,0 +1,15 @@
+curl 'http://localhost/html/stream.php?temperature=0.7&model=gpt-3.5-turbo&message=2&conversation_id=0' \
+  -H 'Accept: text/event-stream' \
+  -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Connection: keep-alive' \
+  -H 'Cookie: username=7LDUyp7dz; aria2conf=%7B%22host%22%3A%22localhost%22%2C%22path%22%3A%22/jsonrpc%22%2C%22port%22%3A6800%2C%22encrypt%22%3Afalse%2C%22auth%22%3A%7B%7D%2C%22directURL%22%3A%22%22%7D; aria2props=%5B%5D; aria2filters=%22%7B%5C%22s%5C%22%3Atrue%2C%5C%22a%5C%22%3Atrue%2C%5C%22w%5C%22%3Atrue%2C%5C%22c%5C%22%3Atrue%2C%5C%22e%5C%22%3Atrue%2C%5C%22p%5C%22%3Atrue%2C%5C%22r%5C%22%3Atrue%7D%22; user_cookie=5qdqxeozp; PHPSESSID=fjhskofg6prhgr5mmif5jqdj7s' \
+  -H 'Referer: http://localhost/html/' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.43' \
+  -H 'sec-ch-ua: "Not.A/Brand";v="8", "Chromium";v="114", "Microsoft Edge";v="114"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  --compressed -v
