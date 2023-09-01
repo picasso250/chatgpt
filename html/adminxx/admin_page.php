@@ -7,7 +7,7 @@ function getOrderString($config)
     $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : null;
     $order_dir = isset($_GET['order_dir']) && strtolower($_GET['order_dir']) == 'desc' ? 'desc' : 'asc';
 
-    if ($order_by && isset($config['fields'][$order_by])) {
+    if ($order_by && isset($config['fields'][$order_by]) && (!isset($config['fields'][$order_by]['sort']) || $config['fields'][$order_by]['sort'])) {
         return "ORDER BY $order_by $order_dir";
     } else {
         return '';
@@ -30,9 +30,14 @@ function generateTable($rows, $config)
         $query_params = ['order_by' => $fieldKey, 'order_dir' => $order_dir_param];
         $query_string = '?' . buildQueryString($query_params);
         echo '<th>';
-        echo '<a href="' . htmlentities($query_string) . '">';
-        echo htmlspecialchars($fieldData['name']) . $order_dir_icon_html;
-        echo '</a>';
+        if (isset($fieldData['sort']) && !$fieldData['sort']) {
+            echo htmlspecialchars($fieldData['name']);
+        } else {
+            echo '<a href="' . htmlentities($query_string) . '">';
+            echo htmlspecialchars($fieldData['name']) . $order_dir_icon_html;
+            echo '</a>';
+        }
+
         echo '</th>';
     }
 
