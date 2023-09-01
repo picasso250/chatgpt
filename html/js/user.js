@@ -1,3 +1,27 @@
+function updateBalance(user) {
+    $('#balance').text(user.balance);
+
+    var freePackageEnd = user.free_package_end;
+    if (freePackageEnd !== null && freePackageEnd !== '0000-00-00 00:00:00') {
+        var expirationDate = new Date(freePackageEnd);
+        var now = new Date();
+
+        // Convert UTC to local time
+        expirationDate.setMinutes(expirationDate.getMinutes() - expirationDate.getTimezoneOffset());
+
+        var daysRemaining = ((expirationDate - now) / (1000 * 60 * 60 * 24)).toFixed(1); // Round to 1 decimal place
+
+        var expirationText;
+        if (daysRemaining < 0) {
+            expirationText = "畅聊卡已过期" + Math.abs(daysRemaining) + "天";
+        } else {
+            expirationText = "畅聊卡还有" + daysRemaining + "天到期";
+        }
+
+        $('#balance').append(" | " + expirationText);
+
+    }
+}
 // Function to perform the AJAX request and populate the elements
 function populateElements() {
     // Check if username exists in query string
@@ -38,28 +62,8 @@ function populateElements() {
                 conversationList.append(li);
             });
 
-            $('#balance').text(data.user.balance);
-
-            var freePackageEnd = data.user.free_package_end;
-            if (freePackageEnd !== null && freePackageEnd !== '0000-00-00 00:00:00') {
-                var expirationDate = new Date(freePackageEnd);
-                var now = new Date();
-
-                // Convert UTC to local time
-                expirationDate.setMinutes(expirationDate.getMinutes() - expirationDate.getTimezoneOffset());
-
-                var daysRemaining = ((expirationDate - now) / (1000 * 60 * 60 * 24)).toFixed(1); // Round to 1 decimal place
-
-                var expirationText;
-                if (daysRemaining < 0) {
-                    expirationText = "畅聊卡已过期" + Math.abs(daysRemaining) + "天";
-                } else {
-                    expirationText = "畅聊卡还有" + daysRemaining + "天到期";
-                }
-
-                $('#balance').append(" | " + expirationText);
-
-            }
+            
+            updateBalance(data.user);
         },
         error: function (xhr, status, error) {
             // Handle the error if any

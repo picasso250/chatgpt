@@ -344,8 +344,7 @@ $(document).ready(function () {
                     $.ajax({
                         url: 'ajax.php?action=UserBalance',
                         success: function (data) {
-                            var balance = data.user.balance;
-                            $("#balance").text(balance);
+                            updateBalance(data.user);
                         }
                     });
                     return;
