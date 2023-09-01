@@ -1,11 +1,39 @@
 <?php
+
+require_once '../lib.php';
+
+function getOrderString()
+{
+    $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : null;
+    $order_dir = isset($_GET['order_dir']) && strtolower($_GET['order_dir']) == 'desc' ? 'desc' : 'asc';
+
+    if ($order_by) {
+        return "ORDER BY $order_by $order_dir";
+    } else {
+        return '';
+    }
+}
+
 function generateTable($rows, $config)
 {
+    $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : null;
+    $order_dir = isset($_GET['order_dir']) && strtolower($_GET['order_dir']) == 'desc' ? 'desc' : 'asc';
+
+    $order_dir_icon = $order_dir == 'desc' ? '▼' : '▲';
+
     echo '<thead>';
     echo '<tr>';
 
     foreach ($config['fields'] as $fieldKey => $fieldData) {
-        echo '<th>' . htmlspecialchars($fieldData['name']) . '</th>';
+        $order_dir_param = $order_by == $fieldKey && $order_dir == 'asc' ? 'desc' : 'asc';
+        $order_dir_icon_html = $order_by == $fieldKey ? " $order_dir_icon" : '';
+        $query_params = ['order_by' => $fieldKey, 'order_dir' => $order_dir_param];
+        $query_string = '?' . buildQueryString($query_params);
+        echo '<th>';
+        echo '<a href="' . htmlentities($query_string) . '">';
+        echo htmlspecialchars($fieldData['name']) . $order_dir_icon_html;
+        echo '</a>';
+        echo '</th>';
     }
 
     echo '</tr>';

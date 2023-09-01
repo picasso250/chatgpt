@@ -31,7 +31,8 @@ if ($where) {
 } else {
     $where = '';
 }
-$sql = "SELECT * FROM orders $where LIMIT $per_page OFFSET " . (($page_num - 1) * $per_page);
+$order_by = getOrderString();
+$sql = "SELECT * FROM orders $where $order_by LIMIT $per_page OFFSET " . (($page_num - 1) * $per_page);
 $stmt = executePreparedStmt($sql, $params);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

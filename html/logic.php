@@ -203,14 +203,6 @@ function getMinIdFromRows($rows)
     }
     return $minId;
 }
-function buildQueryString($params)
-{
-    $filteredParams = array_merge($_GET, $params);
-
-    // 构建查询字符串
-    $query = http_build_query($filteredParams);
-    return $query;
-}
 
 function batchInsertUser($userList, $balance)
 {
