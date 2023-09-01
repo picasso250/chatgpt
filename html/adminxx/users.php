@@ -6,6 +6,9 @@ require_once 'admin_page.php';
 
 define('IN_ADMIN', 1);
 
+$configPages = require('pages.php');
+$config = $configPages['users'];
+
 session_start();
 
 if (empty($_SESSION['user'])) {
@@ -63,7 +66,7 @@ if ($where) {
 } else {
     $where = '';
 }
-$order_by = getOrderString();
+$order_by = getOrderString($config);
 $sql = "SELECT * FROM users $where $order_by LIMIT $per_page OFFSET " . (($page_num - 1) * $per_page);
 $stmt = executePreparedStmt($sql, $params);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -78,8 +81,5 @@ $pagination = '';
 if ($totalRowCount > 0) {
     $pagination = generatePagination($totalRowCount, $page_num, $per_page);
 }
-
-$configPages = require('pages.php');
-$config = $configPages['users'];
 
 include 'users.html';
