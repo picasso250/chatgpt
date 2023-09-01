@@ -132,13 +132,18 @@ $(document).ready(function () {
     autoresize();
     $("#kw-target").on('keydown', function (event) {
         if (event.keyCode == 13 && event.shiftKey) {
-            $("#kw-target").val($("#kw-target").val() + "\r\n");
+            var target = $("#kw-target")[0];
+            var start = target.selectionStart;
+            var end = target.selectionEnd;
+            var value = target.value;
+            target.value = value.substring(0, start) + "\n" + value.substring(end);
+            target.selectionStart = target.selectionEnd = start + 1;
             autoresize();
             return false;
         } else if (event.keyCode == 13) {
             send_post();
             return false;
-        }
+        }        
     });
 
     $(window).resize(function () {
