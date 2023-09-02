@@ -68,6 +68,29 @@ function getUsernameFromCookie()
     }
 }
 
+function updateLastIP($userId, $newIP) {
+    // 假设你已经建立了数据库连接，并且有一个合适的PDO连接对象，这里假设为 $pdo
+
+    // 准备SQL语句
+    $sql = "UPDATE users SET last_ip = :new_ip WHERE id = :user_id";
+
+    // 准备参数
+    $params = [
+        ':user_id' => $userId,
+        ':new_ip' => $newIP
+    ];
+
+    // 执行预处理语句
+    $stmt = executePreparedStmt($sql, $params);
+
+    // 检查是否更新成功
+    if ($stmt->rowCount() > 0) {
+        return true; // 更新成功
+    } else {
+        return false; // 更新失败
+    }
+}
+
 function insertOrUpdateUser($username, $ip)
 {
     // Step 1: 检查是否有ip和username都匹配的用户

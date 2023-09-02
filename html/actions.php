@@ -29,6 +29,7 @@ function action_Index()
             echo json_encode(['error' => '没有这个用户']);
             return;
         }
+        updateLastIP($user['id'], getClientIP());
     }
 
     // Store the user information in the session
