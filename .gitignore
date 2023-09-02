@@ -1,5 +1,6 @@
 *.log
-*.ini
+config/*.ini
+
 stream_cli.php
 deploy.tar.gz
 .vscode/launch.json
