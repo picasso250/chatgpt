@@ -39,7 +39,7 @@ function getClientIP()
         }
     }
 
-    log_info("Collected IP addresses: " . json_encode($ipAddresses));
+    log_debug("Collected IP addresses: " . json_encode($ipAddresses));
 
     foreach ($headers as $header) {
         if (isset($_SERVER[$header]) && !empty($_SERVER[$header])) {
@@ -72,7 +72,7 @@ function updateLastIP($userId, $newIP) {
     // 假设你已经建立了数据库连接，并且有一个合适的PDO连接对象，这里假设为 $pdo
 
     // 准备SQL语句
-    $sql = "UPDATE users SET last_ip = :new_ip WHERE id = :user_id";
+    $sql = "UPDATE users SET last_ip = :new_ip, last_updated = now() WHERE id = :user_id";
 
     // 准备参数
     $params = [

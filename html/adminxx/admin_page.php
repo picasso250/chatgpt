@@ -4,10 +4,13 @@ require_once '../lib.php';
 
 function getOrderString($config)
 {
-    $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : null;
-    $order_dir = isset($_GET['order_dir']) && strtolower($_GET['order_dir']) == 'desc' ? 'desc' : 'asc';
+    $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : 'id';
+    $order_dir = isset($_GET['order_dir']) && strtolower($_GET['order_dir']) == 'asc' ? 'asc' : 'desc';
 
-    if ($order_by && isset($config['fields'][$order_by]) && (!isset($config['fields'][$order_by]['sort']) || $config['fields'][$order_by]['sort'])) {
+    if (
+        $order_by && isset($config['fields'][$order_by]) &&
+        (!isset($config['fields'][$order_by]['sort']) || $config['fields'][$order_by]['sort'])
+    ) {
         return "ORDER BY $order_by $order_dir";
     } else {
         return '';
@@ -123,7 +126,7 @@ function getPageNum()
 // 函数：获取 per_page，并限制最大数量为 100
 function getPerPage()
 {
-    $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 10;
+    $per_page = isset($_GET['per_page']) ? intval($_GET['per_page']) : 100;
 
     if ($per_page <= 0) {
         $per_page = 10;

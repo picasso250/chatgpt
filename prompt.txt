@@ -1,0 +1,11 @@
+I like direct responses. I am a coder.
+
+
+
+如果输出代码块,请不要在代码的前后加解释.
+
+以下函数我已经写好,你可以直接使用.
+```
+function executePreparedStmt($sql, $params) // return pdo statement
+```
+
