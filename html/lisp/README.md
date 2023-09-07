@@ -17,11 +17,11 @@ Jisp是一个轻量级的Lisp方言，旨在让任何人都能轻松学习和修
 
 Jisp提供了一组简单的API函数，以便于解析和执行Jisp代码：
 
-- `jispSyntaxToJsArray(input)`：将Jisp代码编译成抽象语法树（AST）。
+- `compileJispToAST(input)`：将Jisp代码编译成抽象语法树（AST）。
 
-- `syntactic_sugar(ast)`：可选的语法糖处理器，用于扩展Jisp语法。
+- `expandSyntaxSugar(ast)`：可选的语法糖处理器，用于扩展Jisp语法。
 
-- `evaluate(ast, env)`：在指定的环境中执行AST。
+- `executeAST(ast, env)`：在指定的环境中执行AST。
 
 ## 示例
 
@@ -48,6 +48,3 @@ Jisp提供了一组简单的API函数，以便于解析和执行Jisp代码：
 ---
 
 随时探索Jisp并开始编写自己的Lisp方言，欢迎提出改进建议和反馈。祝您编码愉快！
-```
-
-请注意，这只是一个示例README文件，您可以根据您的项目的实际需要进行自定义和扩展。希望这有助于您的项目。如果您需要更多帮助或有其他问题，请随时提问。

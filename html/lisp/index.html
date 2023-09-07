@@ -81,13 +81,25 @@
                     args.push(value);
                 }
 
-                // 将 let 转换为 lambda 就地调用
+                // Convert let to lambda call in-place
                 return [['lambda', params, body], ...args];
+            } else if (ast[0] === 'def') {
+                const [_, name, value] = ast;
+                if (Array.isArray(name)) {
+                    // Handle the (def (f x) y) syntax
+                    const functionName = name[0]; // Get the function name 'f'
+                    const args = name.slice(1);  // Get the arguments 'x'
+                    const lambdaExpression = ['lambda', args, value];
+                    return ['def', functionName, lambdaExpression];
+                } else {
+                    // Not (def (f x) y), return as-is
+                    return ast;
+                }
             } else if (Array.isArray(ast)) {
-                // 递归处理嵌套的表达式
+                // Recursively process nested expressions
                 return ast.map(expandSyntaxSugar);
             } else {
-                return ast; // 不是表达式，直接返回
+                return ast; // Not an expression, return as-is
             }
         }
 
@@ -96,6 +108,13 @@
         const transformedAst = expandSyntaxSugar(inputAst);
         console.log(transformedAst);
         console.log(executeAST(transformedAst, env));
+
+        // Test the 'def' part
+        const inputExpression = ['def', ['f', 'x'], 'y'];
+        const expandedExpression = expandSyntaxSugar(inputExpression);
+
+        console.log('Original Expression:', inputExpression);
+        console.log('Expanded Expression:', expandedExpression);
 
 
         function compileJispToAST(input) {
@@ -125,7 +144,7 @@
         }
 
         const lispCode = `
-(defun factorial (n)
+(def factorial (n)
   (if (= n 0)
       1
       (* n (factorial (- n 1)))))
