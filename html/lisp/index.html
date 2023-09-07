@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function nullp(x) {
+  return x === null;
+}
+
+function quote(x) {
+  return x;
+}
+
+function eq(x, y) {
+  return x === y;
+}
+
+function car(x) {
+  return x[0];
+}
+
+function cdr(x) {
+  return x.slice(1);
+}
+
+function cons(x, y) {
+  return [x].concat(y);
+}
+
+function cond() {
+  for (let i = 0; i < arguments.length; i += 2) {
+    if (arguments[i]) {
+      return arguments[i + 1];
+    }
+  }
+}
+
+function lambda(params, body) {
+  return function() {
+    const args = arguments;
+    const scope = Object.create(params);
+    for (let i = 0; i < args.length; i++) {
+      scope[params[i]] = args[i];
+    }
+    return body.apply(scope);
+  }
+}
+
+function define(name, value) {
+  this[name] = value;
+}
+
+
+
+// 测试 nullp 函数
+console.log(nullp(null)); // true
+console.log(nullp(1)); // false
+
+// 测试 quote 函数
+console.log(quote(1)); // 1
+console.log(quote([1, 2, 3])); // [1, 2, 3]
+
+// 测试 eq 函数
+console.log(eq(1, 1)); // true
+console.log(eq(1, 2)); // false
+
+// 测试 car 函数
+console.log(car([1, 2, 3])); // 1
+
+// 测试 cdr 函数
+console.log(cdr([1, 2, 3])); // [2, 3]
+
+// 测试 cons 函数
+console.log(cons(1, [2, 3])); // [1, 2, 3]
+
+// 测试 cond 函数
+console.log(cond(false, 1, true, 2, false, 3)); // 2
+
+// 测试 lambda 函数
+const add = lambda(["x", "y"], function() {
+  return this.x + this.y;
+});
+console.log(add(1, 2)); // 3
+
+// 测试 define 函数
+define("a", 1);
+console.log(a); // 1
+
+
+    </script>
+    
+</body>
+</html>
