@@ -1,4 +1,11 @@
-
+function executeASTList(astList, env) {
+    let res;
+    for (let i = 0; i < astList.length; i++) {
+        if (Array.isArray(astList[i]) && astList[i].length === 0) continue;
+        res = executeAST(astList[i], env);
+    }
+    return res;
+}
 function executeAST(ast, env) {
     if (typeof ast === 'string') { // 如果 ast 是字符串，就是变量名
         return env[ast];
@@ -131,11 +138,6 @@ function compileJispToAST(input) {
                 newTokens = ['('].concat(newTokens, [')']);
             }
 
-            if (tokens.length > 0 && tokens[tokens.length - 1] === ';') {
-                newTokens.pop();
-                newTokens.pop();
-            }
-
             return newTokens;
         }
         return tokens;
@@ -162,7 +164,7 @@ function compileJispToAST(input) {
         }
     }
 
-    return output[0];
+    return output;
 }
 
 // Example usage:
@@ -171,14 +173,18 @@ const ast = compileJispToAST(input);
 console.log(ast);
 
 const lispCode = `
-(def factorial (n)
+(def (factorial n)
   (if (= n 0)
       1
       (* n (factorial (- n 1)))))
+(factorial 1)
 `;
 
 const jsArray = compileJispToAST(lispCode);
 console.log(jsArray);
+const jsArrayAfterSugar = expandSyntaxSugar(jsArray);
+console.log(jsArrayAfterSugar);
+console.log(executeASTList(jsArrayAfterSugar, env));
 
 
 
