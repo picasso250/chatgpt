@@ -105,11 +105,44 @@ const expandedExpression = expandSyntaxSugar(inputExpression);
 
 console.log('Original Expression:', inputExpression);
 console.log('Expanded Expression:', expandedExpression);
-
 function compileJispToAST(input) {
     let tokens = input.replace(/\(/g, ' ( ').replace(/\)/g, ' ) ').replace(/;/g, ' ; ').split(/\s+/).filter(token => token.length > 0);
     let stack = [];
     let output = [];
+
+    // 新的处理分号的函数
+    function processSemicolon(tokens) {
+
+        if (tokens.includes(';')) {
+            let newTokens = [];
+            let foundSemicolon = false;
+
+            for (let token of tokens) {
+                if (token === ';') {
+                    foundSemicolon = true;
+                    newTokens.push(')');
+                    newTokens.push('(');
+                } else {
+                    newTokens.push(token);
+                }
+            }
+
+            if (foundSemicolon) {
+                newTokens = ['('].concat(newTokens, [')']);
+            }
+
+            if (tokens.length > 0 && tokens[tokens.length - 1] === ';') {
+                newTokens.pop();
+                newTokens.pop();
+            }
+
+            return newTokens;
+        }
+        return tokens;
+    }
+
+    // 处理分号
+    tokens = processSemicolon(tokens);
 
     for (let i = 0; i < tokens.length; i++) {
         let token = tokens[i];
@@ -120,11 +153,6 @@ function compileJispToAST(input) {
             let lastOutput = output;
             output = stack.pop();
             output.push(lastOutput);
-        } else if (token === ';') { // Handle semicolon as an expression separator
-            if (output.length > 0) {
-                stack.push(output);
-                output = [];
-            }
         } else {
             if (!isNaN(parseFloat(token))) {
                 output.push(parseFloat(token));
@@ -138,9 +166,9 @@ function compileJispToAST(input) {
 }
 
 // Example usage:
-// const input = "if c a b;";
-// const ast = compileJispToAST(input);
-// console.log(ast);
+const input = "if c a b;";
+const ast = compileJispToAST(input);
+console.log(ast);
 
 const lispCode = `
 (def factorial (n)
