@@ -106,9 +106,8 @@ const expandedExpression = expandSyntaxSugar(inputExpression);
 console.log('Original Expression:', inputExpression);
 console.log('Expanded Expression:', expandedExpression);
 
-
 function compileJispToAST(input) {
-    let tokens = input.replace(/\(/g, ' ( ').replace(/\)/g, ' ) ').split(/\s+/).filter(token => token.length > 0);
+    let tokens = input.replace(/\(/g, ' ( ').replace(/\)/g, ' ) ').replace(/;/g, ' ; ').split(/\s+/).filter(token => token.length > 0);
     let stack = [];
     let output = [];
 
@@ -121,6 +120,11 @@ function compileJispToAST(input) {
             let lastOutput = output;
             output = stack.pop();
             output.push(lastOutput);
+        } else if (token === ';') { // Handle semicolon as an expression separator
+            if (output.length > 0) {
+                stack.push(output);
+                output = [];
+            }
         } else {
             if (!isNaN(parseFloat(token))) {
                 output.push(parseFloat(token));
@@ -132,6 +136,11 @@ function compileJispToAST(input) {
 
     return output[0];
 }
+
+// Example usage:
+// const input = "if c a b;";
+// const ast = compileJispToAST(input);
+// console.log(ast);
 
 const lispCode = `
 (def factorial (n)
