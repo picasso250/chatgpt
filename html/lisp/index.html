@@ -20,7 +20,7 @@
                 const [_, condition, thenClause, elseClause] = ast;
                 const conditionResult = evaluate(condition, env);
                 return evaluate(conditionResult ? thenClause : elseClause, env);
-            } else if (ast[0] === 'define') { // 如果 ast 是 define，将其第三个元素作为变量名添加到环境中
+            } else if (ast[0] === 'def') { // 如果 ast 是 define，将其第三个元素作为变量名添加到环境中
                 const [_, name, value] = ast;
                 env[name] = evaluate(value, env);
             } else if (ast[0] === 'lambda') { // 如果 ast 是 lambda，创建一个新的函数，并返回
@@ -67,6 +67,73 @@
         console.log(evaluate(['factorial', 5], env)); // 输出 120
 
         console.log(evaluate(['+', 1, 2], env)); // 输出 3
+
+
+        function syntactic_sugar(ast) {
+            if (ast[0] === 'let') {
+                const [_, bindings, body] = ast;
+                const params = [];
+                const args = [];
+
+                for (const binding of bindings) {
+                    const [name, value] = binding;
+                    params.push(name);
+                    args.push(value);
+                }
+
+                // 将 let 转换为 lambda 就地调用
+                return [['lambda', params, body], ...args];
+            } else if (Array.isArray(ast)) {
+                // 递归处理嵌套的表达式
+                return ast.map(syntactic_sugar);
+            } else {
+                return ast; // 不是表达式，直接返回
+            }
+        }
+
+        // 示例用法
+        const inputAst = ['let', [['x', 10], ['y', 20]], ['+', 'x', 'y']];
+        const transformedAst = syntactic_sugar(inputAst);
+        console.log(transformedAst);
+        console.log(evaluate(transformedAst, env));
+
+
+        function lispToJsArray(input) {
+            let tokens = input.replace(/\(/g, ' ( ').replace(/\)/g, ' ) ').split(/\s+/).filter(token => token.length > 0);
+            let stack = [];
+            let output = [];
+
+            for (let i = 0; i < tokens.length; i++) {
+                let token = tokens[i];
+                if (token === '(') {
+                    stack.push(output);
+                    output = [];
+                } else if (token === ')') {
+                    let lastOutput = output;
+                    output = stack.pop();
+                    output.push(lastOutput);
+                } else {
+                    if (!isNaN(parseFloat(token))) {
+                        output.push(parseFloat(token));
+                    } else {
+                        output.push(token);
+                    }
+                }
+            }
+
+            return output[0];
+        }
+
+        const lispCode = `
+(defun factorial (n)
+  (if (= n 0)
+      1
+      (* n (factorial (- n 1)))))
+`;
+
+        const jsArray = lispToJsArray(lispCode);
+        console.log(jsArray);
+
 
 
     </script>
