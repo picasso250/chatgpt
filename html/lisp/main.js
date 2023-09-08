@@ -1,11 +1,17 @@
+/**
+ * 在给定环境中执行一组抽象语法树（AST）。
+ * @param {Array} astList - 要执行的AST列表。
+ * @param {Object} env - 执行所在的环境。
+ * @returns {*} - 列表中最后一个AST执行的结果。
+ */
 function executeASTList(astList, env) {
     let res;
     for (let i = 0; i < astList.length; i++) {
-        if (Array.isArray(astList[i]) && astList[i].length === 0) continue;
         res = executeAST(astList[i], env);
     }
     return res;
 }
+
 function executeAST(ast, env) {
     if (typeof ast === 'string') { // 如果 ast 是字符串，就是变量名
         return env[ast];
@@ -35,8 +41,6 @@ function executeAST(ast, env) {
         return fn.apply(null, args);
     }
 }
-
-
 
 const env = {
     '+': (a, b) => a + b,
@@ -112,6 +116,7 @@ const expandedExpression = expandSyntaxSugar(inputExpression);
 
 console.log('Original Expression:', inputExpression);
 console.log('Expanded Expression:', expandedExpression);
+
 function compileJispToAST(input) {
     let tokens = input.replace(/\(/g, ' ( ').replace(/\)/g, ' ) ').replace(/;/g, ' ; ').split(/\s+/).filter(token => token.length > 0);
     let stack = [];
