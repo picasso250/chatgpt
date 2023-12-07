@@ -143,7 +143,7 @@ $(document).ready(function () {
         } else if (event.keyCode == 13) {
             send_post();
             return false;
-        }        
+        }
     });
 
     $(window).resize(function () {
@@ -350,6 +350,18 @@ $(document).ready(function () {
                         url: 'ajax.php?action=UserBalance',
                         success: function (data) {
                             updateBalance(data.user);
+                            if (data.user.balance <= 0) {
+                                layer.open({
+                                    title: '余额不足',
+                                    content: '您的余额已经不足，通过邀请好友可获得积分。',
+                                    btn: ['我知道了'],
+                                    yes: function (index, layero) {
+                                        layer.close(index);
+                                        // 触发 inviteLink 元素的 click 事件
+                                        $('#inviteLink').trigger('click');
+                                    }
+                                });
+                            }
                         }
                     });
                     return;
