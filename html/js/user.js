@@ -38,6 +38,7 @@ function populateElements() {
 
     // Prepare the request URL with the username if available in the cookie
     var requestUrl = 'ajax.php?action=Index';
+    requestUrl += '&referer=' + encodeURIComponent(document.referrer);
     if (usernameFromCookie) {
         requestUrl += '&username=' + encodeURIComponent(usernameFromCookie);
     }
@@ -62,7 +63,7 @@ function populateElements() {
                 conversationList.append(li);
             });
 
-            
+
             updateBalance(data.user);
         },
         error: function (xhr, status, error) {

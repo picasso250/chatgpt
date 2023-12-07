@@ -68,7 +68,8 @@ function getUsernameFromCookie()
     }
 }
 
-function updateLastIP($userId, $newIP) {
+function updateLastIP($userId, $newIP)
+{
     // 假设你已经建立了数据库连接，并且有一个合适的PDO连接对象，这里假设为 $pdo
 
     // 准备SQL语句
@@ -91,7 +92,7 @@ function updateLastIP($userId, $newIP) {
     }
 }
 
-function insertOrUpdateUser($username, $ip)
+function insertOrUpdateUser($username, $ip, $referer)
 {
     // Step 1: 检查是否有ip和username都匹配的用户
     $selectSql = "SELECT id, username, balance FROM users WHERE username = :username AND last_ip = :last_ip";
@@ -121,10 +122,11 @@ function insertOrUpdateUser($username, $ip)
     }
 
     // Step 3: 插入新用户并返回插入后的用户信息
-    $sql = "INSERT INTO users (username, balance, last_ip, email, password) VALUES (:username, 100, :last_ip, '', '')";
+    $sql = "INSERT INTO users (username, balance, last_ip, email, password, referer) VALUES (:username, 100, :last_ip, '', '', :referer)";
     $params = [
         ':username' => $username,
         ':last_ip' => $ip,
+        ':referer' => $referer,  // 添加 referer 到参数数组中
     ];
 
     // 执行SQL语句
@@ -570,7 +572,8 @@ function insertOrder($order_number, $total_fee, $username, $user_id, $request_id
     $stmt = executePreparedStmt($sql, $params);
 }
 
-function isFreePackageExpired($freePackageEnd) {
+function isFreePackageExpired($freePackageEnd)
+{
     // Convert UTC free_package_end to a DateTime object
     $freePackageEndUTC = new DateTime($freePackageEnd, new DateTimeZone('UTC'));
 
@@ -580,11 +583,12 @@ function isFreePackageExpired($freePackageEnd) {
     return $freePackageEndUTC < $currentUTC;
 }
 
-function subscribeUserToPlan($username, $days) {
-    
+function subscribeUserToPlan($username, $days)
+{
+
     // Calculate the interval in days for the subscription
     $interval = "INTERVAL {$days} DAY";
-    
+
     // Update the user's subscription information with the new expiration date
     $updateSql = "UPDATE users SET free_package_end = GREATEST(COALESCE(free_package_end, NOW()), NOW()) + {$interval} WHERE username = :username";
     $updateParams = array(":username" => $username);
@@ -595,9 +599,9 @@ function getConversationById($conversationId)
 {
     $sql = "SELECT * FROM conversations WHERE id = :conversationId";
     $params = array(':conversationId' => $conversationId);
-    
+
     $stmt = executePreparedStmt($sql, $params); // Assuming you have the executePreparedStmt function
-    
+
     if ($stmt) {
         $conversation = $stmt->fetch(PDO::FETCH_ASSOC);
         return $conversation;
@@ -605,25 +609,27 @@ function getConversationById($conversationId)
         return null; // Return null if conversation not found or an error occurred
     }
 }
-function userOwnsConversation($userId, $conversationId) {
+function userOwnsConversation($userId, $conversationId)
+{
     // Assuming you have a database connection established
-    
+
     $sql = "SELECT COUNT(*) FROM user_conversations WHERE user_id = :userId AND conversation_id = :conversationId";
     $params = array(':userId' => $userId, ':conversationId' => $conversationId);
-    
+
     $stmt = executePreparedStmt($sql, $params); // Assuming you have the executePreparedStmt function
-    
+
     if ($stmt) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $count = intval($row['COUNT(*)']);
-        
+
         return $count > 0;
     } else {
         return false; // Error handling
     }
 }
 
-function calculateAndDeductPrice($postData, $answer, $user) {
+function calculateAndDeductPrice($postData, $answer, $user)
+{
     $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE) . $answer);
     $pricePerToken = 0.004 / 1e3 * 7.3 * 1.4; // factor
     $price = $pricePerToken * $token_size;

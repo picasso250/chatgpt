@@ -23,6 +23,9 @@ $config = [
                 'name' => '免费套餐截止时间',
                 'data' => 'datetime',
             ],
+            'referer' => [
+                'name' => 'Referer',  // 新添加的 referer 列
+            ],
             'op' => [
                 'name' => '操作',
                 'func' => function ($value, $key, $row, $id) {

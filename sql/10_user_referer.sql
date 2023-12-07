@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `referer` VARCHAR(255) NULL DEFAULT NULL AFTER `free_package_end`;

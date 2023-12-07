@@ -17,7 +17,8 @@ function action_Index()
         // Get the client's IP address
         $ip = getClientIP();
         // Insert or update the user with the random username and IP
-        $user = insertOrUpdateUser($username, $ip);
+        $referer = _get('referer');
+        $user = insertOrUpdateUser($username, $ip, $referer);
         if ($user === false) {
             echo json_encode(['error' => '您已经创建过免费用户']);
             return;
