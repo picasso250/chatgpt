@@ -9,6 +9,10 @@
             href="orders.php">订单</a>
     </li>
     <li class="nav-item">
+        <a class="nav-link <?php if (basename($_SERVER['PHP_SELF']) === 'statistics.php') echo 'active'; ?>"
+            href="statistics.php">统计</a>
+    </li>    
+    <li class="nav-item">
         <a class="nav-link "
             href="log_report.php">访问记录</a>
     </li>
