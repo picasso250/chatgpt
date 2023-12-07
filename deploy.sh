@@ -20,7 +20,6 @@ scp -P 27417 "$tar_file" "$target_host:/tmp"
 
 # 在目标机器上解压tar文件并移动到目标目录
 ssh -p 27417 "$target_host" "cd $target_dir.. && tar -xzf /tmp/$tar_file && chgrp www-data $target_dir && rm /tmp/$tar_file"
-# echo "cd $target_dir.. && tar -xzf /tmp/$tar_file && rm /tmp/$tar_file"
 
 # 清理临时文件和目录
 rm -rf "$tar_file"
