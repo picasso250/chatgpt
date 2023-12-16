@@ -2,7 +2,7 @@ function updateBalance(user) {
     $('#balance').text(user.balance);
 
     var freePackageEnd = user.free_package_end;
-    if (freePackageEnd !== null && freePackageEnd !== '0000-00-00 00:00:00') {
+    if (freePackageEnd !== undefined && freePackageEnd !== null && freePackageEnd !== '0000-00-00 00:00:00') {
         var expirationDate = new Date(freePackageEnd);
         var now = new Date();
 
