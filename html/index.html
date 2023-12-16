@@ -9,6 +9,30 @@
     <link rel="stylesheet" href="css/common.css?v=f81e5b09115556f2be5d485ea3de2ec1">
     <link rel="stylesheet" href="css/wenda.css?v=6a44fef3a77339264a5b686ee249c929">
     <link rel="stylesheet" href="css/hightlight.css?v=90b173591f7eca4200441661fc65a1ef">
+
+    <style>
+        .recharge-button {
+            position: relative;
+            /* 其他样式... */
+        }
+
+        .promo-label {
+            position: absolute;
+            top: 50%;
+            /* 垂直居中 */
+            background-color: darkred;
+            /* 更暗的红色背景 */
+            color: white;
+            padding: 0px 5px;
+            /* 减小高度 */
+            border: 1px solid black;
+            font-size: small;
+            border-radius: 3px;
+            transform: translateY(-50%);
+            /* 确保标签在充值旁边垂直居中 */
+            left: 4em;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,11 +43,13 @@
             </ul>
             <div class="control-panel">
                 <div class="username" title="点击可更换用户名">用户名: <span id="username">载入中... </span></div>
-                <div class="recharge-button" id="rechargeButton">充值</div>
+                <div class="recharge-button" id="rechargeButton">充值
+                    <div class="promo-label">限时优惠</div>
+                </div>
                 <div class="credits">积分: <span id="balance">载入中... </span></div>
                 <div class="invite-link" id="inviteLink">邀请链接</div>
                 <div class="feedback">反馈渠道/意见建议</div>
-            </div>            
+            </div>
 
             <div id="qqGroup" style="display:none;">
                 <p>请加入客服QQ群：123456789，联系客服进行充值。</p>
@@ -391,7 +417,8 @@
                             <div id="fixed-block">
                                 <div class="precast-block" id="kw-target-box" data-flex="main:left cross:center">
                                     <div id="target-box" class="box">
-                                        <textarea name="kw-target" placeholder="在此提问，按 Enter 发送，按 Shift+Enter 换行(长对话会增加费用，请使用’新建聊天’功能换话题)"
+                                        <textarea name="kw-target"
+                                            placeholder="在此提问，按 Enter 发送，按 Shift+Enter 换行(长对话会增加费用，请使用’新建聊天’功能换话题)"
                                             id="kw-target" autofocus rows=1></textarea>
                                     </div>
                                     <div class="right-btn layout-bar">
