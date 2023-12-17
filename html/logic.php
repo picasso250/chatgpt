@@ -640,3 +640,28 @@ function calculateAndDeductPrice($postData, $answer, $user)
     $newBalance = deductUserBalance($user['id'], $price);
     return $newBalance;
 }
+
+function calculateCharactersForAmounts($amounts) {
+    // Define the given values
+    $pricePer1000TokensUSD = 0.004;
+    $exchangeRateUSDToCNY = 7.3;
+    $charactersPer1000Tokens = 650;
+
+    // Calculate the price in CNY for 1000 tokens
+    $pricePer1000TokensCNY = $pricePer1000TokensUSD * $exchangeRateUSDToCNY;
+
+    // Calculate the number of characters that can be obtained for 1 CNY
+    $charactersPer1CNY = $charactersPer1000Tokens / $pricePer1000TokensCNY;
+
+    // Calculate the price per character
+    $pricePerCharacter = $charactersPer1CNY / 1.4;
+
+    // Calculate characters for different amounts
+    $result = [];
+    foreach ($amounts as $amount) {
+        $characters = $amount * $pricePerCharacter;
+        $result[] = (int) $characters; // Convert to integer
+    }
+
+    return $result;
+}

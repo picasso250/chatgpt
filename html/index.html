@@ -488,25 +488,18 @@
                 margin-top: 20px;
             }
 
-            .rechargeOptions {
-                display: flex;
-                justify-content: center;
-                gap: 10px;
+            .rechargeOption:hover {
+                background-color: #45a049;
             }
 
-            .rechargeOption {
+            .price {
                 display: flex;
-                justify-content: center;
-                gap: 10px;
-                margin: 10px;
-                /* 内容居中 */
-                padding: 10px 20px;
-                background-color: #4CAF50;
-                color: white;
-                border: none;
-                cursor: pointer;
-                position: relative;
-                /* 设置相对定位以便安放原价标签 */
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .price span {
+                display: flex;
             }
 
             .rechargeOption:hover {
@@ -517,49 +510,213 @@
                 display: flex;
                 justify-content: space-between;
                 width: 100%;
+                margin-bottom: 5px;
+                /* 在价格和聊天信息之间添加一些空间 */
             }
-            .price span{
+
+            .details {
+                /* 详细信息居中 */
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 5px;
+                flex-direction: row;
+            }
+
+            .details span {
                 display: flex;
             }
 
+            .rechargeOptions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .price,
+            .details {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 5px;
+                flex-direction: row;
+            }
+
+            .price {
+                font-weight: bold;
+                margin: 8px;
+            }
+
+            .details {
+                font-size: small;
+            }
+
             .original-price {
-                position: absolute;
-                bottom: 5px;
-                /* 在按钮底部显示原价 */
                 font-size: 0.8em;
                 text-decoration: line-through;
                 /* 斜线表示折扣 */
+            }
+
+            .rechargeOptions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .rechargeOption {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                /* padding: 10px 20px; */
+                background-color: #FFDAB9;
+                /* 浅暖色调底色 */
+                color: #654321;
+                /* 深色文字 */
+                border: 2px solid #CD853F;
+                /* 暖色边框 */
+                border-radius: 10px;
+                /* 圆角边框 */
+                cursor: pointer;
+                transition: background-color 0.3s;
+                /* 平滑颜色过渡 */
+                margin: 10px;
+                min-width: 10rem;
+            }
+
+            .rechargeOption:hover {
+                background-color: #ffb572;
+                /* 鼠标悬停时的颜色变化 */
+            }
+
+            .price,
+            .details {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 5px;
+                gap: 10px;
+            }
+
+            .original-price {
+                font-size: 0.8em;
+                text-decoration: line-through;
+            }
+
+            .rechargeOptions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                flex-wrap: wrap;
+                /* 允许换行 */
+            }
+
+            .rechargeOption {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 10px 10px;
+                background-color: #FFDAB9;
+                color: #654321;
+                border: 2px solid #CD853F;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                /* width: 150px; */
+                /* 设置按钮宽度 */
+            }
+
+            .rechargeOption:hover {
+                background-color: #FFC0CB;
+            }
+
+            .price,
+            .details {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 5px;
+                gap: 10px;
+            }
+
+            .original-price {
+                font-size: 0.8em;
+                text-decoration: line-through;
+            }
+
+            .title {
+                text-align: center;
+                /* margin-bottom: 1px; */
             }
         </style>
         <div class="title">
             <div class="recommended">推荐</div>
             <h3 style="margin: 0;">无限畅聊套餐</h3>
         </div>
+
         <div class="rechargeOptions">
             <button class="rechargeOption" data-amount="W">
                 <div class="price">
                     <span>周卡</span>
                     <span>19 元</span>
                 </div>
-                7天畅聊
-                <div class="original-price">原价 30元</div>
+                <div class="details">
+                    <span>7天畅聊</span>
+                    <span class="original-price">原价 30元</span>
+                </div>
             </button>
             <button class="rechargeOption" data-amount="M">
                 <div class="price">
                     <span>月卡</span>
                     <span>39 元</span>
                 </div>
-                31天畅聊
-                <div class="original-price">原价 60元</div>
+                <div class="details">
+                    <span>31天畅聊</span>
+                    <span class="original-price">原价 60元</span>
+                </div>
             </button>
         </div>
-        <hr>
-        <p>或者选择充值金额</p>
+
+        <p class="title">更多充值金额套餐</p>
         <div class="rechargeOptions">
-            <button class="rechargeOption" data-amount="10">10 元</button>
-            <button class="rechargeOption" data-amount="20">20 元（送 100 积分）</button>
-            <button class="rechargeOption" data-amount="50">50 元（送 1000 积分）</button>
-            <button class="rechargeOption" data-amount="100">100 元（送 2000 积分）</button>
+            <button class="rechargeOption" data-amount="10">
+                <div class="price">
+                    <span>1000积分</span>
+                    <span>10元</span>
+                </div>
+                <div class="details">
+                    <span>约 100 字</span>
+                </div>
+            </button>
+            <button class="rechargeOption" data-amount="20">
+                <div class="price">
+                    <span>2100积分</span>
+                    <span>20元</span>
+                </div>
+                <div class="details">
+                    <span>约 1000 字</span>
+                    <span class="original-price">原价 21元</span>
+                </div>
+            </button>
+            <button class="rechargeOption" data-amount="50">
+                <div class="price">
+                    <span>6000积分</span>
+                    <span>50元</span>
+                </div>
+                <div class="details">
+                    <span>约 1000 字</span>
+                    <span class="original-price">原价 60元</span>
+                </div>
+            </button>
+            <button class="rechargeOption" data-amount="100">
+                <div class="price">
+                    <span>12000积分</span>
+                    <span>100元</span>
+                </div>
+                <div class="details">
+                    <span>约 2000 字</span>
+                    <span class="original-price">原价 120元</span>
+                </div>
+            </button>
         </div>
         <p class="hint">
             我们支持并遵循 OpenAI API 的计价方法，按 Token 计费，1000 Token 约等于 500~750 字；100 积分 = ￥1<br>

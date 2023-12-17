@@ -65,11 +65,25 @@ function populateElements() {
 
 
             updateBalance(data.user);
+
+            updateCharacterCount(data.characters);
         },
         error: function (xhr, status, error) {
             // Handle the error if any
             console.error('Error while fetching data: ', error);
         }
+    });
+}
+function updateCharacterCount(charCounts) {
+    // 选取最后四个 .rechargeOption 元素
+    var lastFourOptions = $('.rechargeOption').slice(-4);
+
+    lastFourOptions.each(function(index) {
+        // 将字符计数转换为“万字”单位，并进行四舍五入到小数点后一位
+        var countInWan = (charCounts[index] / 10000).toFixed(1);
+        
+        // 更新每个 .rechargeOption 的 .details 的第一个 span
+        $(this).find('.details span:first-child').text('约' + countInWan + '万字');
     });
 }
 
@@ -146,7 +160,7 @@ $(document).ready(function () {
             type: 1,
             title: '充值积分', // 添加标题
             content: $('#rechargeDialog'),
-            area: ['400px', '400px']
+            area: ['28rem', '33rem']
         });
     });
 
