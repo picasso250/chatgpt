@@ -45,7 +45,7 @@ function action_Index()
     // Fetch conversations for the user
     $conversations = getUserConversations($user['id']);
 
-    $amounts = [10, 21, 60, 120];
+    $amounts = [10, 21, 55, 120];
     $characters = calculateCharactersForAmounts($amounts);
 
     // Output the JSON-encoded data
