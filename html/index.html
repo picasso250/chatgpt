@@ -454,22 +454,6 @@
                 /* border-radius: 5px; */
             }
 
-            .rechargeOptions {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-                margin-top: 10px;
-            }
-
-            .rechargeOption {
-                padding: 10px;
-                background-color: #007BFF;
-                color: #fff;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-
             .rechargeOption:hover {
                 background-color: #0056b3;
             }
@@ -479,16 +463,96 @@
                 color: #777;
                 margin-top: 15px;
             }
+
+            .recommended {
+                color: #ff0000;
+                /* 红色文字 */
+                font-weight: bold;
+                padding: 5px;
+                margin-right: 10px;
+                display: inline-block;
+                font-size: small;
+            }
+
+            .title {
+                display: flex;
+                align-items: center;
+            }
+
+            .rechargeOption:hover {
+                background-color: #45a049;
+            }
+
+            .hint {
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .rechargeOptions {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .rechargeOption {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin: 10px;
+                /* 内容居中 */
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                cursor: pointer;
+                position: relative;
+                /* 设置相对定位以便安放原价标签 */
+            }
+
+            .rechargeOption:hover {
+                background-color: #45a049;
+            }
+
+            .price {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+            .price span{
+                display: flex;
+            }
+
+            .original-price {
+                position: absolute;
+                bottom: 5px;
+                /* 在按钮底部显示原价 */
+                font-size: 0.8em;
+                text-decoration: line-through;
+                /* 斜线表示折扣 */
+            }
         </style>
-        <p>请选择充值套餐</p>
-        <div class="rechargeOptions">
-            <button class="rechargeOption" data-amount="W">周卡 (19 元)</button>
-            <button class="rechargeOption" data-amount="M">月卡 (39 元)</button>
+        <div class="title">
+            <div class="recommended">推荐</div>
+            <h3 style="margin: 0;">无限畅聊套餐</h3>
         </div>
-        <p class="hint">
-            周卡: 7天畅聊<br>
-            月卡: 31天畅聊
-        </p>
+        <div class="rechargeOptions">
+            <button class="rechargeOption" data-amount="W">
+                <div class="price">
+                    <span>周卡</span>
+                    <span>19 元</span>
+                </div>
+                7天畅聊
+                <div class="original-price">原价 30元</div>
+            </button>
+            <button class="rechargeOption" data-amount="M">
+                <div class="price">
+                    <span>月卡</span>
+                    <span>39 元</span>
+                </div>
+                31天畅聊
+                <div class="original-price">原价 60元</div>
+            </button>
+        </div>
         <hr>
         <p>或者选择充值金额</p>
         <div class="rechargeOptions">
@@ -529,6 +593,12 @@
         showMathMenu: false
             }
         });
+    </script>
+
+    <script>
+        $(() => {
+            $('#rechargeButton').click()
+        })
     </script>
 
 </body>
