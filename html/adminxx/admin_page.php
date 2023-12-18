@@ -53,7 +53,7 @@ function generateTable($rows, $config)
 
         foreach ($config['fields'] as $fieldKey => $fieldData) {
             $data = isset($fieldData['data']) ?
-                ('data-' . $fieldData['data'] . '="' . htmlentities($row[$fieldKey])) . '"'
+                ('data-' . $fieldData['data'] . '="' . ($row[$fieldKey] !== null ? htmlentities($row[$fieldKey]) : '') . '"')
                 : '';
             $class = 'class="table-data-' . $fieldKey . '"';
             echo "<td $data $class>";
@@ -63,7 +63,7 @@ function generateTable($rows, $config)
                 $id = isset($row['id']) ? $row['id'] : null;
                 echo $fieldData['func']($value, $fieldKey, $row, $id);
             } else {
-                echo htmlspecialchars($row[$fieldKey]);
+                echo ($row[$fieldKey] !== null ? htmlspecialchars($row[$fieldKey]) : '');
             }
 
             echo '</td>';
