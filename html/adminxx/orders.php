@@ -50,7 +50,7 @@ if ($totalRowCount > 0) {
     $pagination = generatePagination($totalRowCount, $page_num, $per_page);
 }
 
-$sql = "SELECT COUNT(*) AS paid_count, SUM(payment_amount) AS total_payment FROM orders WHERE is_paid = 1;";
+$sql = "SELECT COUNT(*) AS paid_count, SUM(payment_amount) AS total_payment FROM orders WHERE is_paid = 1 AND id >= 41;"; // 之前都是测试订单
 $stmt = executePreparedStmt($sql, $params);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 $paidCount = $result['paid_count'];
