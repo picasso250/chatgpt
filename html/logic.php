@@ -116,17 +116,22 @@ function insertOrUpdateUser($username, $ip, $referer)
     $selectStmt = executePreparedStmt($selectSql, $selectParams);
     $existingUser = $selectStmt->fetch(PDO::FETCH_ASSOC);
 
+    // Step 2: 检查是否已存在相同ip的用户
     if ($existingUser) {
-        // 如果有相同ip的用户，返回false
-        return false;
+        // 如果有相同ip的用户，将balance设为1
+        $balance = 1;
+    } else {
+        // 如果没有相同ip的用户，设置初始的balance值为100
+        $balance = 100;
     }
 
     // Step 3: 插入新用户并返回插入后的用户信息
-    $sql = "INSERT INTO users (username, balance, last_ip, email, password, referer) VALUES (:username, 100, :last_ip, '', '', :referer)";
+    $sql = "INSERT INTO users (username, balance, last_ip, email, password, referer) VALUES (:username, :balance, :last_ip, '', '', :referer)";
     $params = [
         ':username' => $username,
+        ':balance' => $balance,
         ':last_ip' => $ip,
-        ':referer' => $referer,  // 添加 referer 到参数数组中
+        ':referer' => $referer,
     ];
 
     // 执行SQL语句
@@ -641,7 +646,8 @@ function calculateAndDeductPrice($postData, $answer, $user)
     return $newBalance;
 }
 
-function calculateCharactersForAmounts($amounts) {
+function calculateCharactersForAmounts($amounts)
+{
     // Define the given values
     $pricePer1000TokensUSD = 0.004;
     $exchangeRateUSDToCNY = 7.3;
