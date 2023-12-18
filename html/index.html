@@ -621,12 +621,38 @@
                 border-radius: 10px;
                 cursor: pointer;
                 transition: background-color 0.3s;
-                /* width: 150px; */
-                /* 设置按钮宽度 */
+            }
+
+            .rechargeOption {
+                background-color: #FFE4C4;
+                /* 更浅的背景色 */
+                color: #2F4F4F;
+                /* 更深的文字颜色 */
             }
 
             .rechargeOption:hover {
-                background-color: #FFC0CB;
+                background-color: #FFDAB9;
+            }
+
+            .rechargeOption.taocan {
+                background-color: #E0FFFF;
+                /* 淡青色 - 背景色 */
+                color: #008080;
+                /* 深青色 - 文字颜色 */
+                border: 2px solid #5F9EA0;
+                /* 深天蓝色 - 边框颜色 */
+                transition: background-color 0.3s, color 0.3s;
+                /* 过渡效果 */
+
+                /* 悬停状态 */
+                &:hover {
+                    background-color: #B0E0E6;
+                    /* 粉蓝色 - 悬停背景色 */
+                    color: #00688B;
+                    /* 深蓝色 - 悬停文字颜色 */
+                    border-color: #4682B4;
+                    /* 钢蓝色 - 悬停边框颜色 */
+                }
             }
 
             .price,
@@ -654,7 +680,7 @@
         </div>
 
         <div class="rechargeOptions">
-            <button class="rechargeOption" data-amount="W">
+            <button class="rechargeOption taocan" data-amount="W">
                 <div class="price">
                     <span>周卡</span>
                     <span>19 元</span>
@@ -664,7 +690,7 @@
                     <span class="original-price">原价 30元</span>
                 </div>
             </button>
-            <button class="rechargeOption" data-amount="M">
+            <button class="rechargeOption taocan" data-amount="M">
                 <div class="price">
                     <span>月卡</span>
                     <span>39 元</span>
