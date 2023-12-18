@@ -10,7 +10,7 @@ tar_file="deploy.tar.gz"
 set -x
 
 # before deploy
-/C/xampp/php/php.exe script/html.php
+/C/php/php.exe script/html.php
 
 # 创建临时目录并将所有文件压缩成tar文件
 tar -czf "$tar_file" "$source_dir"
