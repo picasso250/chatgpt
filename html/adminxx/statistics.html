@@ -69,8 +69,8 @@
         // 更新图表数据
         function updateChart(data) {
             // 根据接口返回的数据更新图表的标签和数据
-            userChart.data.labels = data.labels;
-            userChart.data.datasets[0].data = data.values;
+            userChart.data.labels = data.map(entry => entry.date);
+            userChart.data.datasets[0].data = data.map(entry => entry.count);
 
             // 重新绘制图表
             userChart.update();
