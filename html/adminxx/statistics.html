@@ -39,7 +39,9 @@
         <h3>用户统计</h3>
         <select id="timeFilter">
             <option value="30">最近30天</option>
-            <option value="180">最近180天</option>
+            <option value="60">最近2个月 (60天)</option>
+            <option value="90">最近3个月 (90天)</option>
+            <option value="120">最近4个月 (120天)</option>
         </select>
         <canvas id="userChart"></canvas>
     </div>
@@ -53,7 +55,7 @@
 
             // 使用ajax从接口获取数据
             $.ajax({
-                url: "?" , 
+                url: "?",
                 method: "GET",
                 data: { days: selectedTime },
                 success: function (data) {
