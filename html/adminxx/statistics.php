@@ -16,41 +16,13 @@ if (empty($_SESSION['user'])) {
 }
 $username = $_SESSION['user']["username"];
 
-if (isset($_GET['action']) && $_GET['action'] === 'gen_user') {
-    $balance = intval($_POST['balance']);
-    $userCount = intval($_POST['userCount']);
-
-    $userList = [];
-
-    // Generate users based on the given count
-    for ($i = 0; $i < $userCount; $i++) {
-        // Generate a user and add it to the user list
-        $userList[] = generateRandomCode();
-    }
-
-    batchInsertUser($userList, $balance);
-    addAdminLog(
-        $_SESSION['user']['id'],
-        'batchInsertUser',
-        ['userCount' => $userCount, 'balance' => $balance, "userList" => $userList]
-    );
-    log_info("$username gen_user userCount=$userCount balance=$balance " . json_encode($userList));
-
-    // Format the user list as HTML
-    $userListHTML = '<ul>';
-    foreach ($userList as $user) {
-        $userListHTML .= '<li>' . $user . '</li>';
-    }
-    $userListHTML .= '</ul>';
-
-    // Return the generated user list as a response
-    echo $userListHTML;
-    exit();
+$days = 30;
+if (isset($_GET['days'])) {
+    $days = $_GET['days'];
 }
 
-
-$sql = "SELECT DATE(last_updated) AS date, COUNT(*) AS count FROM users WHERE last_updated >= CURDATE() - INTERVAL 30 DAY GROUP BY DATE(last_updated) ORDER BY DATE(last_updated)";
-$stmt = executePreparedStmt($sql, []);
+$sql = "SELECT DATE(last_updated) AS date, COUNT(*) AS count FROM users WHERE last_updated >= CURDATE() - INTERVAL :days DAY GROUP BY DATE(last_updated) ORDER BY DATE(last_updated)";
+$stmt = executePreparedStmt($sql, [':days' => $days]);
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // 格式化结果为JavaScript数组
@@ -62,4 +34,8 @@ foreach ($result as $row) {
     ];
 }
 
-include 'statistics.html';
+if (isset($_GET['days'])) {
+    outputJson($jsResult);
+} else {
+    include 'statistics.html';
+}
