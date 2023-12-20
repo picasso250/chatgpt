@@ -23,6 +23,9 @@ $config = [
                 'name' => '免费套餐截止时间',
                 'data' => 'datetime',
             ],
+            'used_points' => [
+                'name' => '套餐使用',
+            ],
             'referer' => [
                 'name' => '来源',  // 新添加的 referer 列
             ],
