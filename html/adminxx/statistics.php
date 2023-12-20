@@ -21,7 +21,11 @@ if (isset($_GET['days'])) {
     $days = $_GET['days'];
 }
 
-$sql = "SELECT DATE(last_updated) AS date, COUNT(*) AS count FROM users WHERE last_updated >= CURDATE() - INTERVAL :days DAY GROUP BY DATE(last_updated) ORDER BY DATE(last_updated)";
+$sql = "SELECT DATE(last_updated) AS date, COUNT(*) AS count, SUM(click_recharge_dialog = 1) AS click_count
+        FROM users
+        WHERE last_updated >= CURDATE() - INTERVAL :days DAY
+        GROUP BY DATE(last_updated)
+        ORDER BY DATE(last_updated)";
 $stmt = executePreparedStmt($sql, [':days' => $days]);
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -30,7 +34,8 @@ $jsResult = [];
 foreach ($result as $row) {
     $jsResult[] = [
         'date' => $row['date'],
-        'count' => $row['count']
+        'count' => $row['count'],
+        'click_recharge_dialog' => $row['click_count']
     ];
 }
 

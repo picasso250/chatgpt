@@ -78,10 +78,10 @@ function updateCharacterCount(charCounts) {
     // 选取最后四个 .rechargeOption 元素
     var lastFourOptions = $('.rechargeOption').slice(-4);
 
-    lastFourOptions.each(function(index) {
+    lastFourOptions.each(function (index) {
         // 将字符计数转换为“万字”单位，并进行四舍五入到小数点后一位
         var countInWan = (charCounts[index] / 10000).toFixed(1);
-        
+
         // 更新每个 .rechargeOption 的 .details 的第一个 span
         $(this).find('.details span:first-child').text('约' + countInWan + '万字');
     });
@@ -161,6 +161,22 @@ $(document).ready(function () {
             title: '充值积分', // 添加标题
             content: $('#rechargeDialog'),
             area: ['28rem', '33rem']
+        });
+        // 发送AJAX请求到后台打点接口
+        $.ajax({
+            url: 'ajax.php?action=Dadian',  // 替换成你的后台接口地址
+            method: 'POST',  // 根据你的后台接口要求选择请求方法
+            data: {
+                "verb":"click_recharge_dialog"
+            },
+            success: function (response) {
+                // 打点成功后的处理
+                console.log('打点成功:', response);
+            },
+            error: function (error) {
+                // 打点失败时的处理
+                console.error('打点失败:', error);
+            }
         });
     });
 

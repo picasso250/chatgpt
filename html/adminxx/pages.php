@@ -24,7 +24,11 @@ $config = [
                 'data' => 'datetime',
             ],
             'referer' => [
-                'name' => 'Referer',  // 新添加的 referer 列
+                'name' => '来源',  // 新添加的 referer 列
+            ],
+            'click_recharge_dialog' => [
+                'name' => '是否点击付费弹框',  // 新添加的 referer 列
+                'data' => 'boolean',
             ],
             'op' => [
                 'name' => '操作',

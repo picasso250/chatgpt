@@ -247,3 +247,32 @@ function action_UserBalance()
     // Output the JSON-encoded data
     outputJson(compact('user'));
 }
+function action_Dadian()
+{
+    session_start();
+
+    // 获取传递过来的参数
+    $verb = $_POST['verb'];  // 假设使用POST方法传递参数
+
+    // 检查verb是否为click_recharge_dialog
+    if ($verb === 'click_recharge_dialog') {
+        if (isset($_SESSION['user_ses']) && $_SESSION['user_ses']) {
+            // 获取用户ID，假设用户ID存储在$_SESSION['user_ses']['id']
+            $userId = $_SESSION['user_ses']['id'];
+
+            // 更新user表的click_recharge_dialog字段为1，仅限于特定用户
+            $sql = "UPDATE users SET click_recharge_dialog = 1 WHERE id = ?";
+
+            // 使用executePreparedStmt函数执行SQL语句
+            $params = array($userId);  // 将用户ID作为参数传递给SQL语句
+            executePreparedStmt($sql, $params);
+            // 返回成功的响应，可以根据需要返回其他信息
+            echo json_encode(['status' => 'success', 'message' => 'click_recharge_dialog updated']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'no session']);
+        }
+    } else {
+        // 返回错误的响应，可以根据需要返回其他信息
+        echo json_encode(['status' => 'error', 'message' => 'Invalid verb']);
+    }
+}

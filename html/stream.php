@@ -92,7 +92,7 @@ setcookie("errmsg", "");
 $price = 0;
 
 $callback = function ($ch, $data) {
-    
+
     // $end_time = microtime(true);
     // $execution_time = ($end_time - $start_time) * 1000;
     // log_debug("运行时间：$execution_time 毫秒");
@@ -143,8 +143,11 @@ curl_close($ch);
 
 $answer = build_answer($responsedata);
 
-if (!$dontDeductFlag)
-    calculateAndDeductPrice($postData, $answer, $user);
+$price = calculatePrice($postData, $answer);
+if (!$dontDeductFlag) {
+    deductUserBalance($user['id'], $price);
+}
+increaseUserUsedPoints($user['id'], $price);
 
 addConversationRecord($conversationId, $message, $answer, $price, $model);
 

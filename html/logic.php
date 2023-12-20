@@ -185,17 +185,21 @@ function deductUserBalance($userId, $cost)
 
     // Execute the prepared statement
     executePreparedStmt($sql, $params);
+}
 
-    // Fetch and return the updated balance
-    $sql = "SELECT balance FROM users WHERE id = :userId";
-    $params = array('userId' => $userId);
-    $result = executePreparedStmt($sql, $params);
+function increaseUserUsedPoints($userId, $points)
+{
+    // 准备 SQL 语句
+    $sql = "UPDATE users SET used_points = used_points + :points WHERE id = :userId";
 
-    if ($result && $row = $result->fetch(PDO::FETCH_ASSOC)) {
-        return $row['balance'];
-    }
+    // 定义预处理语句的参数
+    $params = array(
+        'points' => $points,
+        'userId' => $userId,
+    );
 
-    return null; // Return null if balance fetching failed
+    // 执行预处理语句
+    executePreparedStmt($sql, $params);
 }
 
 function rechargeUserBalance($username, $amount)
@@ -633,7 +637,8 @@ function userOwnsConversation($userId, $conversationId)
     }
 }
 
-function calculateAndDeductPrice($postData, $answer, $user)
+// 函数1：计算价格
+function calculatePrice($postData, $answer)
 {
     $token_size = strlen(json_encode($postData, JSON_UNESCAPED_UNICODE) . $answer);
     $pricePerToken = 0.004 / 1e3 * 7.3 * 1.4; // factor
@@ -642,9 +647,16 @@ function calculateAndDeductPrice($postData, $answer, $user)
     if ($price < 1) {
         $price = 1;
     }
-    $newBalance = deductUserBalance($user['id'], $price);
-    return $newBalance;
+    return $price;
 }
+
+// // 主函数调用
+// function calculateAndDeductPrice($postData, $answer, $user)
+// {
+//     $price = calculatePrice($postData, $answer);
+//     $newBalance = deductUserBalance($user['id'], $price);
+//     return $newBalance;
+// }
 
 function calculateCharactersForAmounts($amounts)
 {

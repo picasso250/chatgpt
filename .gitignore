@@ -7,3 +7,5 @@ deploy.tar.gz
 bot/__pycache__/*.pyc
 wxpy_puid.pkl
 bot/chat_records.db
+PHPMailer/
+data/
