@@ -44,6 +44,7 @@
             <option value="120">最近4个月 (120天)</option>
         </select>
         <canvas id="userChart"></canvas>
+        <canvas id="statisticsChart"></canvas>
     </div>
 
     <script>
@@ -60,51 +61,92 @@
                 data: { days: selectedTime },
                 success: function (data) {
                     // 数据获取成功后，更新图表
-                    updateChart(data);
+                    updateUserChart(data);
+                    updateStatisticsChart(data);
                 },
                 error: function (error) {
                     console.error("Error fetching data:", error);
                 }
             });
         });
-        
+
         // 更新图表数据
-        function updateChart(data) {
+        function updateUserChart(data) {
+            data = data.users; // 更新为用户表的数据
             // 根据接口返回的数据更新图表的标签和数据
             userChart.data.labels = data.map(entry => entry.date);
             userChart.data.datasets[0].data = data.map(entry => entry.count);
-            userChart.data.datasets[1].data = data.map(entry => entry.click_recharge_dialog); // 新增的数据曲线
+            userChart.data.datasets[1].data = data.map(entry => entry.click_count);
 
-            // 重新绘制图表
+            // 重新绘制用户图表
             userChart.update();
         }
 
-        const ctx = document.getElementById('userChart');
-        const labels = result.map(entry => entry.date); // 使用从PHP获取的日期数据
-        const data = {
-            labels: labels,
+        function updateStatisticsChart(data) {
+            data = data.statistics; // 更新为统计表的数据
+            // 根据接口返回的数据更新图表的标签和数据
+            statisticsChart.data.labels = data.map(entry => entry.date);
+            statisticsChart.data.datasets[0].data = data.map(entry => entry.total_points);
+            statisticsChart.data.datasets[1].data = data.map(entry => entry.day_points);
+
+            // 重新绘制统计图表
+            statisticsChart.update();
+        }
+
+        const userChartCtx = document.getElementById('userChart');
+        const userLabels = result.users.map(entry => entry.date); // 使用从PHP获取的日期数据
+        const userData = {
+            labels: userLabels,
             datasets: [
                 {
                     label: '用户数量',
-                    data: result.map(entry => entry.count), // 使用从PHP获取的数量数据
+                    data: result.users.map(entry => entry.count),
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1
                 },
                 {
                     label: '点击充值对话框数量',
-                    data: result.map(entry => entry.click_recharge_dialog), // 新增的数据
+                    data: result.users.map(entry => entry.click_count),
                     fill: false,
                     borderColor: 'rgb(255, 99, 132)',
                     tension: 0.1
                 }
             ]
         };
-        const config = {
+        const userChartConfig = {
             type: 'line',
-            data: data,
+            data: userData,
         };
-        const userChart = new Chart(ctx, config);
+        const userChart = new Chart(userChartCtx, userChartConfig);
+
+        const statisticsChartCtx = document.getElementById('statisticsChart');
+        const statisticsLabels = result.statistics.map(entry => entry.date); // 使用从PHP获取的日期数据
+        const statisticsData = {
+            labels: statisticsLabels,
+            datasets: [
+                {
+                    label: '消耗的总积分',
+                    data: result.statistics.map(entry => entry.total_points),
+                    fill: true,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                },
+                {
+                    label: '每天消耗的积分',
+                    data: result.statistics.map(entry => entry.day_points),
+                    fill: true,
+                    borderColor: 'rgb(192, 75, 75)',
+                    tension: 0.1
+                }
+            ]
+        };
+        const statisticsChartConfig = {
+            type: 'line',
+            data: statisticsData,
+        };
+        const statisticsChart = new Chart(statisticsChartCtx, statisticsChartConfig);
+
     </script>
 
 </body>
