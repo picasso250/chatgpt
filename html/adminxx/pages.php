@@ -24,7 +24,7 @@ $config = [
                 'data' => 'datetime',
             ],
             'used_points' => [
-                'name' => '套餐使用',
+                'name' => '使用积分',
             ],
             'referer' => [
                 'name' => '来源',  // 新添加的 referer 列
