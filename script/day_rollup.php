@@ -8,8 +8,17 @@ define('DATA_ROOT', dirname(__DIR__) . '/data');
 
 require_once dirname(__DIR__) . '/html/logic.php';
 
+// 设置时区为+8:00
+$setTimezoneSql = "SET time_zone = '+08:00'";
+$setTimezoneParams = [];
+executePreparedStmt($setTimezoneSql, $setTimezoneParams);
+
 // 获取前一天的日期
-$yesterday = date('Y-m-d', strtotime('-1 day'));
+$yesterdaySql = "SELECT CURDATE() - INTERVAL 1 DAY AS yesterday";
+$yesterdayParams = [];
+$yesterdayStmt = executePreparedStmt($yesterdaySql, $yesterdayParams);
+$yesterdayResult = $yesterdayStmt->fetchAll();
+$yesterday = $yesterdayResult[0]['yesterday'];
 
 $sql = "SELECT SUM(used_points) AS total_points FROM users ";
 $params = [];
@@ -28,4 +37,4 @@ $insertParams = [
 
 executePreparedStmt($insertSql, $insertParams);
 
-echo "数据已成功插入到 statistics 表中。";
+echo "$yesterday 数据已成功插入到 statistics 表中。";
