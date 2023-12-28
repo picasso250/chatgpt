@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
-app.mount("/js", StaticFiles(directory="js"), name="js")
+app.mount("/gemini/js", StaticFiles(directory="js"), name="js")  # Updated path for static files
 templates = Jinja2Templates(directory="templates")
 
 # 检测操作系统类型
@@ -20,11 +20,11 @@ else:
     genai.configure(api_key=GOOGLE_API_KEY)
     GenerativeModel = genai.GenerativeModel
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/gemini/", response_class=HTMLResponse)  # Updated path for the root endpoint
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/send_message/")
+@app.post("/gemini/send_message/")  # Updated path for the send_message endpoint
 def send_message(data: dict):
     message = data.get("message")
     history = data.get("history", [])

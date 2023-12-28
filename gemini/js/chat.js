@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Perform any additional processing or validation if needed
 
         // Use fetch to make a POST request to the /send_message/ endpoint
-        fetch("/send_message/", {
+        fetch("/gemini/send_message/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
