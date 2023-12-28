@@ -9,3 +9,4 @@ wxpy_puid.pkl
 bot/chat_records.db
 PHPMailer/
 data/
+*.pyc

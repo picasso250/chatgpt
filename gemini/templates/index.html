@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>与Gemini聊天</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        h3 {
+            color: #555;
+        }
+
+        #chatHistory {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #chatHistory li {
+            margin-bottom: 5px;
+        }
+
+        #chatForm {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>与Gemini聊天</h2>
+    <ul id="chatHistory">
+    </ul>
+    <form id="chatForm" action="/send_message/" method="post">
+        <label for="message">输入你的消息：</label>
+        <!-- Change input to textarea -->
+        <textarea id="message" name="message" required></textarea>
+        <button type="submit">发送</button>
+    </form>
+    
+    <!-- 加载并包含 JavaScript 文件 -->
+    <script src="js/chat.js"></script>
+</body>
+</html>
