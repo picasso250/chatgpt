@@ -58,12 +58,15 @@ if ($conversationId == 0) {
 $records = getConversationRecords($conversationId);
 
 // 获取GET参数中的message，并与conversation_records结合构建messages数组
+$timezone = new DateTimeZone('Asia/Shanghai'); // 设置时区为+8区（亚洲/上海）
+$currentDate = new DateTime('now', $timezone);
+
 $messages = [
     [
         "role" => "system",
         "content" => "You are ChatGPT, a large language model trained by OpenAI, based on the GPT-3.5 architecture.
 Knowledge cutoff: 2022-01
-Current date: 2023-12-26
+Current date: " . $currentDate->format('Y-m-d') . "
 已设置默认语言为中文."
     ]
 ];
