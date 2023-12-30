@@ -193,7 +193,7 @@ $('.feedback').click(function () {
         content: `
             <div class="feedback-content">
                 <p>我们非常重视您的反馈和意见，希望能够不断提供更好的服务和产品。</p>
-                <p>若您有任何疑问、建议或意见，欢迎通过我们的客户反馈渠道与我们取得联系。您可以发送邮件至 <a href="mailto:gptmagicsamabot@gmail.com">gptmagicsamabot@gmail.com</a>，我们的团队将会在第一时间进行回复。</p>
+                <p>若您有任何疑问、建议或意见，欢迎通过我们的客户反馈渠道与我们取得联系。您可以发送邮件至 <a href="mailto:gptmagicsamabot@outlook.com">gptmagicsamabot@outlook.com</a>，我们的团队将会在第一时间进行回复。</p>
                 <p>期待与您保持紧密的沟通，共同为更好的体验而努力。</p>
             </div>
         `,
