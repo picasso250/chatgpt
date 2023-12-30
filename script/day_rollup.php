@@ -8,6 +8,13 @@ define('DATA_ROOT', dirname(__DIR__) . '/data');
 
 require_once dirname(__DIR__) . '/html/logic.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
 // 设置时区为+8:00
 $setTimezoneSql = "SET time_zone = '+08:00'";
 $setTimezoneParams = [];
@@ -20,21 +27,82 @@ $yesterdayStmt = executePreparedStmt($yesterdaySql, $yesterdayParams);
 $yesterdayResult = $yesterdayStmt->fetchAll();
 $yesterday = $yesterdayResult[0]['yesterday'];
 
-$sql = "SELECT SUM(used_points) AS total_points FROM users ";
-$params = [];
-$stmt = executePreparedStmt($sql, $params);
-$result = $stmt->fetchAll();
+// 获取前天的日期
+$dayBeforeYesterdaySql = "SELECT CURDATE() - INTERVAL 2 DAY AS day_before_yesterday";
+$dayBeforeYesterdayParams = [];
+$dayBeforeYesterdayStmt = executePreparedStmt($dayBeforeYesterdaySql, $dayBeforeYesterdayParams);
+$dayBeforeYesterdayResult = $dayBeforeYesterdayStmt->fetchAll();
+$dayBeforeYesterday = $dayBeforeYesterdayResult[0]['day_before_yesterday'];
 
-// 获取查询结果
-$totalPointsFromDB = $result[0]['total_points'];
+// 获取昨天的总积分
+$yesterdayTotalPointsSql = "SELECT SUM(used_points) AS total_points FROM users ";
+$yesterdayTotalPointsParams = [];
+$yesterdayTotalPointsStmt = executePreparedStmt($yesterdayTotalPointsSql, $yesterdayTotalPointsParams);
+$yesterdayTotalPointsResult = $yesterdayTotalPointsStmt->fetchAll();
+$yesterdayTotalPoints = $yesterdayTotalPointsResult[0]['total_points'];
 
-// 将结果插入到 statistics 表中
-$insertSql = "INSERT INTO statistics (total_points, date) VALUES (:total_points, :date)";
-$insertParams = [
-    ':total_points' => $totalPointsFromDB,
+// 将昨天的结果插入到 statistics 表中
+$insertYesterdaySql = "INSERT INTO statistics (total_points, date) VALUES (:total_points, :date)";
+$insertYesterdayParams = [
+    ':total_points' => $yesterdayTotalPoints,
     ':date' => $yesterday,
 ];
 
-executePreparedStmt($insertSql, $insertParams);
+executePreparedStmt($insertYesterdaySql, $insertYesterdayParams);
 
-echo "$yesterday 数据已成功插入到 statistics 表中。";
+// 获取前天的总积分
+$dayBeforeYesterdayTotalPointsSql = "SELECT total_points FROM statistics WHERE date = :date";
+$dayBeforeYesterdayTotalPointsParams = [':date' => $dayBeforeYesterday];
+$dayBeforeYesterdayTotalPointsStmt = executePreparedStmt($dayBeforeYesterdayTotalPointsSql, $dayBeforeYesterdayTotalPointsParams);
+$dayBeforeYesterdayTotalPointsResult = $dayBeforeYesterdayTotalPointsStmt->fetchAll();
+$dayBeforeYesterdayTotalPoints = $dayBeforeYesterdayTotalPointsResult[0]['total_points'];
+
+// 计算差值
+$difference = $yesterdayTotalPoints - $dayBeforeYesterdayTotalPoints;
+
+// 输出差值
+echo "Difference between $yesterday and $dayBeforeYesterday: $difference\n";
+
+// Read username and password from mail.ini
+$config = parse_ini_file('mail.ini', true);
+
+// Accessing values
+$username = $config['credentials']['username'];
+$password = $config['credentials']['password'];
+
+// 设置阈值
+$threshold = 100 * 100;
+$threshold = -1;
+
+// 发送告警邮件
+if ($difference > $threshold) {
+    // 发送邮件的代码，这里使用 PHPMailer 作为示例
+    $mail = new PHPMailer(true);
+
+    try {
+        // 邮件服务器配置
+        $mail->isSMTP();
+        $mail->Host       = 'smtp-mail.outlook.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $username;
+        $mail->Password   = $password;
+        $mail->SMTPSecure = 'tls';
+        $mail->Port       = 587;
+
+        // 邮件内容
+        $mail->setFrom($username, $username);
+        $mail->addAddress('q.q@q.c', 'q.q@q.c');
+        $mail->isHTML(true);
+        $mail->Subject = 'Warning: Exceeded Points Threshold';
+        $mail->Body    = "Total points on $yesterday exceeded the threshold. Total Points: $difference";
+
+        // 发送邮件
+        $mail->send();
+
+        echo 'Alert email sent successfully!';
+    } catch (Exception $e) {
+        echo "Error sending alert email: {$mail->ErrorInfo}";
+    }
+} else {
+    echo 'No alert needed. Total points within threshold.';
+}
