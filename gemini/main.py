@@ -37,7 +37,10 @@ def send_message(data: dict):
     chat = model.start_chat(history=history)
 
     response = chat.send_message(message)
-    return {"response": response, "history": chat.history}
+    chat_history=[]
+    for h in chat.history:
+        chat_history.append({'role':h.role,'text':h.parts[0].text})
+    return {"response": response, "history": chat_history}
 
 if __name__ == "__main__":
     import uvicorn
