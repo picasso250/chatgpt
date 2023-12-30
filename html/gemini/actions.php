@@ -29,8 +29,5 @@ function action_send_message()
     $geminiAPI = getGeminiAPI();
 
     // 调用 GeminiAPI 实例的 chat 方法，传递对话数据
-    $geminiAPI->chat($conversation);
-
-    // 输出 GeminiAPI 实例的历史数据
-    outputJson($geminiAPI->history);
+    outputJson($geminiAPI->chat($conversation));
 }

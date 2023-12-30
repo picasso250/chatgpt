@@ -1,3 +1,14 @@
+function createChatHistoryItem(message, role) {
+    var chatHistoryItem = document.createElement("li");
+
+    // Use marked to convert Markdown to HTML
+    var htmlContent = marked(message);
+
+    // Set innerHTML to render HTML content
+    chatHistoryItem.innerHTML = `${role}: ${htmlContent}`;
+
+    return chatHistoryItem;
+}
 document.addEventListener("DOMContentLoaded", function () {
     var chatForm = document.getElementById("chatForm");
     var chatHistoryElement = document.getElementById("chatHistory");
@@ -47,19 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Hide loading indicator
                 chatHistoryElement.removeChild(loadingIndicator);
 
-                chatHistoryElement.innerHTML = '';
-
-                data.forEach(item => {
-                    var chatHistoryItem = document.createElement("li");
-                
-                    // Use marked to convert Markdown to HTML
-                    var htmlContent = marked(item.parts[0].text);
-                
-                    // Set innerHTML to render HTML content
-                    chatHistoryItem.innerHTML = `${item.role}: ${htmlContent}`;
-                
-                    chatHistoryElement.appendChild(chatHistoryItem);
-                });
+                chatHistoryElement.appendChild(createChatHistoryItem(message, 'user'));
+                chatHistoryElement.appendChild(createChatHistoryItem(data, 'model'));
 
                 // Update the local chat history variable
                 chatHistory = data;
