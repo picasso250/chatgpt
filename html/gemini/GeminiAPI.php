@@ -72,8 +72,11 @@ class GeminiAPI
 
         $this->sendRequest($url, $data);
 
-        // Set $this->history only for the chat method
-        $this->history = $this->decodedResponse['candidates'][0]['content'];
+        // todo history should append $conversation
+        $this->history = array_merge(
+            $conversation,
+            [$this->decodedResponse['candidates'][0]['content']]
+        );
 
         return $this->getMostImportantResult();
     }
@@ -166,6 +169,12 @@ class GeminiAPI
 
         $ch = curl_init($url);
 
+        // Log the URL
+        error_log('URL: ' . $url . "\n", 3, '/tmp/gemini.log');
+
+        // Log the data
+        error_log('Data: ' . $json_data . "\n", 3, '/tmp/gemini.log');
+
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -175,6 +184,9 @@ class GeminiAPI
         curl_setopt($ch, CURLOPT_STDERR, fopen('php://stderr', 'w'));
 
         $response = curl_exec($ch);
+
+        // Log the response
+        error_log('Response: ' . $response . "\n", 3, '/tmp/gemini.log');
 
         curl_close($ch);
 
