@@ -4,15 +4,31 @@ function createChatHistoryItem(message, role) {
     // Use marked to convert Markdown to HTML
     var htmlContent = marked(message);
 
-    // Set innerHTML to render HTML content
-    chatHistoryItem.innerHTML = `${role}: ${htmlContent}`;
+    // Create role and content div elements
+    var roleDiv = document.createElement("div");
+    roleDiv.className = "role";
+    roleDiv.textContent = role;
+
+    var contentDiv = document.createElement("div");
+    contentDiv.className = "content";
+    contentDiv.innerHTML = htmlContent;
+
+    // Append role and content divs to the chatHistoryItem
+    chatHistoryItem.appendChild(roleDiv);
+    chatHistoryItem.appendChild(contentDiv);
+
+    // Set data-text attribute to the message
+    chatHistoryItem.setAttribute("data-text", message);
 
     return chatHistoryItem;
 }
+
+
+var chatHistory = [];  // Variable to store chat history
+
 document.addEventListener("DOMContentLoaded", function () {
     var chatForm = document.getElementById("chatForm");
     var chatHistoryElement = document.getElementById("chatHistory");
-    var chatHistory = [];  // Variable to store chat history
     var submitButton = document.getElementById("submitButton");
 
     chatForm.addEventListener("submit", function (event) {
@@ -26,56 +42,64 @@ document.addEventListener("DOMContentLoaded", function () {
         messageInput.disabled = true;
         submitButton.disabled = true;
 
-        // Show loading indicator
-        var loadingIndicator = document.createElement("div");
-        loadingIndicator.textContent = "Loading...";
-        chatHistoryElement.appendChild(loadingIndicator);
+        chatHistoryElement.appendChild(createChatHistoryItem(message, 'user'));
+        var modelLi = createChatHistoryItem('loading...', 'model');
+        chatHistoryElement.appendChild(modelLi);
 
-        // Construct the message object to be sent in the request body
-        var messageObject = {
+        // Convert message to JSON and base64 encode
+        var encodedMessage = btoa(JSON.stringify({
             role: 'user',
             parts: [
                 {
                     text: message
                 }
             ]
-        };
+        }));
 
-        // Use fetch to make a POST request to the /send_message/ endpoint
-        fetch("ajax.php?action=send_message", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(chatHistory.concat([messageObject])),
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Enable textarea and button
-                messageInput.disabled = false;
-                submitButton.disabled = false;
+        // Create an EventSource object
+        var eventSource = new EventSource("ajax.php?action=send_message_stream&message=" + encodedMessage);
 
-                // Hide loading indicator
-                chatHistoryElement.removeChild(loadingIndicator);
+        var collectedText='';
 
-                chatHistoryElement.appendChild(createChatHistoryItem(message, 'user'));
-                chatHistoryElement.appendChild(createChatHistoryItem(data, 'model'));
+        // Listen for messages from the server
+        eventSource.addEventListener("message", function (event) {
+            var data = JSON.parse(event.data);
 
-                // Update the local chat history variable
-                chatHistory = data;
+            // Enable textarea and button
+            messageInput.disabled = false;
+            submitButton.disabled = false;
 
-                // Clear the message input
-                messageInput.value = "";
-            })
-            .catch(error => {
-                // Enable textarea and button
-                messageInput.disabled = false;
-                submitButton.disabled = false;
+            // Update the local chat history variable
+            chatHistory = data;
 
-                // Hide loading indicator
-                chatHistoryElement.removeChild(loadingIndicator);
+            collectedText+=data.text;
 
-                console.error("Error:", error);
-            });
+            // Clear the message input
+            messageInput.value = "";
+
+            // Get the content div within the model li
+            var contentDiv = modelLi.querySelector('.content');
+
+            // Use marked to convert Markdown to HTML
+            var htmlContent = marked(collectedText);
+
+            // Set innerHTML to render HTML content in the content div
+            contentDiv.innerHTML = `${htmlContent}`;
+
+            // Append the updated model li to the chat history
+            chatHistoryElement.appendChild(modelLi);
+        });
+
+        // Listen for errors from the server
+        eventSource.addEventListener("error", function (error) {
+            // Enable textarea and button
+            messageInput.disabled = false;
+            submitButton.disabled = false;
+
+            console.error("Error:", error);
+
+            // Close the EventSource connection in case of an error
+            eventSource.close();
+        });
     });
 });

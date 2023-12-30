@@ -103,7 +103,8 @@ class GeminiAPI
 
             // Process the JSON string within the streaming data
             $capturedText = $this->processJsonInData($data);
-            $streamingCallback($ch, $capturedText);
+            if ($$capturedText)
+                $streamingCallback($ch, $capturedText);
 
             // Return the length of the data processed
             return strlen($data);
@@ -124,11 +125,7 @@ class GeminiAPI
 
         // Check if the pattern exists in the data
         if (preg_match($pattern, $data, $matches)) {
-            // Extract the captured text
-            $capturedText = $matches[1];
-
-            // Return the captured text
-            return json_decode($capturedText);
+            return $matches[0];
         }
 
         // Return null if the pattern is not found
