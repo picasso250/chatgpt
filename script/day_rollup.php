@@ -11,9 +11,9 @@ require_once dirname(__DIR__) . '/html/logic.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'PHPMailer/src/Exception.php';
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
+require dirname(__DIR__). '/PHPMailer/src/Exception.php';
+require dirname(__DIR__). '/PHPMailer/src/PHPMailer.php';
+require dirname(__DIR__). '/PHPMailer/src/SMTP.php';
 
 // 设置时区为+8:00
 $setTimezoneSql = "SET time_zone = '+08:00'";
@@ -70,9 +70,11 @@ $config = parse_ini_file('mail.ini', true);
 $username = $config['credentials']['username'];
 $password = $config['credentials']['password'];
 
+// 将mail_list_main字符串拆分成数组
+$mailListArray = explode(',', $config['mail_list']['mail_list_main']);
+
 // 设置阈值
 $threshold = 100 * 100;
-$threshold = -1;
 
 // 发送告警邮件
 if ($difference > $threshold) {
@@ -91,7 +93,10 @@ if ($difference > $threshold) {
 
         // 邮件内容
         $mail->setFrom($username, $username);
-        $mail->addAddress('q.q@q.c', 'q.q@q.c');
+        // 遍历数组，添加每个地址
+        foreach ($mailListArray as $email) {
+            $mail->addAddress(trim($email));
+        }
         $mail->isHTML(true);
         $mail->Subject = 'Warning: Exceeded Points Threshold';
         $mail->Body    = "Total points on $yesterday exceeded the threshold. Total Points: $difference";
